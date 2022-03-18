@@ -15,7 +15,6 @@ public class MainCharacter {
 
     public float stateTime = 0.0f;
     public int walkSpeed = 500;
-    public boolean isLeft = false;
 
     public MainCharacter() {
         walk = new MainCharacterWalk();
@@ -23,8 +22,8 @@ public class MainCharacter {
 
         rigid_body = new Rectangle();
         /* I don't know exactly. */
-        rigid_body.height = 28;
-        rigid_body.width = 41;
+        rigid_body.height = 30;
+        rigid_body.width = 103;
         rigid_body.x = 0;
         rigid_body.y = 0;
     }
@@ -66,5 +65,6 @@ public class MainCharacter {
 
     public void dispose() {
         walk.dispose();
+        idle.dispose();
     }
 }
