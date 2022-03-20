@@ -1,28 +1,31 @@
 package character.interActerObject;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.mygdx.game.GameMode;
 
-public class TestObject extends Image{
+public class WallObject {
     Body body;
 
-    static private final Texture texture = new Texture("wallSample.png");
+    Sprite sprite;
 
-    public TestObject(World gameWorld, float x, float y) {
+    static private final Texture texture = new Texture("wallSample2.png");
+
+    public WallObject(World gameWorld, float x, float y) {
+        sprite = new Sprite(texture);
+        sprite.setPosition(x, y);
+
         BodyDef bd = new BodyDef();
         bd.type = BodyDef.BodyType.StaticBody;
         bd.position.set(x, y);
         body = gameWorld.createBody(bd);
 
         PolygonShape box = new PolygonShape();
-        box.setAsBox(texture.getWidth()/2f, texture.getHeight()/2f,
-                new Vector2(texture.getWidth()/2f, texture.getHeight()/2f), 0);
+        box.setAsBox(sprite.getWidth()/2f /GameMode.PPM, sprite.getHeight()/2f /GameMode.PPM,
+                new Vector2(sprite.getWidth()/2f /GameMode.PPM, sprite.getHeight()/2f /GameMode.PPM), 0);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = box;
@@ -33,7 +36,8 @@ public class TestObject extends Image{
     }
 
     public void draw(SpriteBatch batch) {
-        batch.draw(texture, body.getPosition().x, body.getPosition().y);
+        batch.draw(sprite, body.getPosition().x, body.getPosition().y,
+                sprite.getWidth() /GameMode.PPM, sprite.getHeight() /GameMode.PPM);
     }
 
     public void dispose() {

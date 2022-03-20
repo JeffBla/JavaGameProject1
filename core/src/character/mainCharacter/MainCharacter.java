@@ -5,8 +5,10 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.physics.box2d.*;
+import com.mygdx.game.GameMode;
 
 public class MainCharacter extends Actor {
     final MainCharacterWalk walk;
@@ -17,7 +19,8 @@ public class MainCharacter extends Actor {
 
     public Vector2 speed = new Vector2(0, 0);
     public float stateTime = 0.0f;
-    public int walkSpeed = 10000;
+    private final float walkSpeed = 5;  // 5 for game. 10 for test.
+    private final float width = 1.7f, height = 1.7f;
 
     public MainCharacter(World gameWorld, float x, float y) {
         walk = new MainCharacterWalk();
@@ -31,7 +34,7 @@ public class MainCharacter extends Actor {
         body = gameWorld.createBody(bd);
 
         PolygonShape box = new PolygonShape();
-        box.setAsBox(44, 10, new Vector2(x+currentFrame.getRegionWidth()/2f, y), 0);
+        box.setAsBox(0.44f, 0.1f, new Vector2(x+width/2, y), 0);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = box;
@@ -41,13 +44,21 @@ public class MainCharacter extends Actor {
         box.dispose();
     }
 
+    public Vector3 getPosition() {
+        return new Vector3(body.getPosition(), 0);
+    }
+
+    public Vector3 getPosition(float offsetX, float offsetY) {
+        return new Vector3(body.getPosition().x + offsetX, body.getPosition().y + offsetY, 0);
+    }
+
     @Override
     public void act(float delta) {
         keyInput(delta);
     }
 
     public void draw(SpriteBatch batch) {
-        batch.draw(currentFrame, body.getPosition().x, body.getPosition().y);
+        batch.draw(currentFrame, body.getPosition().x, body.getPosition().y, width, height);
     }
 
     private void keyInput(float delta) {

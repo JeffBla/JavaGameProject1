@@ -11,7 +11,7 @@ public class MainCharacterIdle {
     public Animation<TextureRegion> idleAnimation;
 
     public MainCharacterIdle() {
-        idleSheetTexture = new Texture(Gdx.files.internal("Idle-smallsmall.png"));
+        idleSheetTexture = new Texture(Gdx.files.internal("Idle.png"));
         int frameCols = 4;
         int frameRows = 1;
 

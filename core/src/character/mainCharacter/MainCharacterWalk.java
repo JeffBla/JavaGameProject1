@@ -11,7 +11,7 @@ public class MainCharacterWalk {
     public Animation<TextureRegion> walkAnimation;
 
     public MainCharacterWalk() {
-        walkSheetTexture = new Texture(Gdx.files.internal("Walk-small.png"));
+        walkSheetTexture = new Texture(Gdx.files.internal("Walk.png"));
         int frameCols = 6;
         int frameRows = 1;
 
