@@ -20,11 +20,11 @@ public class GameLobby implements Screen {
     final WallObject wallObject1;
     final BoxObject boxObject;
 
-    World gameWorld;
-    Stage gameStage;
-    Box2DDebugRenderer box2DDebugRenderer;
-    FitViewport stageViewport;
-    FitViewport mainCharacterViewport;
+    private World gameWorld;
+    private Stage gameStage;
+    private Box2DDebugRenderer box2DDebugRenderer;
+    private FitViewport stageViewport;
+    private FitViewport mainCharacterViewport;
 //    OrthographicCamera stageCamera;
 //    OrthographicCamera mainCharacterCamera;
 
@@ -67,8 +67,6 @@ public class GameLobby implements Screen {
         gameStage.act();
         boxObject.act(delta);
         update(delta);
-
-
 
         gameMode.batch.begin();
         wallObject0.draw(gameMode.batch);

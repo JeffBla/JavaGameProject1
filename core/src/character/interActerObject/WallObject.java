@@ -8,9 +8,9 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.mygdx.game.GameMode;
 
 public class WallObject {
-    Body body;
+    private Body body;
 
-    Sprite sprite;
+    private Sprite sprite;
 
     static private final Texture texture = new Texture("wallSample2.png");
 

@@ -11,7 +11,7 @@ public class MainCharacterIdle {
     public Animation<TextureRegion> idleAnimation;
 
     public MainCharacterIdle() {
-        idleSheetTexture = new Texture(Gdx.files.internal("Idle.png"));
+        idleSheetTexture = new Texture(Gdx.files.internal("Adventurer-1.5/adventurer_idle.png"));
         int frameCols = 4;
         int frameRows = 1;
 
@@ -20,7 +20,7 @@ public class MainCharacterIdle {
         TextureRegion[][] cellRegion = TextureRegion.split(idleSheetTexture, perCellWidth, perCellHeight);
         TextureRegion[] walkFrames = cellRegion[0]; /* Only when frameRows is 1  */
 
-        idleAnimation = new Animation<TextureRegion>(0.3f, walkFrames);
+        idleAnimation = new Animation<TextureRegion>(0.2f, walkFrames);
         idleAnimation.setPlayMode(Animation.PlayMode.LOOP);
 
     }

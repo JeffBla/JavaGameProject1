@@ -8,10 +8,10 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.mygdx.game.GameMode;
 
 public class BoxObject {
-    Body body;
-    Fixture fixture;
+    private Body body;
+    private Fixture fixture;
 
-    Sprite sprite;
+    private Sprite sprite;
 
     private final Texture texture = new Texture("box.png");
 
