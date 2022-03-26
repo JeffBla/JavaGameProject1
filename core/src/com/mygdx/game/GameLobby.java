@@ -1,7 +1,7 @@
 package com.mygdx.game;
 
-import character.interActerObject.BoxObject;
-import character.interActerObject.WallObject;
+import character.interActorObject.BoxObject;
+import character.interActorObject.WallObject;
 import character.mainCharacter.MainCharacter;
 
 import com.badlogic.gdx.Gdx;
@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 
 public class GameLobby implements Screen {
     final GameMode gameMode;
+    final ScreenMusic screenMusic;
     final MainCharacter mainCharacter;
     final WallObject wallObject0;
     final WallObject wallObject1;
@@ -32,7 +33,12 @@ public class GameLobby implements Screen {
         this.gameMode = gameMode;
 
         gameWorld = new World(new Vector2(0, 0), true);
+        gameWorld.setContactListener(new GameLobbyContactListener());
+
         box2DDebugRenderer = new Box2DDebugRenderer();
+
+        screenMusic = new ScreenMusic();
+        screenMusic.playGameLobbyMusic();
 
         mainCharacter = new MainCharacter(gameWorld, 0, 0);
         wallObject0 = new WallObject(gameWorld, 5f, 6.5f);
@@ -70,8 +76,9 @@ public class GameLobby implements Screen {
 
         gameMode.batch.begin();
         wallObject0.draw(gameMode.batch);
-        wallObject1.draw(gameMode.batch);
         boxObject.draw(gameMode.batch);
+        wallObject1.draw(gameMode.batch);
+
         mainCharacter.draw(gameMode.batch);
         gameMode.batch.end();
         mainCharacter.stateTime += Gdx.graphics.getDeltaTime();

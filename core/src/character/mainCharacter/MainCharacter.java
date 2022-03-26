@@ -2,21 +2,24 @@ package character.mainCharacter;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.physics.box2d.*;
-import com.mygdx.game.GameMode;
+
+import worldBuilding.BuildBody;
 
 public class MainCharacter extends Actor {
     private final MainCharacterWalk walk;
     private final MainCharacterIdle idle;
     private final MainCharacterAttack attack;
+    private final MainCharacterSoundEffect soundEffect;
 
+    private final World gameWorld;
     public Body body;
+    public Body attackDetectRight;
+    public Body attackDetectLeft;
     public TextureRegion currentFrame;
 
     public Vector2 speed = new Vector2(0, 0);
@@ -24,27 +27,32 @@ public class MainCharacter extends Actor {
     private final float walkSpeed = 5;  // 5 for game. 10 for test.
     private final float width = 1.7f, height = 1.7f;
 
+    private boolean isLeft = false;
+    private boolean isAttack = false;
+
     public MainCharacter(World gameWorld, float x, float y) {
+        this.gameWorld = gameWorld;
+
         walk = new MainCharacterWalk();
         idle = new MainCharacterIdle();
         attack = new MainCharacterAttack();
+        soundEffect = new MainCharacterSoundEffect();
 
         currentFrame = idle.idleAnimation.getKeyFrame(stateTime);
 
-        BodyDef bd = new BodyDef();
-        bd.type = BodyDef.BodyType.DynamicBody;
-        bd.position.set(0, 0);
-        body = gameWorld.createBody(bd);
+        body = BuildBody.createBox(gameWorld, 0, 0, 0.3f, 0.65f,
+                new Vector2(x + width / 2, y + height / 2 - 0.2f), 0, 0, 0.2f,
+                false, true, false);
 
-        PolygonShape box = new PolygonShape();
-        box.setAsBox(0.44f, 0.1f, new Vector2(x + width / 2, y), 0);
 
-        FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.shape = box;
+//        BuildBody.createWeldJointDef(gameWorld, body, attackDetectRight, 5f,
+//                0, 0, 0, 0, 0, false);
 
-        body.createFixture(fixtureDef);
 
-        box.dispose();
+//        BuildBody.createWeldJointDef(gameWorld, body, attackDetectLeft, 5f,
+//                0, 0, 0, 0, 0, false);
+
+        body.setUserData(this);
     }
 
     public Vector3 getPosition() {
@@ -53,6 +61,14 @@ public class MainCharacter extends Actor {
 
     public Vector3 getPosition(float offsetX, float offsetY) {
         return new Vector3(body.getPosition().x + offsetX, body.getPosition().y + offsetY, 0);
+    }
+
+    public boolean getIsLeft() {
+        return isLeft;
+    }
+
+    public boolean getIsAttack() {
+        return isAttack;
     }
 
     @Override
@@ -72,51 +88,85 @@ public class MainCharacter extends Actor {
     private final float castDuration = 1.2f;
     private float castDurationCount = 0;
 
+    private int attackDetectRightCount = 0;
+    private int attackDetectLeftCount = 0;
+
     private void keyInput(float delta) {
-        boolean isLeft = Gdx.input.isKeyPressed(Input.Keys.A);
-        boolean isRight = Gdx.input.isKeyPressed(Input.Keys.D);
-        boolean isUp = Gdx.input.isKeyPressed(Input.Keys.W);
-        boolean isDown = Gdx.input.isKeyPressed(Input.Keys.S);
-        boolean isAttack = Gdx.input.isKeyPressed(Input.Keys.J);
-        boolean isCast = Gdx.input.isKeyPressed(Input.Keys.K);
+        boolean pressLeft = Gdx.input.isKeyPressed(Input.Keys.A);
+        boolean pressRight = Gdx.input.isKeyPressed(Input.Keys.D);
+        boolean pressUp = Gdx.input.isKeyPressed(Input.Keys.W);
+        boolean pressDown = Gdx.input.isKeyPressed(Input.Keys.S);
+        boolean pressAttack = Gdx.input.isKeyPressed(Input.Keys.J);
+        boolean pressCast = Gdx.input.isKeyPressed(Input.Keys.K);
 
         // idle
         currentFrame = idle.idleAnimation.getKeyFrame(stateTime);
 
+        isAttack = false;
         // attack
-        if (isAttack || attackDurationCount != 0) {
+        if (pressAttack || attackDurationCount != 0) {
+            isAttack = true;
             attackComboTimeCount = 0;
             body.setLinearVelocity(0, 0);
             attackDurationCount += delta;
+
+            if (attackComboTimeCount >= attackComboTimeDuration) {
+                attacklevelCount = 1;
+                attackComboTimeCount = 0;
+            } else {
+                attackComboTimeCount += delta;
+            }
+
+            // attack detect region
+            if (!isLeft && attackDetectRightCount != 1) {
+                attackDetectRight = BuildBody.createBox(gameWorld, 0, 0, 0.3f * 2 - 0.12f, 0.65f,
+                        new Vector2(body.getPosition().x + width / 2 + 0.2f, body.getPosition().y + height / 2 - 0.2f),
+                        0, 0, 0, false, true, true);
+                attackDetectRight.setUserData(this);
+                attackDetectRightCount++;
+            } else if (isLeft && attackDetectLeftCount != 1) {
+                attackDetectLeft = BuildBody.createBox(gameWorld, 0, 0, 0.3f * 2 - 0.12f, 0.65f,
+                        new Vector2(body.getPosition().x + width / 2 - 0.2f, body.getPosition().y + height / 2 - 0.2f),
+                        0, 0, 0, false, true, true);
+                attackDetectLeft.setUserData(this);
+                attackDetectLeftCount++;
+            }
+
             if (attacklevelCount == 1 && attackDurationCount <= attackDurations[1]) {
                 currentFrame = attack.attackAnim1.getKeyFrame(attackDurationCount);
+                soundEffect.playSword_shoosh_sound();
+                return;
             } else if (attacklevelCount == 2 && attackDurationCount <= attackDurations[2]) {
                 currentFrame = attack.attackAnim2.getKeyFrame(attackDurationCount);
+                soundEffect.playSword_shoosh_sound();
+                return;
             } else if (attacklevelCount == 3 && attackDurationCount <= attackDurations[3]) {
                 currentFrame = attack.attackAnim3.getKeyFrame(attackDurationCount);
+                soundEffect.playSword_cut_air_sound();
+                return;
             }
-        }
-        if (attackComboTimeCount >= attackComboTimeDuration) {
-            attacklevelCount = 1;
-            attackComboTimeCount = 0;
-        } else {
-            attackComboTimeCount += delta;
         }
         if (attacklevelCount == 1 && attackDurationCount > attackDurations[1]) {
             attacklevelCount++;
             attackDurationCount = 0;
+
+            DestoryAttackDetect();
         }
         if (attacklevelCount == 2 && attackDurationCount > attackDurations[2]) {
             attacklevelCount++;
             attackDurationCount = 0;
+
+            DestoryAttackDetect();
         }
         if (attacklevelCount == 3 && attackDurationCount > attackDurations[3]) {
             attacklevelCount = 1;
             attackDurationCount = 0;
+
+            DestoryAttackDetect();
         }
 
         // cast
-        if (isCast || castDurationCount != 0) {
+        if (pressCast || castDurationCount != 0) {
             body.setLinearVelocity(0, 0);
             castDurationCount += delta;
             if (castDurationCount <= castDuration) {
@@ -128,35 +178,63 @@ public class MainCharacter extends Actor {
 
         // move
         body.setLinearVelocity(speed);
-        if (isLeft || isRight) {
+        if (pressLeft || pressRight) {
             currentFrame = walk.walkAnimation.getKeyFrame(stateTime);
-            if (isRight) {
+            if (pressRight) {
+                isLeft = false;
                 flipTheAnimRight(walk.walkAnimation);
                 flipTheAnimRight(idle.idleAnimation);
                 flipTheAnimRight(attack.attackAnim1);
                 flipTheAnimRight(attack.attackAnim2);
+                flipTheAnimRight(attack.attackAnim3);
+                flipTheAnimRight(attack.attackAnimCast);
                 speed.x = walkSpeed;
             }
-            if (isLeft) {
+            if (pressLeft) {
+                isLeft = true;
                 flipTheAnimLeft(walk.walkAnimation);
                 flipTheAnimLeft(idle.idleAnimation);
                 flipTheAnimLeft(attack.attackAnim1);
                 flipTheAnimLeft(attack.attackAnim2);
+                flipTheAnimLeft(attack.attackAnim3);
+                flipTheAnimLeft(attack.attackAnimCast);
                 speed.x = -walkSpeed;
             }
         } else {
             speed.x = 0;
         }
-        if (isUp || isDown) {
+        if (pressUp || pressDown) {
             currentFrame = walk.walkAnimation.getKeyFrame(stateTime);
-            if (isUp) {
+            if (pressUp) {
                 speed.y = walkSpeed;
             }
-            if (isDown) {
+            if (pressDown) {
                 speed.y = -walkSpeed;
             }
         } else {
             speed.y = 0;
+        }
+
+        // stop Runing Sound
+        if(pressDown||pressRight||pressUp||pressLeft){
+            soundEffect.playRun_sound();
+        }
+        else{
+            soundEffect.stopRun_sound();
+        }
+        if(pressAttack){
+            soundEffect.stopRun_sound();
+        }
+    }
+
+    private void DestoryAttackDetect(){
+        if (attackDetectLeftCount == 1) {
+            gameWorld.destroyBody(attackDetectLeft);
+            attackDetectLeftCount = 0;
+        }
+        if (attackDetectRightCount == 1) {
+            gameWorld.destroyBody(attackDetectRight);
+            attackDetectRightCount = 0;
         }
     }
 
@@ -164,6 +242,7 @@ public class MainCharacter extends Actor {
         for (TextureRegion textureRegion : anim.getKeyFrames())
             if (textureRegion.isFlipX())
                 textureRegion.flip(true, false);
+
     }
 
     private void flipTheAnimLeft(Animation<TextureRegion> anim) {
