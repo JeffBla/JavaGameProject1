@@ -8,12 +8,12 @@ public class ScreenMusic {
     private Music gameLobbyMusic;
 
     public ScreenMusic(){
-        gameLobbyMusic = Gdx.audio.newMusic(Gdx.files.internal("Music/gameLobbyMusic.mp3"));
+        gameLobbyMusic = Gdx.audio.newMusic(Gdx.files.internal("Music/VID_20220204_112731.mp3"));
     }
 
     public void playGameLobbyMusic(){
         gameLobbyMusic.setLooping(true);
-        gameLobbyMusic.setVolume(0.2f);
+        gameLobbyMusic.setVolume(0.4f);
         gameLobbyMusic.play();
     }
 }

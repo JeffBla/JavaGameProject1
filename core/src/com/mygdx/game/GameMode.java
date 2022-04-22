@@ -12,9 +12,8 @@ public class GameMode extends Game {
 	SpriteBatch batch;
 	BitmapFont bitmapFont;
 	float bitmapFontSize= 5.0f;
-	// for testing and
+	// ^for testing and
 	// providing the programmer some information
-
 
 	public void create () {
 		batch = new SpriteBatch();
