@@ -1,15 +1,17 @@
 package character.interActorObject;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.mygdx.game.GameMode;
 
 import worldBuilding.BuildBody;
 
-public class BoxObject {
+public class BoxObject extends Actor {
     private Body body;
     private Fixture fixture;
 
@@ -22,14 +24,15 @@ public class BoxObject {
         sprite.setPosition(x, y);
 
         body = BuildBody.createBox(gameWorld, x, y, sprite.getWidth() / 2f / GameMode.PPM,
-                sprite.getHeight() / 2f / GameMode.PPM - GameMode.interActerObject_collisionConstant,
-                new Vector2(sprite.getWidth() / 2f / GameMode.PPM, sprite.getHeight() / 2f / GameMode.PPM + GameMode.interActerObject_collisionConstant),
+                sprite.getHeight() / 2f / GameMode.PPM - 0.5f,
+                new Vector2(sprite.getWidth() / 2f / GameMode.PPM, sprite.getHeight() / 2f / GameMode.PPM + 0.5f),
                 0, 0, 10f, false, true, false);
         fixture= body.getFixtureList().first();
 
         body.setUserData(this);
     }
 
+    @Override
     public void act(float delta) {
         if (!body.getLinearVelocity().epsilonEquals(0, 0)) {
             if (body.getLinearVelocity().x > 0) {
@@ -53,7 +56,8 @@ public class BoxObject {
         }
     }
 
-    public void draw(SpriteBatch batch) {
+    @Override
+    public void draw (Batch batch, float parentAlpha) {
         batch.draw(sprite, body.getPosition().x, body.getPosition().y, sprite.getWidth() / GameMode.PPM,
                 sprite.getHeight() / GameMode.PPM);
     }

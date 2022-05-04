@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class GameMode extends Game {
 	public static final	float PPM= 100f; // pixel per meter (PPM) ratio
-	public static final float interActerObject_collisionConstant = 0.5f;
 
 	SpriteBatch batch;
 	BitmapFont bitmapFont;

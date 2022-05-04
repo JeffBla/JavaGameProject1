@@ -40,17 +40,9 @@ public class MainCharacter extends Actor {
 
         currentFrame = idle.idleAnimation.getKeyFrame(stateTime);
 
-        body = BuildBody.createBox(gameWorld, 0, 0, 0.3f, 0.65f,
-                new Vector2(x + width / 2, y + height / 2 - 0.2f), 0, 0, 0.2f,
+        body = BuildBody.createBox(gameWorld, x, y, 0.3f, 0.65f,
+                new Vector2(width / 2, height / 2 - 0.2f), 0, 0, 0.2f,
                 false, true, false);
-
-
-//        BuildBody.createWeldJointDef(gameWorld, body, attackDetectRight, 5f,
-//                0, 0, 0, 0, 0, false);
-
-
-//        BuildBody.createWeldJointDef(gameWorld, body, attackDetectLeft, 5f,
-//                0, 0, 0, 0, 0, false);
 
         body.setUserData(this);
     }
@@ -76,7 +68,8 @@ public class MainCharacter extends Actor {
         keyInput(delta);
     }
 
-    public void draw(SpriteBatch batch) {
+    @Override
+    public void draw (Batch batch, float parentAlpha) {
         batch.draw(currentFrame, body.getPosition().x, body.getPosition().y, width, height);
     }
 

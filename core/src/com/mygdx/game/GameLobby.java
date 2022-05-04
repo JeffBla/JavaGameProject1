@@ -19,6 +19,10 @@ public class GameLobby implements Screen {
     final MainCharacter mainCharacter;
     final WallObject wallObject0;
     final WallObject wallObject1;
+    final WallObject frameObject0;
+    final WallObject frameObject1;
+    final WallObject frameObject2;
+    final WallObject frameObject3;
     final BoxObject boxObject;
 
     private World gameWorld;
@@ -26,8 +30,6 @@ public class GameLobby implements Screen {
     private Box2DDebugRenderer box2DDebugRenderer;
     private FitViewport stageViewport;
     private FitViewport mainCharacterViewport;
-//    OrthographicCamera stageCamera;
-//    OrthographicCamera mainCharacterCamera;
 
     public GameLobby(final GameMode gameMode) {
         this.gameMode = gameMode;
@@ -40,21 +42,38 @@ public class GameLobby implements Screen {
         screenMusic = new ScreenMusic();
         screenMusic.playGameLobbyMusic();
 
-        mainCharacter = new MainCharacter(gameWorld, 0, 0);
-        wallObject0 = new WallObject(gameWorld, 5f, 6.5f);
-        wallObject1 = new WallObject(gameWorld, 5f, 0);
+        mainCharacter = new MainCharacter(gameWorld, 2, 2);
+        wallObject0 = new WallObject(gameWorld, 8f, 8f);
+        wallObject1 = new WallObject(gameWorld, 8f, -1);
+        frameObject0 = new WallObject(gameWorld, 0f, 12f, 40f, 3f, 0.3f,
+                0, -0.3f);
+        frameObject1 = new WallObject(gameWorld, 0, -0.5f, 40f, 2f,
+                0f, 0f, 0f);
+        frameObject2 = new WallObject(gameWorld, -0.5f, -7f, 1f, 22f,
+                0f, 0f, 0f);
+        frameObject3 = new WallObject(gameWorld, 39f,-7f,1f,22f,
+                0f,0f,0f);
         boxObject = new BoxObject(gameWorld, 8, 5);
 
 
         Gdx.input.setInputProcessor(gameStage);
         float ratio = (float) (Gdx.graphics.getWidth()) / (float) (Gdx.graphics.getHeight());
 
-        stageViewport = new FitViewport(1000, 1000 / ratio); // This is for developer
+        // 40 is good
+        stageViewport = new FitViewport(40, 40 / ratio); // This is for developer
         mainCharacterViewport = new FitViewport(20, 20/ratio); // This is for gamer
-        mainCharacterViewport.getCamera().position.set(0,0,1f);
-        mainCharacterViewport.getCamera().lookAt(mainCharacter.getPosition());
+        mainCharacterViewport.getCamera().position.set(0,0,1);
+//        mainCharacterViewport.getCamera().lookAt(mainCharacter.getPosition());  /* have bug */
 
-        gameStage = new Stage(mainCharacterViewport);
+        gameStage = new Stage(stageViewport);
+
+        gameStage.addActor(frameObject0);
+        gameStage.addActor(wallObject1);
+        gameStage.addActor(frameObject1);
+        gameStage.addActor(frameObject2);
+        gameStage.addActor(frameObject3);
+        gameStage.addActor(boxObject);
+        gameStage.addActor(wallObject0);
 
         gameStage.addActor(mainCharacter);
     }
@@ -62,24 +81,19 @@ public class GameLobby implements Screen {
     @Override
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        Gdx.gl.glClearColor(0.9f, 0.9f, 0.9f, 1);
+        Gdx.gl.glClearColor(0.8f, 0.8f, 0.8f, 1);
 
         if(gameStage.getViewport() == mainCharacterViewport) {
-            mainCharacterViewport.getCamera().position.set(mainCharacter.getPosition(4, 1.5f));
+                mainCharacterViewport.getCamera().position.set(mainCharacter.getPosition(4, 1.5f));
         }
         gameStage.getCamera().update();
         gameMode.batch.setProjectionMatrix(gameStage.getCamera().combined);
 
         gameStage.act();
-        boxObject.act(delta);
         update(delta);
 
         gameMode.batch.begin();
-        wallObject0.draw(gameMode.batch);
-        boxObject.draw(gameMode.batch);
-        wallObject1.draw(gameMode.batch);
-
-        mainCharacter.draw(gameMode.batch);
+        gameStage.draw();
         gameMode.batch.end();
         mainCharacter.stateTime += Gdx.graphics.getDeltaTime();
 
