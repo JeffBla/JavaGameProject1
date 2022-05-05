@@ -1,6 +1,8 @@
 package com.mygdx.game;
 
 import character.interActorObject.BoxObject;
+import character.interActorObject.ButtonObject;
+import character.interActorObject.DoorObject;
 import character.interActorObject.WallObject;
 import character.mainCharacter.MainCharacter;
 
@@ -8,10 +10,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import worldBuilding.BuildBody;
 
 public class GameLobby implements Screen {
     final GameMode gameMode;
@@ -19,17 +23,25 @@ public class GameLobby implements Screen {
     final MainCharacter mainCharacter;
     final WallObject wallObject0;
     final WallObject wallObject1;
-    final WallObject frameObject0;
-    final WallObject frameObject1;
-    final WallObject frameObject2;
-    final WallObject frameObject3;
+    final WallObject frameObjectUp;
+    final WallObject frameObjectDownPartOne;
+    final WallObject frameObjectDownPartTwo;
+    final WallObject frameObjectDownDown;
+    final WallObject frameObjectFont;
+    final WallObject frameObjectRear;
     final BoxObject boxObject;
+    final ButtonObject openDoorButton;
+    final DoorObject doorObject;
+    final Body doorBlock1;
+    final Body doorBlock2;
 
     private World gameWorld;
     private Stage gameStage;
     private Box2DDebugRenderer box2DDebugRenderer;
     private FitViewport stageViewport;
     private FitViewport mainCharacterViewport;
+
+    public static boolean isTheDoorOpen =false;
 
     public GameLobby(final GameMode gameMode) {
         this.gameMode = gameMode;
@@ -45,16 +57,31 @@ public class GameLobby implements Screen {
         mainCharacter = new MainCharacter(gameWorld, 2, 2);
         wallObject0 = new WallObject(gameWorld, 8f, 8f);
         wallObject1 = new WallObject(gameWorld, 8f, -1);
-        frameObject0 = new WallObject(gameWorld, 0f, 12f, 40f, 3f, 0.3f,
+        frameObjectUp = new WallObject(gameWorld, 0f, 12f, 40f, 3f, 0.3f,
                 0, -0.3f);
-        frameObject1 = new WallObject(gameWorld, 0, -0.5f, 40f, 2f,
+        frameObjectDownPartOne = new WallObject(gameWorld, 0, -0.5f, 28.5f, 2f,
+                1f, 0f, -1f);
+        frameObjectDownPartTwo = new WallObject(gameWorld, 34.5f, -0.5f, 5f, 2f,
+                1, 0f, -1f);
+        frameObjectDownDown = new WallObject(gameWorld, 0, -1f, 40f, 1f,
                 0f, 0f, 0f);
-        frameObject2 = new WallObject(gameWorld, -0.5f, -7f, 1f, 22f,
+        frameObjectFont = new WallObject(gameWorld, -0.5f, -7f, 1f, 22f,
                 0f, 0f, 0f);
-        frameObject3 = new WallObject(gameWorld, 39f,-7f,1f,22f,
+        frameObjectRear = new WallObject(gameWorld, 39f,-7f,1f,22f,
                 0f,0f,0f);
         boxObject = new BoxObject(gameWorld, 8, 5);
 
+        doorObject = new DoorObject(gameWorld, "doorLeft.png", "doorRight.png",
+                30f, 0, 3f,1f,2,-2,
+                0,0,0);
+        openDoorButton= new ButtonObject(gameWorld, "gameButtonSmall.png",
+                "gameButtonSmall_pressed.png",
+                30, 10, 1f, 1f, 0,0,0);
+
+        doorBlock1=BuildBody.createBox(gameWorld, 28f, 0, 0.5f,0.5f,
+                new Vector2(0,0),0,0,0,true,false,false);
+        doorBlock2=BuildBody.createBox(gameWorld, 35f, 0, 0.5f,0.5f,
+                new Vector2(0,0),0,0,0,true,false,false);
 
         Gdx.input.setInputProcessor(gameStage);
         float ratio = (float) (Gdx.graphics.getWidth()) / (float) (Gdx.graphics.getHeight());
@@ -67,14 +94,17 @@ public class GameLobby implements Screen {
 
         gameStage = new Stage(stageViewport);
 
-        gameStage.addActor(frameObject0);
+        gameStage.addActor(frameObjectUp);
         gameStage.addActor(wallObject1);
-        gameStage.addActor(frameObject1);
-        gameStage.addActor(frameObject2);
-        gameStage.addActor(frameObject3);
+        gameStage.addActor(frameObjectDownPartOne);
+        gameStage.addActor(frameObjectDownPartTwo);
+        gameStage.addActor(frameObjectDownDown);
+        gameStage.addActor(frameObjectFont);
+        gameStage.addActor(frameObjectRear);
         gameStage.addActor(boxObject);
         gameStage.addActor(wallObject0);
-
+        gameStage.addActor(openDoorButton);
+        gameStage.addActor(doorObject);
         gameStage.addActor(mainCharacter);
     }
 
@@ -103,7 +133,10 @@ public class GameLobby implements Screen {
     }
 
     public void update(float delta) {
-
+        if(isTheDoorOpen){
+            doorBlock1.setActive(false);
+            doorBlock2.setActive(false);
+        }
     }
 
 

@@ -2,6 +2,8 @@ package worldBuilding;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.joints.PrismaticJoint;
+import com.badlogic.gdx.physics.box2d.joints.PrismaticJointDef;
 import com.badlogic.gdx.physics.box2d.joints.WeldJoint;
 import com.badlogic.gdx.physics.box2d.joints.WeldJointDef;
 
@@ -9,6 +11,7 @@ public class BuildBody {
     private final static BodyDef bd = new BodyDef();
     private final static FixtureDef fixtureDef = new FixtureDef();
     private final static WeldJointDef weldJointDef = new WeldJointDef();
+    private final static PrismaticJointDef prismaticJointDef = new PrismaticJointDef();
 
     public static Body createEdge(World world, float body_posX, float body_posY, float v1_X, float v1_Y,
                                   float v2_X, float v2_Y, float friction,
@@ -97,7 +100,7 @@ public class BuildBody {
     /**
      * Ax, Ay, Bx, By is the offset of the origin point
      */
-    public static WeldJoint createWeldJointDef(World world, Body bodyA, Body bodyB, float frequency,
+    public static WeldJoint createWeldJoint(World world, Body bodyA, Body bodyB, float frequency,
                                                float Ax, float Ay, float Bx, float By,
                                                float damping, Boolean isCollide) {
         weldJointDef.bodyA = bodyA;
@@ -108,5 +111,20 @@ public class BuildBody {
         weldJointDef.localAnchorB.set(Bx, By);
         weldJointDef.collideConnected = isCollide;
         return (WeldJoint) world.createJoint(weldJointDef);
+    }
+
+    public static PrismaticJoint createPrismaticJoint(World world, Body bodyA, Body bodyB,
+                                                         float Ax, float Ay, float Bx, float By,
+                                                         Boolean isCollide, Boolean isEnableLimit,
+                                                         float lowerTranslation, float upperTranslation) {
+        prismaticJointDef.bodyA = bodyA;
+        prismaticJointDef.bodyB = bodyB;
+        prismaticJointDef.localAnchorA.set(Ax, Ay);
+        prismaticJointDef.localAnchorB.set(Bx, By);
+        prismaticJointDef.enableLimit = isEnableLimit;
+        prismaticJointDef.lowerTranslation = lowerTranslation;
+        prismaticJointDef.upperTranslation = upperTranslation;
+        prismaticJointDef.collideConnected = isCollide;
+        return (PrismaticJoint) world.createJoint(prismaticJointDef);
     }
 }
