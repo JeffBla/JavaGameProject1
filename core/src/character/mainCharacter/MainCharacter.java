@@ -8,9 +8,13 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.physics.box2d.*;
 
+import com.badlogic.gdx.utils.Array;
+import kit.FlipAnimation;
 import worldBuilding.BuildBody;
 
 public class MainCharacter extends Actor {
+    private final Array<Animation<TextureRegion>> actorAnimation;
+
     private final MainCharacterWalk walk;
     private final MainCharacterIdle idle;
     private final MainCharacterAttack attack;
@@ -37,6 +41,10 @@ public class MainCharacter extends Actor {
         idle = new MainCharacterIdle();
         attack = new MainCharacterAttack();
         soundEffect = new MainCharacterSoundEffect();
+
+        actorAnimation = new Array<>();
+        actorAnimation.addAll(walk.walkAnimation, idle.idleAnimation,
+                attack.attackAnim1, attack.attackAnim2, attack.attackAnim3, attack.attackAnimCast);
 
         currentFrame = idle.idleAnimation.getKeyFrame(stateTime);
 
@@ -65,11 +73,12 @@ public class MainCharacter extends Actor {
 
     @Override
     public void act(float delta) {
+        stateTime += delta;
         keyInput(delta);
     }
 
     @Override
-    public void draw (Batch batch, float parentAlpha) {
+    public void draw(Batch batch, float parentAlpha) {
         batch.draw(currentFrame, body.getPosition().x, body.getPosition().y, width, height);
     }
 
@@ -175,22 +184,12 @@ public class MainCharacter extends Actor {
             currentFrame = walk.walkAnimation.getKeyFrame(stateTime);
             if (pressRight) {
                 isLeft = false;
-                flipTheAnimRight(walk.walkAnimation);
-                flipTheAnimRight(idle.idleAnimation);
-                flipTheAnimRight(attack.attackAnim1);
-                flipTheAnimRight(attack.attackAnim2);
-                flipTheAnimRight(attack.attackAnim3);
-                flipTheAnimRight(attack.attackAnimCast);
+                FlipAnimation.flipAnim_ArrayRight(actorAnimation);
                 speed.x = walkSpeed;
             }
             if (pressLeft) {
                 isLeft = true;
-                flipTheAnimLeft(walk.walkAnimation);
-                flipTheAnimLeft(idle.idleAnimation);
-                flipTheAnimLeft(attack.attackAnim1);
-                flipTheAnimLeft(attack.attackAnim2);
-                flipTheAnimLeft(attack.attackAnim3);
-                flipTheAnimLeft(attack.attackAnimCast);
+                FlipAnimation.flipAnim_ArrayLeft(actorAnimation);
                 speed.x = -walkSpeed;
             }
         } else {
@@ -209,18 +208,17 @@ public class MainCharacter extends Actor {
         }
 
         // stop Runing Sound
-        if(pressDown||pressRight||pressUp||pressLeft){
+        if (pressDown || pressRight || pressUp || pressLeft) {
             soundEffect.playRun_sound();
-        }
-        else{
+        } else {
             soundEffect.stopRun_sound();
         }
-        if(pressAttack){
+        if (pressAttack) {
             soundEffect.stopRun_sound();
         }
     }
 
-    private void DestoryAttackDetect(){
+    private void DestoryAttackDetect() {
         if (attackDetectLeftCount == 1) {
             gameWorld.destroyBody(attackDetectLeft);
             attackDetectLeftCount = 0;
@@ -231,21 +229,9 @@ public class MainCharacter extends Actor {
         }
     }
 
-    private void flipTheAnimRight(Animation<TextureRegion> anim) {
-        for (TextureRegion textureRegion : anim.getKeyFrames())
-            if (textureRegion.isFlipX())
-                textureRegion.flip(true, false);
-
-    }
-
-    private void flipTheAnimLeft(Animation<TextureRegion> anim) {
-        for (TextureRegion textureRegion : anim.getKeyFrames())
-            if (!textureRegion.isFlipX())
-                textureRegion.flip(true, false);
-    }
-
     public void dispose() {
         walk.dispose();
         idle.dispose();
+        attack.dispose();
     }
 }

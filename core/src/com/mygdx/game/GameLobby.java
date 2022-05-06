@@ -1,5 +1,6 @@
 package com.mygdx.game;
 
+import character.enemy.robot.Enemy_robot;
 import character.interActorObject.BoxObject;
 import character.interActorObject.ButtonObject;
 import character.interActorObject.DoorObject;
@@ -20,7 +21,6 @@ import worldBuilding.BuildBody;
 public class GameLobby implements Screen {
     final GameMode gameMode;
     final ScreenMusic screenMusic;
-    final MainCharacter mainCharacter;
     final WallObject wallObject0;
     final WallObject wallObject1;
     final WallObject frameObjectUp;
@@ -32,8 +32,12 @@ public class GameLobby implements Screen {
     final BoxObject boxObject;
     final ButtonObject openDoorButton;
     final DoorObject doorObject;
-    final Body doorBlock1;
-    final Body doorBlock2;
+    final Body doorBlockLeft;
+    final Body doorBlockRight;
+
+
+    final MainCharacter mainCharacter;
+    final Enemy_robot enemy_robot;
 
     private World gameWorld;
     private Stage gameStage;
@@ -55,6 +59,8 @@ public class GameLobby implements Screen {
         screenMusic.playGameLobbyMusic();
 
         mainCharacter = new MainCharacter(gameWorld, 2, 2);
+        enemy_robot =new Enemy_robot(gameWorld, 10f,5f);
+
         wallObject0 = new WallObject(gameWorld, 8f, 8f);
         wallObject1 = new WallObject(gameWorld, 8f, -1);
         frameObjectUp = new WallObject(gameWorld, 0f, 12f, 40f, 3f, 0.3f,
@@ -69,6 +75,9 @@ public class GameLobby implements Screen {
                 0f, 0f, 0f);
         frameObjectRear = new WallObject(gameWorld, 39f,-7f,1f,22f,
                 0f,0f,0f);
+        frameObjectRear.setTrigger(gameWorld,
+                0,0,0);
+
         boxObject = new BoxObject(gameWorld, 8, 5);
 
         doorObject = new DoorObject(gameWorld, "doorLeft.png", "doorRight.png",
@@ -78,9 +87,9 @@ public class GameLobby implements Screen {
                 "gameButtonSmall_pressed.png",
                 30, 10, 1f, 1f, 0,0,0);
 
-        doorBlock1=BuildBody.createBox(gameWorld, 28f, 0, 0.5f,0.5f,
+        doorBlockLeft =BuildBody.createBox(gameWorld, 28, 0, 0.5f,0.5f,
                 new Vector2(0,0),0,0,0,true,false,false);
-        doorBlock2=BuildBody.createBox(gameWorld, 35f, 0, 0.5f,0.5f,
+        doorBlockRight=BuildBody.createBox(gameWorld, 35, 0, 0.5f,0.5f,
                 new Vector2(0,0),0,0,0,true,false,false);
 
         Gdx.input.setInputProcessor(gameStage);
@@ -88,24 +97,25 @@ public class GameLobby implements Screen {
 
         // 40 is good
         stageViewport = new FitViewport(40, 40 / ratio); // This is for developer
-        mainCharacterViewport = new FitViewport(20, 20/ratio); // This is for gamer
+        mainCharacterViewport = new FitViewport(25, 25/ratio); // This is for gamer
         mainCharacterViewport.getCamera().position.set(0,0,1);
-//        mainCharacterViewport.getCamera().lookAt(mainCharacter.getPosition());  /* have bug */
 
         gameStage = new Stage(stageViewport);
 
         gameStage.addActor(frameObjectUp);
-        gameStage.addActor(wallObject1);
+        gameStage.addActor(wallObject0);
+        gameStage.addActor(openDoorButton);
+        gameStage.addActor(boxObject);
+        gameStage.addActor(frameObjectFont);
+        gameStage.addActor(frameObjectRear);
         gameStage.addActor(frameObjectDownPartOne);
         gameStage.addActor(frameObjectDownPartTwo);
         gameStage.addActor(frameObjectDownDown);
-        gameStage.addActor(frameObjectFont);
-        gameStage.addActor(frameObjectRear);
-        gameStage.addActor(boxObject);
-        gameStage.addActor(wallObject0);
-        gameStage.addActor(openDoorButton);
+        gameStage.addActor(wallObject1);
         gameStage.addActor(doorObject);
+        gameStage.addActor(enemy_robot);
         gameStage.addActor(mainCharacter);
+
     }
 
     @Override
@@ -125,7 +135,6 @@ public class GameLobby implements Screen {
         gameMode.batch.begin();
         gameStage.draw();
         gameMode.batch.end();
-        mainCharacter.stateTime += Gdx.graphics.getDeltaTime();
 
         box2DDebugRenderer.render(gameWorld, gameStage.getCamera().combined);
         gameWorld.step(Gdx.graphics.getDeltaTime(), 6, 2);
@@ -134,8 +143,8 @@ public class GameLobby implements Screen {
 
     public void update(float delta) {
         if(isTheDoorOpen){
-            doorBlock1.setActive(false);
-            doorBlock2.setActive(false);
+            doorBlockLeft.setTransform(27, 0, 0);
+            doorBlockRight.setTransform(36f, 0, 0);
         }
     }
 

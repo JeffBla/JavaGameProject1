@@ -1,9 +1,10 @@
 package com.mygdx.game;
 
+import character.enemy.robot.Enemy_robot;
 import character.interActorObject.ButtonObject;
-import character.interActorObject.DoorObject;
 import character.mainCharacter.MainCharacter;
 import com.badlogic.gdx.physics.box2d.*;
+import kit.FlipAnimation;
 
 public class GameLobbyContactListener implements ContactListener {
     @Override
@@ -40,7 +41,7 @@ public class GameLobbyContactListener implements ContactListener {
                     }
                 }
             }
-            if (classB.equalsIgnoreCase("character.interActorObject.BoxObject")
+            else if (classB.equalsIgnoreCase("character.interActorObject.BoxObject")
                     && classA.equalsIgnoreCase("character.mainCharacter.MainCharacter")) {
                 boolean isLeft_mainCh;
 
@@ -60,23 +61,48 @@ public class GameLobbyContactListener implements ContactListener {
                 }
             }
         }
-        // if mainCharacter is pesssed the button
+        // if mainCharacter is pressed the button
         {
             if (classA.equalsIgnoreCase("character.interActorObject.ButtonObject")
                     && classB.equalsIgnoreCase("character.mainCharacter.MainCharacter")) {
                 ButtonObject button = (ButtonObject) tmpA;
                 button.OnButtonPressed();
+
+                GameLobby.isTheDoorOpen = true;
             }
-            if (classB.equalsIgnoreCase("character.interActorObject.ButtonObject")
+            else if (classB.equalsIgnoreCase("character.interActorObject.ButtonObject")
                     && classA.equalsIgnoreCase("character.mainCharacter.MainCharacter")) {
                 ButtonObject button = (ButtonObject) tmpB;
                 button.OnButtonPressed();
 
-                GameLobby.isTheDoorOpen =true;
+                GameLobby.isTheDoorOpen = true;
 
             }
         }
+        // if enemy_robot collides with static collision
+        {
+            if (classA.equalsIgnoreCase("character.enemy.robot.Enemy_robot")
+                    && classB.equalsIgnoreCase("character.interActorObject.WallObject")) {
+                Enemy_robot robot = (Enemy_robot) tmpA;
+                if (robot.getIsLeft()) {
+                    FlipAnimation.flipAnim_ArrayRight(robot.getActorAnimation());
+                } else {
+                    FlipAnimation.flipAnim_ArrayLeft(robot.getActorAnimation());
+                }
+                robot.setSpeed(-robot.init_walkSpeed, 0);
+            }
+            else if (classB.equalsIgnoreCase("character.enemy.robot.Enemy_robot")
+                    && classA.equalsIgnoreCase("character.interActorObject.WallObject")) {
+                Enemy_robot robot = (Enemy_robot) tmpB;
+                if (robot.getIsLeft()) {
+                    FlipAnimation.flipAnim_ArrayRight(robot.getActorAnimation());
+                } else {
+                    FlipAnimation.flipAnim_ArrayLeft(robot.getActorAnimation());
+                }
+                robot.setSpeed(-robot.init_walkSpeed, 0);
 
+            }
+        }
     }
 
     @Override

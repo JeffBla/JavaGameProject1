@@ -48,7 +48,7 @@ public class ButtonObject extends Actor {
 
     public void OnButtonPressed(){
         this.sprite.setTexture(buttonDownImg);
-        pressedSound.play();
+        pressedSound.play(8);
     }
     public void OnButtonRelease(){
         this.sprite.setTexture(buttonUpImg);

@@ -1,4 +1,4 @@
-package character.mainCharacter;
+package character.enemy.robot;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import java.util.ArrayList;
 
-public class MainCharacterAttack {
+public class Enemy_robotAttack {
     private final Texture textureSheet1 = new Texture(Gdx.files.internal("Adventurer-1.5/adventurer_attack1.png"));
     private final Texture textureSheet2 = new Texture(Gdx.files.internal("Adventurer-1.5/adventurer_attack2.png"));
     private final Texture textureSheet3 = new Texture(Gdx.files.internal("Adventurer-1.5/adventurer_attack3.png"));
@@ -18,7 +18,7 @@ public class MainCharacterAttack {
     protected Animation<TextureRegion> attackAnim3;
     protected Animation<TextureRegion> attackAnimCast; // Maybe some day it will be helpfulm but now it is useless.
 
-    public MainCharacterAttack() {
+    public Enemy_robotAttack() {
         attackAnim1 = createAnim(1, 6, true, 0.1f, textureSheet1);
         attackAnim2 = createAnim(1, 4, true, 0.1f, textureSheet2);
         attackAnim3 = createAnim(1, 6, true, 0.1f, textureSheet3);
@@ -29,6 +29,8 @@ public class MainCharacterAttack {
         attackAnims.add(attackAnim2);
         attackAnims.add(attackAnim3);
         attackAnims.add(attackAnimCast);
+
+
     }
 
     private Animation<TextureRegion> createAnim(final int numOfRow, final int numOfCol,
@@ -51,9 +53,5 @@ public class MainCharacterAttack {
         textureSheet1.dispose();
         textureSheet2.dispose();
     }
-
-    public ArrayList<Animation<TextureRegion>> getAttackAnims(){
-        return attackAnims;
-    };
 
 }

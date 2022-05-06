@@ -2,6 +2,7 @@ package character.mainCharacter;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.utils.TimeUtils;
 
 public class MainCharacterSoundEffect {
 
@@ -50,15 +51,16 @@ public class MainCharacterSoundEffect {
     }
 
     private static float sword_shoosh_Timer = 0f;
-
+    private static boolean isStart = false;
     public void playSword_shoosh_sound() {
-        if (sword_shoosh_Timer >= 0.55f) {
-            sword_shoosh_Timer = -0.02f; // delta is roughly equal to 0.02f
-        }
-        if (sword_shoosh_Timer <= 0) {
+        if(isStart) {
+            isStart = true;
             sword_shoosh.play();
+            sword_shoosh_Timer = TimeUtils.nanoTime();
         }
-
-        sword_shoosh_Timer += 0.02;
+        if (TimeUtils.nanoTime() - sword_shoosh_Timer >= 600000000) {
+            sword_shoosh_Timer = 0;
+            isStart = false;
+        }
     }
 }
