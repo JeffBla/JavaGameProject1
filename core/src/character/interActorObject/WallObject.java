@@ -14,6 +14,7 @@ import worldBuilding.BuildBody;
 public class WallObject extends Actor {
     private Body body;
     private Body trigger;
+    private String type = "None";
 
     private static final Texture texture = new Texture("wallSample2.png");
 
@@ -76,4 +77,11 @@ public class WallObject extends Actor {
         texture.dispose();
     }
 
+    public void setType(String Type) {
+        this.type = Type;
+    }
+
+    public String getType() {
+        return type;
+    }
 }

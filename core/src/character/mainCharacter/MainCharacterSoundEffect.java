@@ -54,13 +54,19 @@ public class MainCharacterSoundEffect {
     private static boolean isStart = false;
     public void playSword_shoosh_sound() {
         if(isStart) {
-            isStart = true;
+            isStart = false;
             sword_shoosh.play();
             sword_shoosh_Timer = TimeUtils.nanoTime();
         }
         if (TimeUtils.nanoTime() - sword_shoosh_Timer >= 600000000) {
             sword_shoosh_Timer = 0;
-            isStart = false;
+            isStart = true;
         }
+    }
+
+    public void dispose(){
+        run.dispose();
+        sword_cut_air.dispose();
+        sword_cut_air.dispose();
     }
 }

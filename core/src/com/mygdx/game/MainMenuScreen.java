@@ -42,7 +42,7 @@ public class MainMenuScreen implements Screen {
                 "startmenu/SpyStartButtonCheck.png", 100, 600, new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
-                        gameMode.setScreen(new GameLobby(gameMode));
+                        gameMode.setScreen(new Stageselection(gameMode));
                         dispose();
                     }
                 });

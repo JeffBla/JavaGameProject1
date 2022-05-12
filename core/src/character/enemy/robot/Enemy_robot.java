@@ -1,5 +1,7 @@
 package character.enemy.robot;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -18,19 +20,22 @@ public class Enemy_robot extends Actor {
 
     private World gameWorld;
     public Body body;
+    public Body sightTrigger;
     public TextureRegion currentFrame;
+    public TextureRegion eyeSightTexture;
 
     public float stateTime = 0.0f;
 
     public final float init_walkSpeed = 5;  // 5 for game. 10 for test.
-    public Vector2 speed = new Vector2(init_walkSpeed, 0);
+    private Vector2 speed = new Vector2(init_walkSpeed, 0);
     private final float width = 2.5f, height = 3f;
+    private final float sightWidth = 7f, sightHeight = 1.7f;
 
     private boolean isLeft = false;
     private boolean isAttack = false;
     private boolean isWalk = true;
 
-    public Enemy_robot(World gameWorld, float x, float y) {
+    public Enemy_robot(World gameWorld, float x, float y, float speed_x, float speed_y) {
         this.gameWorld = gameWorld;
 
         idle = new Enemy_robotIdle();
@@ -41,11 +46,26 @@ public class Enemy_robot extends Actor {
 
         currentFrame = idle.idleAnimation.getKeyFrame(stateTime);
 
-        body = BuildBody.createBox(gameWorld, x, y, width / 2 - 0.3f, height / 2 - 0.3f,
-                new Vector2(width / 2, height / 2 - 0.3f), 0, 0, 0.2f,
+        eyeSightTexture = new TextureRegion(new Texture(Gdx.files.internal("enemy_robot/enemy_robot_sight.png")));
+
+        body = BuildBody.createBox(gameWorld, x, y, width / 2 - 0.3f, height / 2 - 0.8f,
+                new Vector2(width / 2, height / 2 - 0.8f), 0, 0, 0.2f,
                 false, true, true);
 
+        sightTrigger = BuildBody.createBox(gameWorld, x, y, sightWidth / 2 - 0.6f, sightHeight / 2 - 0.3f,
+                new Vector2(-1f, 0.3f),
+                0, 0, 0,
+                false, true, true);
+
+        setSpeed(speed_x, speed_y);
+
+        sightTrigger.setUserData(this);
         body.setUserData(this);
+    }
+
+    public Enemy_robot(World gameWorld, float x, float y) {
+        this(gameWorld, x, y, 0, 0);
+        setSpeed(init_walkSpeed, 0);
     }
 
     @Override
@@ -57,18 +77,29 @@ public class Enemy_robot extends Actor {
         } else {
             // move
             body.setLinearVelocity(speed);
+            sightTrigger.setLinearVelocity(speed);
             currentFrame = walk.walkAnimation.getKeyFrame(stateTime);
+        }
+        if (!isLeft) {
+            sightTrigger.setTransform(body.getPosition().x+5f, body.getPosition().y, 0);
+        } else {
+            sightTrigger.setTransform(body.getPosition().x+0.1f, body.getPosition().y + 0.1f, 0);
+
         }
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
+        if (!isLeft) {
+            batch.draw(eyeSightTexture, body.getPosition().x + 0.5f, body.getPosition().y - 0.5f, sightWidth, sightHeight);
+        } else {
+            batch.draw(eyeSightTexture, body.getPosition().x - 4.5f, body.getPosition().y - 0.5f, sightWidth, sightHeight);
+        }
         batch.draw(currentFrame, body.getPosition().x, body.getPosition().y, width, height);
     }
 
     public void dispose() {
         idle.dispose();
-
     }
 
     public Array<Animation<TextureRegion>> getActorAnimation() {
@@ -86,6 +117,7 @@ public class Enemy_robot extends Actor {
     public void setSpeed(float x, float y) {
         speed = new Vector2(x, y);
     }
+
     public Vector2 getSpeed() {
         return speed;
     }

@@ -28,11 +28,12 @@ public class MainCharacter extends Actor {
 
     public Vector2 speed = new Vector2(0, 0);
     public float stateTime = 0.0f;
-    private final float walkSpeed = 5;  // 5 for game. 10 for test.
+    private final float walkSpeed = 3;  // 5 for game. 10 for test.
     private final float width = 1.7f, height = 1.7f;
 
     private boolean isLeft = false;
     private boolean isAttack = false;
+    private boolean isBound = false;
 
     public MainCharacter(World gameWorld, float x, float y) {
         this.gameWorld = gameWorld;
@@ -233,5 +234,13 @@ public class MainCharacter extends Actor {
         walk.dispose();
         idle.dispose();
         attack.dispose();
+        soundEffect.dispose();
+    }
+
+    public void setIsBound(boolean isBound){
+        this.isBound=isBound;
+    }
+    public boolean getIsBound(){
+        return isBound;
     }
 }
