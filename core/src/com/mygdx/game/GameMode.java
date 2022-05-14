@@ -1,17 +1,19 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class GameMode extends Game {
+	public static final	float PPM= 100f; // pixel per meter (PPM) ratio
+
 	SpriteBatch batch;
 	BitmapFont bitmapFont;
 	float bitmapFontSize= 5.0f;
-	// for testing and
+	// ^for testing and
 	// providing the programmer some information
-
 
 	public void create () {
 		batch = new SpriteBatch();
