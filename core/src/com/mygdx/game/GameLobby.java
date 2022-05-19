@@ -10,6 +10,7 @@ import character.mainCharacter.MainCharacter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
@@ -47,6 +48,7 @@ public class GameLobby implements Screen {
     private Box2DDebugRenderer box2DDebugRenderer;
     private FitViewport stageViewport;
     private FitViewport mainCharacterViewport;
+    private Texture keyMapTutorial;
 
     public static boolean isTheDoorOpen = false;
 
@@ -57,6 +59,8 @@ public class GameLobby implements Screen {
         gameWorld.setContactListener(new GameLobbyContactListener());
 
         box2DDebugRenderer = new Box2DDebugRenderer();
+
+        keyMapTutorial = new Texture(Gdx.files.internal("keyMapToturial.png"));
 
         screenMusic = new ScreenMusic();
         screenMusic.playGameLobbyMusic();
@@ -150,6 +154,7 @@ public class GameLobby implements Screen {
 
         gameMode.batch.begin();
         gameStage.draw();
+        gameMode.batch.draw(keyMapTutorial, 1, 5, 6, 4);
         gameMode.batch.end();
 
         box2DDebugRenderer.render(gameWorld, gameStage.getCamera().combined);
@@ -189,10 +194,24 @@ public class GameLobby implements Screen {
     }
 
     public void dispose() {
+        isTheDoorOpen=false;
         gameStage.dispose();
+        screenMusic.dispose();
+        frameObjectFont.dispose();
+        frameObjectDownDown.dispose();
+        frameObjectDownPartTwo.dispose();
+        frameObjectDownPartOne.dispose();
+        frameObjectUp.dispose();
+        frameObjectRear.dispose();
         wallObject0.dispose();
         wallObject1.dispose();
         boxObject.dispose();
+        doorObject.dispose();
+        openDoorButton.dispose();
+        keyMapTutorial.dispose();
+        enemy_robot1.dispose();
+        enemy_robot2.dispose();
+        enemy_robot3.dispose();
         mainCharacter.dispose();
     }
 }

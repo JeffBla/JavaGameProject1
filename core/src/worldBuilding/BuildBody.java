@@ -69,7 +69,8 @@ public class BuildBody {
         return box;
     }
 
-    public static Body createCircle(World world, float posX, float posY, float Radius, float friction, float density,
+    public static Body createCircle(World world, float posX, float posY, float Radius,
+                                    float friction, float density, float restitution,
                                     boolean isStaticBody, boolean isDynamicBody, boolean isSensor) {
         Body ball;
 
@@ -88,6 +89,7 @@ public class BuildBody {
 
         fixtureDef.shape = circle;
         fixtureDef.friction = friction;
+        fixtureDef.restitution = restitution;
         fixtureDef.isSensor = isSensor;
         fixtureDef.density = density;
         ball.createFixture(fixtureDef);

@@ -22,18 +22,19 @@ public class MainCharacter extends Actor {
 
     private final World gameWorld;
     public Body body;
-    public Body attackDetectRight;
-    public Body attackDetectLeft;
+    public MainCharacterAttackDetectRegion attackDetectRight;
+    public MainCharacterAttackDetectRegion attackDetectLeft;
     public TextureRegion currentFrame;
 
     public Vector2 speed = new Vector2(0, 0);
     public float stateTime = 0.0f;
-    private final float walkSpeed = 3;  // 5 for game. 10 for test.
+    private final float walkSpeed = 5;  // 5 for game. 10 for test.
     private final float width = 1.7f, height = 1.7f;
 
     private boolean isLeft = false;
     private boolean isAttack = false;
     private boolean isBound = false;
+    private boolean isCatch = false;
 
     public MainCharacter(World gameWorld, float x, float y) {
         this.gameWorld = gameWorld;
@@ -101,7 +102,15 @@ public class MainCharacter extends Actor {
         boolean pressDown = Gdx.input.isKeyPressed(Input.Keys.S);
         boolean pressAttack = Gdx.input.isKeyPressed(Input.Keys.J);
         boolean pressCast = Gdx.input.isKeyPressed(Input.Keys.K);
-
+        
+        boolean pressCatch = Gdx.input.isKeyPressed(Input.Keys.Z);
+        if(pressCatch) {
+        	isCatch = true;
+        }
+        else {
+        	isCatch = false;
+        }
+        
         // idle
         currentFrame = idle.idleAnimation.getKeyFrame(stateTime);
 
@@ -122,16 +131,16 @@ public class MainCharacter extends Actor {
 
             // attack detect region
             if (!isLeft && attackDetectRightCount != 1) {
-                attackDetectRight = BuildBody.createBox(gameWorld, 0, 0, 0.3f * 2 - 0.12f, 0.65f,
-                        new Vector2(body.getPosition().x + width / 2 + 0.2f, body.getPosition().y + height / 2 - 0.2f),
+                attackDetectRight = new MainCharacterAttackDetectRegion(gameWorld, 0, 0, 0.35f * 2, 0.65f,
+                        new Vector2(body.getPosition().x + width / 2+0.5f, body.getPosition().y + height / 2 - 0.2f),
                         0, 0, 0, false, true, true);
-                attackDetectRight.setUserData(this);
+
                 attackDetectRightCount++;
             } else if (isLeft && attackDetectLeftCount != 1) {
-                attackDetectLeft = BuildBody.createBox(gameWorld, 0, 0, 0.3f * 2 - 0.12f, 0.65f,
-                        new Vector2(body.getPosition().x + width / 2 - 0.2f, body.getPosition().y + height / 2 - 0.2f),
+                attackDetectLeft = new MainCharacterAttackDetectRegion(gameWorld, 0, 0, 0.35f * 2, 0.65f,
+                        new Vector2(body.getPosition().x + width / 2-0.5f, body.getPosition().y + height / 2 - 0.2f),
                         0, 0, 0, false, true, true);
-                attackDetectLeft.setUserData(this);
+
                 attackDetectLeftCount++;
             }
 
@@ -221,11 +230,13 @@ public class MainCharacter extends Actor {
 
     private void DestoryAttackDetect() {
         if (attackDetectLeftCount == 1) {
-            gameWorld.destroyBody(attackDetectLeft);
+            gameWorld.destroyBody(attackDetectLeft.getDetectRegion());
+            attackDetectLeft=null;
             attackDetectLeftCount = 0;
         }
         if (attackDetectRightCount == 1) {
-            gameWorld.destroyBody(attackDetectRight);
+            gameWorld.destroyBody(attackDetectRight.getDetectRegion());
+            attackDetectRight=null;
             attackDetectRightCount = 0;
         }
     }
@@ -242,5 +253,15 @@ public class MainCharacter extends Actor {
     }
     public boolean getIsBound(){
         return isBound;
+    }
+    
+    public float getPosition_X() {
+        return body.getPosition().x;
+    }
+    public float getPosition_Y() {
+        return body.getPosition().y;
+    }
+    public boolean getIsCatch() {
+    	return this.isCatch;
     }
 }

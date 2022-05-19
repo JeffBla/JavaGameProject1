@@ -18,6 +18,7 @@ public class Stageselection implements Screen{
     private ImageButton BackImgButton;
     private ImageButton Stage1ImgButton;
     private ImageButton Stage2ImgButton;
+    private ImageButton Stage3ImgButton;
     private Stage stage;
     private Window exitConfirmWindowFrame;
 
@@ -55,9 +56,18 @@ public class Stageselection implements Screen{
                 dispose();
             }
         });
+        Stage3ImgButton=worldBuilding.UI.ButtonBulider.createImgButton("StageSelection/Stage3.png",
+                "StageSelection/Stage3down.png", "StageSelection/Stage3Pressed.png",
+                500, 600, new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                gameMode.setScreen(new Level3(gameMode));
+                dispose();
+            }
+        });
         stage.addActor(BackImgButton);
         stage.addActor(Stage1ImgButton);
         stage.addActor(Stage2ImgButton);
+        stage.addActor(Stage3ImgButton);
 
     }
 

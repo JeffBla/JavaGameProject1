@@ -1,5 +1,6 @@
 package character.interActorObject;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -16,7 +17,7 @@ public class WallObject extends Actor {
     private Body trigger;
     private String type = "None";
 
-    private static final Texture texture = new Texture("wallSample2.png");
+    private final Texture texture = new Texture(Gdx.files.internal("wallSample2.png"));;
 
     private final Sprite sprite;
 
@@ -33,6 +34,7 @@ public class WallObject extends Actor {
                 height / 2 + fixBoxHeight_constant, new Vector2(sprite.getWidth() / 2f / GameMode.PPM,
                         sprite.getHeight() / 2f / GameMode.PPM + fixBoxOrigin_constant),
                 0, 0, 0, true, false, false);
+
     }
 
     // regular wall

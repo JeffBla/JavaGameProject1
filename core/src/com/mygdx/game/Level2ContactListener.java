@@ -1,13 +1,15 @@
 package com.mygdx.game;
 
 import character.enemy.robot.Enemy_robot;
+import character.interActorObject.BoxObject;
 import character.interActorObject.ButtonObject;
 import character.interActorObject.WallObject;
+import character.interActorObject.Laser.LaserObject;
 import character.mainCharacter.MainCharacter;
 import com.badlogic.gdx.physics.box2d.*;
 import kit.FlipAnimation;
 
-public class GameLobbyContactListener implements ContactListener {
+public class Level2ContactListener implements ContactListener {
     @Override
     public void beginContact(Contact contact) {
         Object tmpA, tmpB;
@@ -22,46 +24,6 @@ public class GameLobbyContactListener implements ContactListener {
 //        System.out.println("A: "+classA);
 //        System.out.println("B: "+classB);
 
-        // if mainCharacter is attack and encounter some mobs
-        {
-            if (classA.equalsIgnoreCase("character.interActorObject.BoxObject")
-                    && classB.equalsIgnoreCase("character.mainCharacter.MainCharacter")) {
-                boolean isLeft_mainCh;
-
-                MainCharacter mainCharacter = (MainCharacter) (contact.getFixtureB().getBody().getUserData());
-                isLeft_mainCh = mainCharacter.getIsLeft();
-                if (mainCharacter.getIsAttack()) {
-                    if (!isLeft_mainCh) {
-                        if (mainCharacter.attackDetectRight.getDetectRegion().getLocalCenter().equals(contact.getFixtureB().getBody().getLocalCenter())) {
-                            System.out.println("BR vs A");
-                        }
-                    } else {
-                        if (mainCharacter.attackDetectLeft.getDetectRegion().getLocalCenter().equals(contact.getFixtureB().getBody().getLocalCenter())) {
-                            System.out.println("BL vs A");
-                        }
-                    }
-                }
-            }
-            else if (classB.equalsIgnoreCase("character.interActorObject.BoxObject")
-                    && classA.equalsIgnoreCase("character.mainCharacter.MainCharacter")) {
-                boolean isLeft_mainCh;
-
-                MainCharacter mainCharacter = (MainCharacter) (contact.getFixtureA().getBody().getUserData());
-                isLeft_mainCh = mainCharacter.getIsLeft();
-
-                if (mainCharacter.getIsAttack()) {
-                    if (!isLeft_mainCh) {
-                        if (mainCharacter.attackDetectRight.getDetectRegion().getLocalCenter().equals(contact.getFixtureA().getBody().getLocalCenter())) {
-                            System.out.println("AR vs B");
-                        }
-                    } else {
-                        if (mainCharacter.attackDetectLeft.getDetectRegion().getLocalCenter().equals(contact.getFixtureA().getBody().getLocalCenter())) {
-                            System.out.println("AL vs B");
-                        }
-                    }
-                }
-            }
-        }
         // if mainCharacter is pressed the button
         {
             if (classA.equalsIgnoreCase("character.interActorObject.ButtonObject")
@@ -69,14 +31,14 @@ public class GameLobbyContactListener implements ContactListener {
                 ButtonObject button = (ButtonObject) tmpA;
                 button.OnButtonPressed();
 
-                GameLobby.isTheDoorOpen = true;
+                Level2.isTheDoorOpen = true;
             }
             else if (classB.equalsIgnoreCase("character.interActorObject.ButtonObject")
                     && classA.equalsIgnoreCase("character.mainCharacter.MainCharacter")) {
                 ButtonObject button = (ButtonObject) tmpB;
                 button.OnButtonPressed();
 
-                GameLobby.isTheDoorOpen = true;
+                Level2.isTheDoorOpen = true;
 
             }
         }
@@ -138,11 +100,90 @@ public class GameLobbyContactListener implements ContactListener {
                 }
             }
         }
+        {
+        	if(classA.equalsIgnoreCase("character.mainCharacter.MainCharacter")
+                    && classB.equalsIgnoreCase("character.interActorObject.Laser.LaserObject")){
+        		MainCharacter mainCharacter =(MainCharacter) tmpA;
+        		LaserObject Laser = (LaserObject) tmpB;
+        		System.out.println("die");
+            }
+        }
+        {
+        	if(classA.equalsIgnoreCase("character.interActorObject.BoxObject")
+                    && classB.equalsIgnoreCase("character.interActorObject.Laser.LaserObject")){
+        		BoxObject Box =(BoxObject)(contact.getFixtureA().getBody().getUserData());
+        		LaserObject Laser = (LaserObject) tmpB;
+        		if(Laser.get_type().equals("leri")) {
+        			Laser.touch_leri(Box.getPosition_X(), Box.getPosition_Y());
+        		}
+        		else if(Laser.get_type().equals("doup")) {
+        			Laser.touch_doup(Box.getPosition_X(), Box.getPosition_X());
+        		}
+            }
+        	else if(classB.equalsIgnoreCase("character.interActorObject.BoxObject")
+                    && classA.equalsIgnoreCase("character.interActorObject.Laser.LaserObject")){
+        		BoxObject Box =(BoxObject)(contact.getFixtureB().getBody().getUserData());
+        		LaserObject Laser = (LaserObject) tmpA;
+        		if(Laser.get_type().equals("leri")) {
+        			Laser.touch_leri(Box.getPosition_X(), Box.getPosition_Y());
+        		}
+        		else if(Laser.get_type().equals("doup")) {
+        			Laser.touch_doup(Box.getPosition_X(), Box.getPosition_Y());
+        		}
+            }
+        }
     }
 
     @Override
     public void endContact(Contact contact) {
-
+    	Object tmpA, tmpB;
+        String classA, classB;
+        if ((tmpA = contact.getFixtureA().getBody().getUserData()) != null)
+            classA = tmpA.getClass().getName();
+        else return;
+        if ((tmpB = contact.getFixtureB().getBody().getUserData()) != null)
+            classB = tmpB.getClass().getName();
+        else return;
+        
+//        {
+//        	if(classA.equalsIgnoreCase("character.mainCharacter.MainCharacter")
+//                    && classB.equalsIgnoreCase("character.interActorObject.Laser.LaserObject")){
+//        		MainCharacter mainCharacter =(MainCharacter) tmpA;
+//        		LaserObject Laser = (LaserObject) tmpB;
+//        		if(Laser.get_type().equals("leri")) {
+//        			System.out.println("leri");
+//        			Laser.left();
+//        		}
+//        		else if(Laser.get_type().equals("doup")) {
+//        			System.out.println("doup");
+//        			Laser.left();
+//        		}
+//            }
+//        }
+        {
+        	if(classA.equalsIgnoreCase("character.interActorObject.BoxObject")
+                    && classB.equalsIgnoreCase("character.interActorObject.Laser.LaserObject")){
+        		BoxObject Box =(BoxObject) tmpA;
+        		LaserObject Laser = (LaserObject) tmpB;
+        		if(Laser.get_type().equals("leri")) {
+            		Laser.left();
+        		}
+        		else if(Laser.get_type().equals("doup")) {
+        			Laser.left();
+        		}
+            }
+        	else if(classB.equalsIgnoreCase("character.interActorObject.BoxObject")
+                    && classA.equalsIgnoreCase("character.interActorObject.Laser.LaserObject")){
+        		BoxObject Box =(BoxObject) tmpB;
+        		LaserObject Laser = (LaserObject) tmpA;
+        		if(Laser.get_type().equals("leri")) {
+            		Laser.left();
+        		}
+        		else if(Laser.get_type().equals("doup")) {
+        			Laser.left();
+        		}
+            }
+        }
     }
 
     @Override
