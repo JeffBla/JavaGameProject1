@@ -55,8 +55,20 @@ public class DotObject extends Actor {
         body = BuildBody.createCircle(gameWorld, x, y, weight / 2, 0, 0, 1,
                 false, true, false);
 
-        float randomNumX = random.nextFloat(4.0f, 7.1f);
-        float randomNumY = random.nextFloat(4.0f, 7.1f);
+        float randomNumX ;
+        float randomNumY ;
+        while(true){
+            randomNumX = random.nextFloat(-7, 7);
+            if (Math.abs(randomNumX) >= 4.0f) {
+                break;
+            }
+        }while (true) {
+            randomNumY = random.nextFloat(-7, 7);
+            if (Math.abs(randomNumY) >= 4.0f) {
+                break;
+            }
+        }
+
         body.setLinearVelocity(randomNumX, randomNumY);
 
         attackedSound = Gdx.audio.newSound(Gdx.files.internal("Sound/woodchop2.mp3"));
@@ -72,8 +84,8 @@ public class DotObject extends Actor {
     }
 
     @Override
-    public void act(float delta){
-        if(isDelete){
+    public void act(float delta) {
+        if (isDelete) {
             body.setTransform(100, 100, 0);
         }
     }
@@ -103,7 +115,7 @@ public class DotObject extends Actor {
         return isDelete;
     }
 
-    public void playAttackedSound(float volume){
+    public void playAttackedSound(float volume) {
         attackedSound.play(volume);
     }
 }

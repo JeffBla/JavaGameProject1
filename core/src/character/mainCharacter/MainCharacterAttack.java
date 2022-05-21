@@ -16,7 +16,7 @@ public class MainCharacterAttack {
     protected Animation<TextureRegion> attackAnim1;
     protected Animation<TextureRegion> attackAnim2;
     protected Animation<TextureRegion> attackAnim3;
-    protected Animation<TextureRegion> attackAnimCast; // Maybe some day it will be helpfulm but now it is useless.
+    protected Animation<TextureRegion> attackAnimCast; // Maybe some day it will be helpful but now it is useless.
 
     public MainCharacterAttack() {
         attackAnim1 = createAnim(1, 6, true, 0.1f, textureSheet1);

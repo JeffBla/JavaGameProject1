@@ -35,6 +35,7 @@ public class WallObject extends Actor {
                         sprite.getHeight() / 2f / GameMode.PPM + fixBoxOrigin_constant),
                 0, 0, 0, true, false, false);
 
+        body.setUserData(this);
     }
 
     // regular wall
@@ -49,6 +50,7 @@ public class WallObject extends Actor {
                 , new Vector2(sprite.getWidth() / 2f / GameMode.PPM,
                         sprite.getHeight() / 2f / GameMode.PPM + 0.5f),
                 0, 0, 0, true, false, false);
+        body.setUserData(this);
     }
 
     public void setTrigger(World gameWorld, float x, float y, float weight, float height,
