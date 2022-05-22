@@ -4,7 +4,6 @@ import character.enemy.robot.Enemy_robot;
 import character.interActorObject.BoxObject;
 import character.interActorObject.ButtonObject;
 import character.interActorObject.DotObject;
-import character.interActorObject.Laser.LaserObject;
 import character.interActorObject.WallObject;
 import character.mainCharacter.MainCharacter;
 import com.badlogic.gdx.physics.box2d.Contact;

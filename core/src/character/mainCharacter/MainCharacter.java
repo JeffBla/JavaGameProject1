@@ -71,7 +71,7 @@ public class MainCharacter extends Actor {
         body = BuildBody.createBox(gameWorld, x, y, 0.3f, 0.65f,
                 new Vector2(width / 2, height / 2 - 0.2f), 0, 0, 0.2f,
                 false, true, false);
-
+        //body.isSleepingAllowed(false);
         body.setUserData(this);
     }
 

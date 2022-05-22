@@ -4,7 +4,7 @@ import character.enemy.robot.Enemy_robot;
 import character.interActorObject.BoxObject;
 import character.interActorObject.ButtonObject;
 import character.interActorObject.WallObject;
-import character.interActorObject.Laser.LaserObject;
+import character.interActorObject.Laser.LaserObjectLine;
 import character.mainCharacter.MainCharacter;
 import com.badlogic.gdx.physics.box2d.*;
 import kit.FlipAnimation;
@@ -101,42 +101,42 @@ public class Level2ContactListener implements ContactListener {
             }
         }
         {
-        	if(classA.equalsIgnoreCase("character.mainCharacter.MainCharacter")
-                    && classB.equalsIgnoreCase("character.interActorObject.Laser.LaserObject")){
-        		MainCharacter mainCharacter =(MainCharacter) tmpA;
-        		LaserObject Laser = (LaserObject) tmpB;
-        		System.out.println("die");
+            if(classA.equalsIgnoreCase("character.mainCharacter.MainCharacter")
+                    && classB.equalsIgnoreCase("character.interActorObject.Laser.LaserObjectLine")){
+                MainCharacter mainCharacter =(MainCharacter) tmpA;
+                LaserObjectLine Laser = (LaserObjectLine) tmpB;
+                System.out.println("die");
             }
         }
-        {
-        	if(classA.equalsIgnoreCase("character.interActorObject.BoxObject")
-                    && classB.equalsIgnoreCase("character.interActorObject.Laser.LaserObject")){
-        		BoxObject Box =(BoxObject)(contact.getFixtureA().getBody().getUserData());
-        		LaserObject Laser = (LaserObject) tmpB;
-        		if(Laser.get_type().equals("leri")) {
-        			Laser.touch_leri(Box.getPosition_X(), Box.getPosition_Y());
-        		}
-        		else if(Laser.get_type().equals("doup")) {
-        			Laser.touch_doup(Box.getPosition_X(), Box.getPosition_X());
-        		}
-            }
-        	else if(classB.equalsIgnoreCase("character.interActorObject.BoxObject")
-                    && classA.equalsIgnoreCase("character.interActorObject.Laser.LaserObject")){
-        		BoxObject Box =(BoxObject)(contact.getFixtureB().getBody().getUserData());
-        		LaserObject Laser = (LaserObject) tmpA;
-        		if(Laser.get_type().equals("leri")) {
-        			Laser.touch_leri(Box.getPosition_X(), Box.getPosition_Y());
-        		}
-        		else if(Laser.get_type().equals("doup")) {
-        			Laser.touch_doup(Box.getPosition_X(), Box.getPosition_Y());
-        		}
-            }
-        }
+//        {
+//        	if(classA.equalsIgnoreCase("character.interActorObject.BoxObject")
+//                    && classB.equalsIgnoreCase("character.interActorObject.Laser.LaserObject")){
+//        		BoxObject Box =(BoxObject)(contact.getFixtureA().getBody().getUserData());
+//        		LaserObject Laser = (LaserObject) tmpB;
+//        		if(Laser.get_type().equals("leri")) {
+//        			Laser.touch_leri(Box.getPosition_X(), Box.getPosition_Y());
+//        		}
+//        		else if(Laser.get_type().equals("doup")) {
+//        			Laser.touch_doup(Box.getPosition_X(), Box.getPosition_X());
+//        		}
+//            }
+//        	else if(classB.equalsIgnoreCase("character.interActorObject.BoxObject")
+//                    && classA.equalsIgnoreCase("character.interActorObject.Laser.LaserObject")){
+//        		BoxObject Box =(BoxObject)(contact.getFixtureB().getBody().getUserData());
+//        		LaserObject Laser = (LaserObject) tmpA;
+//        		if(Laser.get_type().equals("leri")) {
+//        			Laser.touch_leri(Box.getPosition_X(), Box.getPosition_Y());
+//        		}
+//        		else if(Laser.get_type().equals("doup")) {
+//        			Laser.touch_doup(Box.getPosition_X(), Box.getPosition_Y());
+//        		}
+//            }
+//        }
     }
 
     @Override
     public void endContact(Contact contact) {
-    	Object tmpA, tmpB;
+        Object tmpA, tmpB;
         String classA, classB;
         if ((tmpA = contact.getFixtureA().getBody().getUserData()) != null)
             classA = tmpA.getClass().getName();
@@ -144,7 +144,7 @@ public class Level2ContactListener implements ContactListener {
         if ((tmpB = contact.getFixtureB().getBody().getUserData()) != null)
             classB = tmpB.getClass().getName();
         else return;
-        
+
 //        {
 //        	if(classA.equalsIgnoreCase("character.mainCharacter.MainCharacter")
 //                    && classB.equalsIgnoreCase("character.interActorObject.Laser.LaserObject")){
@@ -160,30 +160,30 @@ public class Level2ContactListener implements ContactListener {
 //        		}
 //            }
 //        }
-        {
-        	if(classA.equalsIgnoreCase("character.interActorObject.BoxObject")
-                    && classB.equalsIgnoreCase("character.interActorObject.Laser.LaserObject")){
-        		BoxObject Box =(BoxObject) tmpA;
-        		LaserObject Laser = (LaserObject) tmpB;
-        		if(Laser.get_type().equals("leri")) {
-            		Laser.left();
-        		}
-        		else if(Laser.get_type().equals("doup")) {
-        			Laser.left();
-        		}
-            }
-        	else if(classB.equalsIgnoreCase("character.interActorObject.BoxObject")
-                    && classA.equalsIgnoreCase("character.interActorObject.Laser.LaserObject")){
-        		BoxObject Box =(BoxObject) tmpB;
-        		LaserObject Laser = (LaserObject) tmpA;
-        		if(Laser.get_type().equals("leri")) {
-            		Laser.left();
-        		}
-        		else if(Laser.get_type().equals("doup")) {
-        			Laser.left();
-        		}
-            }
-        }
+//        {
+//        	if(classA.equalsIgnoreCase("character.interActorObject.BoxObject")
+//                    && classB.equalsIgnoreCase("character.interActorObject.Laser.LaserObject")){
+//        		BoxObject Box =(BoxObject) tmpA;
+//        		LaserObject Laser = (LaserObject) tmpB;
+//        		if(Laser.get_type().equals("leri")) {
+//            		Laser.left();
+//        		}
+//        		else if(Laser.get_type().equals("doup")) {
+//        			Laser.left();
+//        		}
+//            }
+//        	else if(classB.equalsIgnoreCase("character.interActorObject.BoxObject")
+//                    && classA.equalsIgnoreCase("character.interActorObject.Laser.LaserObject")){
+//        		BoxObject Box =(BoxObject) tmpB;
+//        		LaserObject Laser = (LaserObject) tmpA;
+//        		if(Laser.get_type().equals("leri")) {
+//            		Laser.left();
+//        		}
+//        		else if(Laser.get_type().equals("doup")) {
+//        			Laser.left();
+//        		}
+//            }
+//        }
     }
 
     @Override

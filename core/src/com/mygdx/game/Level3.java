@@ -77,7 +77,6 @@ public class Level3 implements Screen {
         frameObjectDownDown = new WallObject(gameWorld3, 0, -1f, 40f, 1f,
                 0f, 0f, 0f);
         frameObjectDownDown.setType("Bound");
-        frameObjectDownDown.setTrigger(gameWorld3, 0, 0, 0);
         frameObjectFont = new WallObject(gameWorld3, -0.5f, -7f, 1f, 27f,
                 0f, 0f, 0f);
         frameObjectRear = new WallObject(gameWorld3, 39f, -7f, 1f, 27f,

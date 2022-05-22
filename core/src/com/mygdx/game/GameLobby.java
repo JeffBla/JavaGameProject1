@@ -36,6 +36,7 @@ public class GameLobby implements Screen {
     final DoorObject doorObject;
     final Body doorBlockLeft;
     final Body doorBlockRight;
+    final Body doorBlockUp;
 
 
     final MainCharacter mainCharacter;
@@ -72,27 +73,21 @@ public class GameLobby implements Screen {
 
         wallObject0 = new WallObject(gameWorld, 8f, 8f);
         wallObject1 = new WallObject(gameWorld, 8f, -1);
-        wallObject1.setTrigger(gameWorld, 0, 0, 0);
         wallObject2 = new WallObject(gameWorld, 33, 7, 6f, 2.5f,
                 0.2f, 0, -0.2f);
         frameObjectUp = new WallObject(gameWorld, 0f, 12f, 40f, 3f, 0.3f,
                 0, -0.3f);
-        frameObjectUp.setTrigger(gameWorld, 0.3f, 0, -0.3f);
         frameObjectDownPartOne = new WallObject(gameWorld, 0, -0.5f, 28.5f, 2f,
                 1f, 0f, -1f);
-        frameObjectDownPartOne.setTrigger(gameWorld, 1f, 0, -1f);
         frameObjectDownPartTwo = new WallObject(gameWorld, 34.5f, -0.5f, 5f, 2f,
                 1, 0f, -1f);
         frameObjectDownDown = new WallObject(gameWorld, 0, -1f, 40f, 1f,
                 0f, 0f, 0f);
         frameObjectDownDown.setType("Bound");
-        frameObjectDownDown.setTrigger(gameWorld, 0, 0, 0);
         frameObjectFont = new WallObject(gameWorld, -0.5f, -7f, 1f, 22f,
                 0f, 0f, 0f);
         frameObjectRear = new WallObject(gameWorld, 39f, -7f, 1f, 22f,
                 0f, 0f, 0f);
-        frameObjectRear.setTrigger(gameWorld,
-                0, 0, 0);
 
         boxObject = new BoxObject(gameWorld, 8, 5);
 
@@ -107,6 +102,8 @@ public class GameLobby implements Screen {
                 new Vector2(0, 0), 0, 0, 0, true, false, false);
         doorBlockRight = BuildBody.createBox(gameWorld, 35, 0, 0.5f, 0.5f,
                 new Vector2(0, 0), 0, 0, 0, true, false, false);
+        doorBlockUp = BuildBody.createEdge(gameWorld, 28.5f, 1.08f, 0, 0,
+                0.1f, 0, 0, true, false, false);
 
         Gdx.input.setInputProcessor(gameStage);
         float ratio = (float) (Gdx.graphics.getWidth()) / (float) (Gdx.graphics.getHeight());
