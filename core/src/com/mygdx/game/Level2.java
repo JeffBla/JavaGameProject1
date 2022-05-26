@@ -58,6 +58,9 @@ public class Level2 implements Screen {
     private FitViewport mainCharacterViewport;
     public static boolean isTheDoorOpen = false;
     public HUD HUDBatch;
+    public PausedScreen Pause;
+    public GameOverScreen GameOver;
+    public CompleteScreen Complete;
 
     public Level2(GameMode gameMode) {
         this.gameMode = gameMode;
@@ -119,6 +122,9 @@ public class Level2 implements Screen {
         mainCharacterViewport = new FitViewport(25, 25 / ratio); // This is for gamer
         mainCharacterViewport.getCamera().position.set(0, 0, 1);
         HUDBatch =new HUD();
+        Pause=new PausedScreen();
+        GameOver=new GameOverScreen();
+        Complete=new CompleteScreen();
 
         gameStage2 = new Stage(stageViewport);
         gameStage2.addActor(frameObjectUp);
@@ -149,52 +155,103 @@ public class Level2 implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        Gdx.gl.glClearColor(0.8f, 0.8f, 0.8f, 1);
+        if (PausedScreen.pause) {
+            gameWorld2.getContactList().clear();
+//            gameWorld.setContactListener(null);
+            Pause.render(delta);
+            if (PausedScreen.restart) {
+                PausedScreen.restart = false;
+                PausedScreen.pause = false;
+                gameMode.setScreen(new Level2(gameMode));
+                Pause.dispose();
+                dispose();
+            } else if (PausedScreen.stage) {
+                PausedScreen.stage = false;
+                PausedScreen.pause = false;
+                gameMode.setScreen(new Stageselection(gameMode));
+                Pause.dispose();
+                dispose();
+            }
+        } else if (GameOverScreen.gameover) {
+            gameWorld2.getContactList().clear();
+//            gameWorld.setContactListener(null);
+            GameOver.render(delta);
+            if (GameOverScreen.restart) {
+                GameOverScreen.restart = false;
+                gameMode.setScreen(new Level2(gameMode));
+                GameOver.dispose();
+                dispose();
+            } else if (GameOver.stage) {
+                GameOver.stage = false;
+                gameMode.setScreen(new Stageselection(gameMode));
+                GameOver.dispose();
+                dispose();
+            }
+        } else if (CompleteScreen.complete) {
+            gameWorld2.getContactList().clear();
+//            gameWorld.setContactListener(null);
+            Complete.render(delta);
+            if (CompleteScreen.restart) {
+                CompleteScreen.restart = false;
+                gameMode.setScreen(new Level2(gameMode));
+                Complete.dispose();
+                dispose();
+            } else if (CompleteScreen.stage) {
+                CompleteScreen.stage = false;
+                gameMode.setScreen(new Stageselection(gameMode));
+                Complete.dispose();
+                dispose();
+            } else if (CompleteScreen.nextstage) {
+                CompleteScreen.nextstage = false;
+                gameMode.setScreen(new Level3(gameMode));
+                Complete.dispose();
+                dispose();
+            }
+        } else {
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+            Gdx.gl.glClearColor(0.8f, 0.8f, 0.8f, 1);
 
-        if(gameStage2.getViewport() == mainCharacterViewport) {
-            mainCharacterViewport.getCamera().position.set(mainCharacter.getPosition(4, 1.5f));
+            if (gameStage2.getViewport() == mainCharacterViewport) {
+                mainCharacterViewport.getCamera().position.set(mainCharacter.getPosition(4, 1.5f));
+            }
+            gameStage2.getCamera().update();
+            gameMode.batch.setProjectionMatrix(gameStage2.getCamera().combined);
+
+            gameStage2.act();
+            update(delta);
+
+            gameMode.batch.begin();
+            gameStage2.draw();
+            gameMode.batch.end();
+
+            laserline1.move_Y(4.45f, 6.6f);
+            if (TimeUtils.nanoTime() - laserline1.get_start() > 1210000000f) {
+
+                laserline1.set_startTime();
+                if (laserline1.isVisible()) {
+                    laserline1.setVisible(false);
+                    laserline1.sleep();
+                } else {
+                    laserline1.setVisible(true);
+                    laserline1.awake();
+                }
+            }
+            if (TimeUtils.nanoTime() - laserline2.get_start() > 1210000000f) {
+                laserline2.set_startTime();
+                if (laserline2.isVisible()) {
+                    laserline2.setVisible(false);
+                    laserline2.sleep();
+                } else {
+                    laserline2.setVisible(true);
+                    laserline2.awake();
+                }
+            }
+            laserline3.move_X(17f, 23f);
+            laserline4.move_X(30f, 34f);
+            laserline5.move_Y(3f, 7.5f);
+            box2DDebugRenderer.render(gameWorld2, gameStage2.getCamera().combined);
+            HUDBatch.render(delta);
         }
-        gameStage2.getCamera().update();
-        gameMode.batch.setProjectionMatrix(gameStage2.getCamera().combined);
-
-        gameStage2.act();
-        update(delta);
-
-        gameMode.batch.begin();
-        gameStage2.draw();
-        gameMode.batch.end();
-
-        laserline1.move_Y(4.45f,6.6f);
-        if (TimeUtils.nanoTime() - laserline1.get_start() > 1210000000f) {
-
-            laserline1.set_startTime();
-            if(laserline1.isVisible()) {
-                laserline1.setVisible(false);
-                laserline1.sleep();
-            }
-            else {
-                laserline1.setVisible(true);
-                laserline1.awake();
-            }
-        }
-        if (TimeUtils.nanoTime() - laserline2.get_start() > 1210000000f) {
-            laserline2.set_startTime();
-            if(laserline2.isVisible()) {
-                laserline2.setVisible(false);
-                laserline2.sleep();
-            }
-            else {
-                laserline2.setVisible(true);
-                laserline2.awake();
-            }
-        }
-        laserline3.move_X(17f,23f);
-        laserline4.move_X(30f, 34f);
-        laserline5.move_Y(3f, 7.5f);
-        box2DDebugRenderer.render(gameWorld2, gameStage2.getCamera().combined);
-        gameWorld2.step(Gdx.graphics.getDeltaTime(), 6, 2);
-        HUDBatch.render(delta);
     }
 
     private void update(float delta) {
@@ -207,6 +264,7 @@ public class Level2 implements Screen {
             HUD.hp=3;
             dispose();
         }
+        gameWorld2.step(Gdx.graphics.getDeltaTime(), 6, 2);
     }
 
     @Override
@@ -263,5 +321,9 @@ public class Level2 implements Screen {
         enemy_robot1.dispose();
         enemy_robot2.dispose();
         HUD.hp=3;
+        HUDBatch.dispose();
+        Pause.dispose();
+        GameOver.dispose();
+        Complete.dispose();
     }
 }

@@ -18,11 +18,14 @@ import character.interActorObject.DoorObject;
 import character.interActorObject.WallObject;
 import character.interActorObject.Laser.LaserObjectBase;
 import character.interActorObject.Laser.LaserObjectLine;
+import character.interActorObject.Cannon.Cannon;
+import character.interActorObject.Cannon.CannonLine;
 import character.mainCharacter.MainCharacter;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+
 import worldBuilding.BuildBody;
 
 public class Level4 implements Screen {
-
     final GameMode gameMode;
     final ScreenMusic screenMusic;
     final WallObject frameObjectUp;
@@ -39,6 +42,8 @@ public class Level4 implements Screen {
     final LaserObjectBase laserbase1;
     final LaserObjectLine laserline2;
     final LaserObjectBase laserbase2;
+    final Cannon cannon1;
+    final CannonLine cannonline1;
     final Enemy_robot enemy_robot1;
     final Enemy_robot enemy_robot2;
     private GearActor gearActor;
@@ -53,6 +58,9 @@ public class Level4 implements Screen {
     private FitViewport mainCharacterViewport;
     public static boolean isTheDoorOpen = false;
     public HUD HUDBatch;
+    public PausedScreen Pause;
+    public GameOverScreen GameOver;
+    public CompleteScreen Complete;
 
     public Level4(GameMode gameMode) {
         this.gameMode = gameMode;
@@ -80,9 +88,9 @@ public class Level4 implements Screen {
                 0f, 0, 0f);
         wallObject4 = new WallObject(gameWorld4, 24, 9f, 3f, 2f,
                 0f, 0, 0f);
-        wallObject5 = new WallObject(gameWorld4, 13.5f, 14f, 3f, 2f,
+        wallObject5 = new WallObject(gameWorld4, 13.5f, 13.6f, 3f, 1.8f,
                 0f, 0, 0f);
-        wallObject6 = new WallObject(gameWorld4, 25, 13f, 3f, 2f,
+        wallObject6 = new WallObject(gameWorld4, 25, 13.5f, 3f, 2f,
                 0f, 0, 0f);
 
         enemy_robot1 = new Enemy_robot(gameWorld4, 28f, 5f, 5, -2f);
@@ -93,6 +101,8 @@ public class Level4 implements Screen {
         laserbase1 = new LaserObjectBase(laserline1.get_body(), "laser/rile.png", "rile", 1.2f, 1f, 43.1f, 0f);
         laserline2 = new LaserObjectLine(gameWorld4, "laser/laser_leri.png", "leri", true, 6.5f, 3.4f, 43.5f, 1f, 0.167562f, 0f, 0f, 0, 0f, -0.3f);
         laserbase2 = new LaserObjectBase(laserline2.get_body(), "laser/leri.png", "leri", 1.2f, 1.2f, -0.92f, -0.05f);
+        cannon1 = new Cannon(gameWorld4, mainCharacter.get_body() , 15, 8, 1.5f, 1, 0.1f, 0, 0, 0f);
+        cannonline1 = new CannonLine(gameWorld4, cannon1.get_body(), 40f, 1f, 0.1f, 0.5f, 0f, -0.2f);
 //        doorObject = new DoorObject(gameWorld4, "doorLeft.png", "doorRight.png",
 //                30f, 0, 3f, 1f, 2, -2,
 //                0, 0, 0);
@@ -108,7 +118,10 @@ public class Level4 implements Screen {
         stageViewport = new FitViewport(51, 51 / ratio); // This is for developer
         mainCharacterViewport = new FitViewport(35, 35 / ratio); // This is for gamer
         mainCharacterViewport.getCamera().position.set(0, 0, 1);
-        HUDBatch = new HUD();
+        HUDBatch =new HUD();
+        Pause=new PausedScreen();
+        GameOver=new GameOverScreen();
+        Complete=new CompleteScreen();
 
         gameStage4 = new Stage(mainCharacterViewport);
         gameStage4.addActor(frameObjectUp);
@@ -128,60 +141,132 @@ public class Level4 implements Screen {
         gameStage4.addActor(laserline1);
         gameStage4.addActor(laserbase2);
         gameStage4.addActor(laserline2);
+        gameStage4.addActor(cannon1);
+        gameStage4.addActor(cannonline1);
         gameStage4.addActor(mainCharacter);
     }
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        Gdx.gl.glClearColor(0.8f, 0.8f, 0.8f, 1);
-
-        if (gameStage4.getViewport() == mainCharacterViewport) {
-            mainCharacterViewport.getCamera().position.set(mainCharacter.getPosition(4, 1.5f));
-        }
-        gameStage4.getCamera().update();
-        gameMode.batch.setProjectionMatrix(gameStage4.getCamera().combined);
-
-        gameStage4.act();
-        update(delta);
-
-        gameMode.batch.begin();
-        gameStage4.draw();
-        gameMode.batch.end();
-
-        laserline1.move_Y(3.2f, 17.5f);
-
-        if (laserline1.get_body().getPosition().y >= 4.3 && laserline1.get_body().getPosition().y <= 6.7) {
-            laserline1.touch_rile(18.5f, 49.5f);
-        } else if (laserline1.get_body().getPosition().y >= 8.3 && laserline1.get_body().getPosition().y <= 10.7) {
-            laserline1.touch_rile(27, 49.5f);
-        } else if (laserline1.get_body().getPosition().y >= 13.3 && laserline1.get_body().getPosition().y <= 15.7) {
-            laserline1.touch_rile(34, 49.5f);
-        } else {
-            laserline1.left_rile();
-        }
-
-        if (TimeUtils.nanoTime() - laserline2.get_start() > 2500000000f) {
-            laserline2.set_startTime();
-            if (laserline2.isVisible()) {
-                laserline2.setVisible(false);
-                laserline2.sleep();
-            } else {
-                laserline2.setVisible(true);
-                laserline2.awake();
+        if (PausedScreen.pause) {
+            gameWorld4.getContactList().clear();
+//            gameWorld.setContactListener(null);
+            Pause.render(delta);
+            if (PausedScreen.restart) {
+                PausedScreen.restart = false;
+                PausedScreen.pause = false;
+                gameMode.setScreen(new Level4(gameMode));
+                Pause.dispose();
+                dispose();
+            } else if (PausedScreen.stage) {
+                PausedScreen.stage = false;
+                PausedScreen.pause = false;
+                gameMode.setScreen(new Stageselection(gameMode));
+                Pause.dispose();
+                dispose();
+            }
+        } else if (GameOverScreen.gameover) {
+            gameWorld4.getContactList().clear();
+//            gameWorld.setContactListener(null);
+            GameOver.render(delta);
+            if (GameOverScreen.restart) {
+                GameOverScreen.restart = false;
+                gameMode.setScreen(new Level4(gameMode));
+                GameOver.dispose();
+                dispose();
+            } else if (GameOver.stage) {
+                GameOver.stage = false;
+                gameMode.setScreen(new Stageselection(gameMode));
+                GameOver.dispose();
+                dispose();
+            }
+        } else if (CompleteScreen.complete) {
+            gameWorld4.getContactList().clear();
+//            gameWorld.setContactListener(null);
+            Complete.render(delta);
+            if (CompleteScreen.restart) {
+                CompleteScreen.restart = false;
+                gameMode.setScreen(new Level4(gameMode));
+                Complete.dispose();
+                dispose();
+            } else if (CompleteScreen.stage) {
+                CompleteScreen.stage = false;
+                gameMode.setScreen(new Stageselection(gameMode));
+                Complete.dispose();
+                dispose();
+            } else if (CompleteScreen.nextstage) {
+                CompleteScreen.nextstage = false;
+                gameMode.setScreen(new Level4(gameMode));
+                Complete.dispose();
+                dispose();
             }
         }
+        else {
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+            Gdx.gl.glClearColor(0.8f, 0.8f, 0.8f, 1);
 
-        if (Gdx.input.isKeyPressed(Input.Keys.B)) {
-            gearActor.getGearActor_fireGunHashMap().get("LeftBottom").spawnFire(5, gameStage4, delta);
-            gearActor.getGearActor_fireGunHashMap().get("RightBottom").spawnFire(5, gameStage4, delta);
-            gearActor.getGearActor_fireGunHashMap().get("RightUp").spawnFire(5, gameStage4, delta);
-            gearActor.getGearActor_fireGunHashMap().get("LeftUp").spawnFire(5, gameStage4, delta);
+            if (gameStage4.getViewport() == mainCharacterViewport) {
+                mainCharacterViewport.getCamera().position.set(mainCharacter.getPosition(4, 1.5f));
+            }
+            gameStage4.getCamera().update();
+            gameMode.batch.setProjectionMatrix(gameStage4.getCamera().combined);
+
+            gameStage4.act();
+            update(delta);
+
+            gameMode.batch.begin();
+            gameStage4.draw();
+            gameMode.batch.end();
+
+            laserline1.move_Y(3.2f, 17.5f);
+            if(laserline1.get_begin_touch()==true) {
+                laserline1.touch_rile();
+                laserline1.set_begin_touch(false);
+            }
+
+            if(laserline1.get_leave()==true) {
+                laserline1.touch_rile();
+                laserline1.set_leave(false);
+            }
+
+            if (TimeUtils.nanoTime() - laserline2.get_start() > 2500000000f) {
+                laserline2.set_startTime();
+                if(laserline2.isVisible()) {
+                    laserline2.setVisible(false);
+                    laserline2.sleep();
+                }
+                else {
+                    laserline2.setVisible(true);
+                    laserline2.awake();
+                }
+            }
+
+            if (TimeUtils.nanoTime() - cannon1.get_start() > 2500000000f) {
+                cannon1.set_startTime();
+                if(cannon1.get_attack() == false) {
+                    cannon1.set_target(false);
+                    cannon1.set_attack(true);
+                    cannonline1.awake();
+                    cannonline1.setVisible(true);
+                }
+                else if(cannon1.get_attack() == true){
+                    cannon1.set_target(false);
+                    cannon1.set_attack(false);
+                    cannonline1.sleep();
+                    cannonline1.setVisible(false);
+                }
+            }
+
+            if (Gdx.input.isKeyPressed(Input.Keys.B)) {
+                gearActor.getGearActor_fireGunHashMap().get("LeftBottom").spawnFire(5, gameStage4, delta);
+                gearActor.getGearActor_fireGunHashMap().get("RightBottom").spawnFire(5, gameStage4, delta);
+                gearActor.getGearActor_fireGunHashMap().get("RightUp").spawnFire(5, gameStage4, delta);
+                gearActor.getGearActor_fireGunHashMap().get("LeftUp").spawnFire(5, gameStage4, delta);
+            }
+
+            box2DDebugRenderer.render(gameWorld4, gameStage4.getCamera().combined);
+            HUDBatch.render(delta);
         }
-
-        box2DDebugRenderer.render(gameWorld4, gameStage4.getCamera().combined);
-        gameWorld4.step(Gdx.graphics.getDeltaTime(), 6, 2);
-        HUDBatch.render(delta);
     }
 
     private void update(float delta) {
@@ -193,6 +278,7 @@ public class Level4 implements Screen {
             gameMode.setScreen(new Stageselection(gameMode));
             dispose();
         }
+        gameWorld4.step(Gdx.graphics.getDeltaTime(), 6, 2);
     }
 
     @Override
@@ -231,5 +317,9 @@ public class Level4 implements Screen {
         frameObjectRear.dispose();
         //doorObject.dispose();
         HUD.hp = 3;
+        HUDBatch.dispose();
+        Pause.dispose();
+        GameOver.dispose();
+        Complete.dispose();
     }
 }

@@ -312,4 +312,8 @@ public class MainCharacter extends Actor {
     public boolean getIsCatch() {
         return this.isCatch;
     }
+
+    public Body get_body() {
+        return this.body;
+    }
 }

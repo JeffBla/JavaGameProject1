@@ -53,6 +53,9 @@ public class Level3 implements Screen {
     private Texture hintTexture;
     public static boolean isTheDoorOpen = false;
     public HUD HUDBatch;
+    public PausedScreen Pause;
+    public GameOverScreen GameOver;
+    public CompleteScreen Complete;
 
     public Level3(GameMode gameMode) {
         this.gameMode = gameMode;
@@ -104,6 +107,9 @@ public class Level3 implements Screen {
         mainCharacterViewport = new FitViewport(25, 25 / ratio); // This is for gamer
         mainCharacterViewport.getCamera().position.set(0, 0, 1);
         HUDBatch =new HUD();
+        Pause=new PausedScreen();
+        GameOver=new GameOverScreen();
+        Complete=new CompleteScreen();
 
         gameStage3 = new Stage(stageViewport);
 
@@ -128,26 +134,80 @@ public class Level3 implements Screen {
 
     @Override
     public void render(float delta) {
+        if (PausedScreen.pause) {
+            gameWorld3.getContactList().clear();
+//            gameWorld.setContactListener(null);
+            Pause.render(delta);
+            if (PausedScreen.restart) {
+                PausedScreen.restart = false;
+                PausedScreen.pause = false;
+                gameMode.setScreen(new Level3(gameMode));
+                Pause.dispose();
+                dispose();
+            } else if (PausedScreen.stage) {
+                PausedScreen.stage = false;
+                PausedScreen.pause = false;
+                gameMode.setScreen(new Stageselection(gameMode));
+                Pause.dispose();
+                dispose();
+            }
+        } else if (GameOverScreen.gameover) {
+            gameWorld3.getContactList().clear();
+//            gameWorld.setContactListener(null);
+            GameOver.render(delta);
+            if (GameOverScreen.restart) {
+                GameOverScreen.restart = false;
+                gameMode.setScreen(new Level3(gameMode));
+                GameOver.dispose();
+                dispose();
+            } else if (GameOver.stage) {
+                GameOver.stage = false;
+                gameMode.setScreen(new Stageselection(gameMode));
+                GameOver.dispose();
+                dispose();
+            }
+        } else if (CompleteScreen.complete) {
+            gameWorld3.getContactList().clear();
+//            gameWorld.setContactListener(null);
+            Complete.render(delta);
+            if (CompleteScreen.restart) {
+                CompleteScreen.restart = false;
+                gameMode.setScreen(new Level3(gameMode));
+                Complete.dispose();
+                dispose();
+            } else if (CompleteScreen.stage) {
+                CompleteScreen.stage = false;
+                gameMode.setScreen(new Stageselection(gameMode));
+                Complete.dispose();
+                dispose();
+            } else if (CompleteScreen.nextstage) {
+                CompleteScreen.nextstage = false;
+                gameMode.setScreen(new Level4(gameMode));
+                Complete.dispose();
+                dispose();
+            }
+        }
+        else {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Gdx.gl.glClearColor(0.8f, 0.8f, 0.8f, 1);
 
         if (gameStage3.getViewport() == mainCharacterViewport) {
             mainCharacterViewport.getCamera().position.set(mainCharacter.getPosition(6f, 1.5f));
         }
-        gameStage3.getCamera().update();
-        gameMode.batch.setProjectionMatrix(gameStage3.getCamera().combined);
+            gameStage3.getCamera().update();
+            gameMode.batch.setProjectionMatrix(gameStage3.getCamera().combined);
 
-        gameStage3.act();
-        update(delta);
+            gameStage3.act();
+            update(delta);
 
-        gameMode.batch.begin();
-        gameStage3.draw();
-        gameMode.batch.draw(hintTexture, 1, 5, 6, 4);
-        gameMode.batch.end();
+            gameMode.batch.begin();
+            gameStage3.draw();
+            gameMode.batch.draw(hintTexture, 1, 5, 6, 4);
+            gameMode.batch.end();
 
-        box2DDebugRenderer.render(gameWorld3, gameStage3.getCamera().combined);
-        gameWorld3.step(Gdx.graphics.getDeltaTime(), 6, 2);
-        HUDBatch.render(delta);
+            box2DDebugRenderer.render(gameWorld3, gameStage3.getCamera().combined);
+            HUDBatch.render(delta);
+        }
     }
 
     private void update(float delta) {
@@ -164,6 +224,7 @@ public class Level3 implements Screen {
             gameMode.setScreen(new Stageselection(gameMode));
             dispose();
         }
+        gameWorld3.step(Gdx.graphics.getDeltaTime(), 6, 2);
     }
 
     @Override
@@ -198,6 +259,10 @@ public class Level3 implements Screen {
         wallObject0.dispose();
         mainCharacter.dispose();
         HUD.hp=3;
+        HUDBatch.dispose();
+        Pause.dispose();
+        GameOver.dispose();
+        Complete.dispose();
     }
 
     private int spawnDots(int dotNum){

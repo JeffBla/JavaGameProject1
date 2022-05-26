@@ -11,6 +11,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
@@ -121,7 +122,7 @@ public class GameLobby implements Screen {
         GameOver=new GameOverScreen();
         Complete=new CompleteScreen();
 
-        gameStage = new Stage(mainCharacterViewport);
+        gameStage = new Stage(stageViewport);
 
         gameStage.addActor(frameObjectUp);
         gameStage.addActor(wallObject0);
@@ -144,6 +145,7 @@ public class GameLobby implements Screen {
 
     @Override
     public void render(float delta) {
+
         if(PausedScreen.pause) {
             gameWorld.getContactList().clear();
 //            gameWorld.setContactListener(null);
@@ -285,5 +287,8 @@ public class GameLobby implements Screen {
 
         HUDBatch.dispose();
         HUD.hp=3;
+        Pause.dispose();
+        GameOver.dispose();
+        Complete.dispose();
     }
 }

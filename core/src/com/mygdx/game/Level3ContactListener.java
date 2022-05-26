@@ -33,6 +33,7 @@ public class Level3ContactListener implements ContactListener {
             if (classA.equalsIgnoreCase("character.interActorObject.DotObject")
                     && classB.equalsIgnoreCase("character.mainCharacter.MainCharacter")) {
                 HUD.hp--;
+                HUD.whenHpDecrease();
                 DotObject dotObject= (DotObject)tmpA;
                 dotObject.setIsDelete(true);
                 dotObject.getBody().setLinearVelocity(0,0);
@@ -40,6 +41,7 @@ public class Level3ContactListener implements ContactListener {
             } else if (classB.equalsIgnoreCase("character.interActorObject.DotObject")
                     && classA.equalsIgnoreCase("character.mainCharacter.MainCharacter")) {
                 HUD.hp--;
+                HUD.whenHpDecrease();
                 DotObject dotObject= (DotObject)tmpB;
                 dotObject.setIsDelete(true);
                 dotObject.getBody().setLinearVelocity(0,0);

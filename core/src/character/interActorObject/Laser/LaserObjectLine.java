@@ -27,7 +27,6 @@ public class LaserObjectLine extends Actor{
     int perCellWidth;
     int perCellHeight;
     float stateTime =0;
-
     private Sprite sprite_laser;
     private Body body;
     private String type;
@@ -37,12 +36,16 @@ public class LaserObjectLine extends Actor{
     private float fixBoxWeight_constant;
     private float fixBoxHeight_constant;
     private float origin_x;
-    private float origin_y;
+    private float end_x;
+    private float transform_x1;
+    private float transform_x2;
     private float speed_x;
     private float speed_y;
     private int frameCol;
     private int frameRow;
     private long start = 0;
+    private boolean begin_touch = false;
+    private boolean leave = false;
 
     public LaserObjectLine(World gameWorld, String texture1,String type, boolean can_vanish ,  float x, float y,
                            float weight, float height, float anima_duration, float speed_x, float speed_y, float fixBoxOrigin_constant,
@@ -107,7 +110,7 @@ public class LaserObjectLine extends Actor{
         this.fixBoxWeight_constant = fixBoxWeight_constant;
         this.fixBoxHeight_constant = fixBoxHeight_constant;
         this.origin_x = x;
-        this.origin_y = y;
+        this.end_x = x+weight;
         this.speed_x = speed_x;
         this.speed_y = speed_y;
         sprite_laser = new Sprite(laserSheetTexture);
@@ -118,17 +121,19 @@ public class LaserObjectLine extends Actor{
                 sprite_laser.getWidth() / GameMode.PPM / 2 + fixBoxWeight_constant,
                 sprite_laser.getHeight() / GameMode.PPM / 2 + fixBoxHeight_constant,
                 new Vector2(sprite_laser.getWidth() / GameMode.PPM / 2, sprite_laser.getHeight() / GameMode.PPM / 2),
-                0, 0, 0, false, false, true);
-        body.isSleepingAllowed();
+                0, 0, 0, false, true, true);
+        body.setSleepingAllowed(can_vanish == true);
         body.setUserData(this);
 
     }
 
+    @Override
     public void act(float delta) {
         stateTime += delta;
         currentFrame = laserAnimation.getKeyFrame(stateTime);
     }
 
+    @Override
     public void draw(Batch batch, float parentAlpha) {
         batch.draw(currentFrame, body.getPosition().x, body.getPosition().y, sprite_laser.getWidth() / GameMode.PPM, sprite_laser.getHeight() / GameMode.PPM);
     }
@@ -137,17 +142,40 @@ public class LaserObjectLine extends Actor{
         return this.body;
     }
 
-    public void touch_rile(float start_x,float end_x) {
+    public Sprite get_sprite() {
+        return this.sprite_laser;
+    }
+
+    public String get_type() {
+        return this.type;
+    }
+
+    public float get_origin_x() {
+        return origin_x;
+    }
+
+    public float get_end_x() {
+        return end_x;
+    }
+
+    public void set_transfrom(float x1,float x2) {
+        transform_x1 = x1;
+        transform_x2 = x2;
+    }
+
+    public void touch_rile() {
         float height = sprite_laser.getHeight();
-        float weight = end_x-start_x;
+        float weight = transform_x2-transform_x1;
+
         sprite_laser.setSize(weight * GameMode.PPM, height);
         ((PolygonShape)body.getFixtureList().first().getShape()).setAsBox(
                 sprite_laser.getWidth() / GameMode.PPM / 2 + fixBoxWeight_constant,
                 sprite_laser.getHeight() / GameMode.PPM / 2 + fixBoxHeight_constant,
                 new Vector2(sprite_laser.getWidth() / GameMode.PPM / 2, sprite_laser.getHeight() / GameMode.PPM / 2),
                 0);
-        body.setTransform( start_x , body.getPosition().y, 0);
+        body.setTransform( transform_x1 , body.getPosition().y, 0);
     }
+
 
     public void left_rile() {
         sprite_laser.setSize(weight * GameMode.PPM, height * GameMode.PPM);
@@ -165,6 +193,22 @@ public class LaserObjectLine extends Actor{
 
     public void set_startTime() {
         start = TimeUtils.nanoTime();
+    }
+
+    public void set_begin_touch(boolean condition) {
+        begin_touch = condition;
+    }
+
+    public boolean get_begin_touch() {
+        return begin_touch;
+    }
+
+    public void set_leave(boolean condition) {
+        leave = condition;
+    }
+
+    public boolean get_leave() {
+        return leave;
     }
 
     public void sleep() {

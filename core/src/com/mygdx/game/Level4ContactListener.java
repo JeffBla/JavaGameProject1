@@ -87,9 +87,13 @@ public class Level4ContactListener implements ContactListener {
         {
             if(classA.equalsIgnoreCase("character.enemy.robot.Enemy_robot")
                     && classB.equalsIgnoreCase("character.mainCharacter.MainCharacter")){
+                HUD.hp--;
+                HUD.whenHpDecrease();
                 System.out.println("DIE");
             }else if(classB.equalsIgnoreCase("character.enemy.robot.Enemy_robot")
                     && classA.equalsIgnoreCase("character.mainCharacter.MainCharacter")){
+                HUD.hp--;
+                HUD.whenHpDecrease();
                 System.out.println("DIE");
             }
         }

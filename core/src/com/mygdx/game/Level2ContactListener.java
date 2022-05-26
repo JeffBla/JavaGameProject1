@@ -78,9 +78,11 @@ public class Level2ContactListener implements ContactListener {
             if(classA.equalsIgnoreCase("character.enemy.robot.Enemy_robot")
                     && classB.equalsIgnoreCase("character.mainCharacter.MainCharacter")){
                 HUD.hp--;
+                HUD.whenHpDecrease();
             }else if(classB.equalsIgnoreCase("character.enemy.robot.Enemy_robot")
                     && classA.equalsIgnoreCase("character.mainCharacter.MainCharacter")){
                 HUD.hp--;
+                HUD.whenHpDecrease();
             }
         }
         // if the health point decrease
@@ -124,7 +126,7 @@ public class Level2ContactListener implements ContactListener {
                 MainCharacter mainCharacter =(MainCharacter) tmpA;
                 LaserObjectLine Laser = (LaserObjectLine) tmpB;
                 HUD.hp--;
-                System.out.println("die");
+                HUD.whenHpDecrease();
             }
         }
 //        {
