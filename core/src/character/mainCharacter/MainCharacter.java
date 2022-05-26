@@ -22,6 +22,7 @@ public class MainCharacter extends Actor {
     private final MainCharacterIdle idle;
     private final MainCharacterAttack attack;
     private final MainCharacterSoundEffect soundEffect;
+    private final MainCharacterShield shield;
 
     private final World gameWorld;
     public Body body;
@@ -39,7 +40,7 @@ public class MainCharacter extends Actor {
     private float attackDurationCount = 0;
     private float attackComboTimeCount = 0;
     private float attacklevelCount = 1;
-    private final float castDuration = 1.2f;
+    private final float castDuration = 0.6f;
     private float castDurationCount = 0;
     private ArrayList<Cast_magicObject_fire> cast_magicObjectFireArrayList;
 
@@ -54,6 +55,7 @@ public class MainCharacter extends Actor {
 
     public MainCharacter(World gameWorld, float x, float y) {
         this.gameWorld = gameWorld;
+        this.setBounds(x, y, width, height);
 
         cast_magicObjectFireArrayList = new ArrayList<>();
 
@@ -61,6 +63,7 @@ public class MainCharacter extends Actor {
         idle = new MainCharacterIdle();
         attack = new MainCharacterAttack();
         soundEffect = new MainCharacterSoundEffect();
+        shield = new MainCharacterShield(gameWorld, width / 2 + x, height + y, height, height, this);
 
         actorAnimation = new Array<>();
         actorAnimation.addAll(walk.walkAnimation, idle.idleAnimation,
@@ -93,12 +96,16 @@ public class MainCharacter extends Actor {
 
     @Override
     public void act(float delta) {
+        this.setPosition(body.getPosition().x, body.getPosition().y);
+
         stateTime += delta;
         keyInput(delta);
 
         for (Cast_magicObject_fire magicObject : cast_magicObjectFireArrayList) {
             magicObject.act(delta);
         }
+
+        shield.act(delta);
     }
 
     @Override
@@ -107,6 +114,8 @@ public class MainCharacter extends Actor {
         for (Cast_magicObject_fire magicObject : cast_magicObjectFireArrayList) {
             magicObject.draw(batch, parentAlpha);
         }
+
+        shield.draw(batch, parentAlpha);
     }
 
     private void keyInput(float delta) {
@@ -199,7 +208,7 @@ public class MainCharacter extends Actor {
             if (!isCastMagic) {  // 0.3f mean away from mainCharacter
                 Cast_magicObject_fire cast_magicObject_fire = null;
                 if (isLeft) {
-                    cast_magicObject_fire = new Cast_magicObject_fire(gameWorld, body.getPosition().x-0.3f,
+                    cast_magicObject_fire = new Cast_magicObject_fire(gameWorld, body.getPosition().x - 0.3f,
                             body.getPosition().y + height / 2, 1.5f, 0.8f);
 
                     FlipAnimation.flipAnim_ArrayLeft(cast_magicObject_fire.getAnimFly().GetActorAnimation());

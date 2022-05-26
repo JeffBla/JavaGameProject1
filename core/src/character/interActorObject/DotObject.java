@@ -86,7 +86,9 @@ public class DotObject extends Actor {
     @Override
     public void act(float delta) {
         if (isDelete) {
-            body.setTransform(100, 100, 0);
+            body.setTransform(100,100,0);
+            body.setLinearVelocity(0,0);
+            body.setAwake(true);
         }
     }
 

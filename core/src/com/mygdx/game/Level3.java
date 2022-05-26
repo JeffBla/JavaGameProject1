@@ -52,6 +52,7 @@ public class Level3 implements Screen {
     private FitViewport mainCharacterViewport;
     private Texture hintTexture;
     public static boolean isTheDoorOpen = false;
+    public HUD HUDBatch;
 
     public Level3(GameMode gameMode) {
         this.gameMode = gameMode;
@@ -102,6 +103,7 @@ public class Level3 implements Screen {
         stageViewport = new FitViewport(40, 40 / ratio); // This is for developer
         mainCharacterViewport = new FitViewport(25, 25 / ratio); // This is for gamer
         mainCharacterViewport.getCamera().position.set(0, 0, 1);
+        HUDBatch =new HUD();
 
         gameStage3 = new Stage(stageViewport);
 
@@ -145,6 +147,7 @@ public class Level3 implements Screen {
 
         box2DDebugRenderer.render(gameWorld3, gameStage3.getCamera().combined);
         gameWorld3.step(Gdx.graphics.getDeltaTime(), 6, 2);
+        HUDBatch.render(delta);
     }
 
     private void update(float delta) {
@@ -194,6 +197,7 @@ public class Level3 implements Screen {
         screenMusic.dispose();
         wallObject0.dispose();
         mainCharacter.dispose();
+        HUD.hp=3;
     }
 
     private int spawnDots(int dotNum){

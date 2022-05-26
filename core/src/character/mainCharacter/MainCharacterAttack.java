@@ -16,13 +16,13 @@ public class MainCharacterAttack {
     protected Animation<TextureRegion> attackAnim1;
     protected Animation<TextureRegion> attackAnim2;
     protected Animation<TextureRegion> attackAnim3;
-    protected Animation<TextureRegion> attackAnimCast; // Maybe some day it will be helpful but now it is useless.
+    protected Animation<TextureRegion> attackAnimCast;
 
     public MainCharacterAttack() {
         attackAnim1 = createAnim(1, 6, true, 0.1f, textureSheet1);
         attackAnim2 = createAnim(1, 4, true, 0.1f, textureSheet2);
         attackAnim3 = createAnim(1, 6, true, 0.1f, textureSheet3);
-        attackAnimCast = createAnim(1, 6, true, 0.2f, textureSheetCast);
+        attackAnimCast = createAnim(1, 6, true, 0.1f, textureSheetCast);
 
         attackAnims =new ArrayList<>(); // useless now
         attackAnims.add(attackAnim1);

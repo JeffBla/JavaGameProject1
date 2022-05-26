@@ -2,6 +2,7 @@ package com.mygdx.game;
 
 import character.interActorObject.Gear.GearActor;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Vector2;
@@ -22,7 +23,7 @@ import worldBuilding.BuildBody;
 
 public class Level4 implements Screen {
 
-	final GameMode gameMode;
+    final GameMode gameMode;
     final ScreenMusic screenMusic;
     final WallObject frameObjectUp;
     final WallObject frameObjectDown;
@@ -41,7 +42,7 @@ public class Level4 implements Screen {
     final Enemy_robot enemy_robot1;
     final Enemy_robot enemy_robot2;
     private GearActor gearActor;
-//    final DoorObject doorObject;
+    //    final DoorObject doorObject;
 //    final Body doorBlockLeft;
 //    final Body doorBlockRight;
     final MainCharacter mainCharacter;
@@ -51,6 +52,7 @@ public class Level4 implements Screen {
     private FitViewport stageViewport;
     private FitViewport mainCharacterViewport;
     public static boolean isTheDoorOpen = false;
+    public HUD HUDBatch;
 
     public Level4(GameMode gameMode) {
         this.gameMode = gameMode;
@@ -60,7 +62,7 @@ public class Level4 implements Screen {
         box2DDebugRenderer = new Box2DDebugRenderer();
         screenMusic = new ScreenMusic();
         screenMusic.playGameLobbyMusic();
-        
+
         mainCharacter = new MainCharacter(gameWorld4, 2, 2);
         frameObjectUp = new WallObject(gameWorld4, 0f, 18f, 51f, 3f, 0.3f,
                 0, -0.3f);
@@ -85,12 +87,12 @@ public class Level4 implements Screen {
 
         enemy_robot1 = new Enemy_robot(gameWorld4, 28f, 5f, 5, -2f);
         enemy_robot2 = new Enemy_robot(gameWorld4, 20, 12.5f, 5, 2f);
-        gearActor = new GearActor(gameWorld4, 40,10, 6,6);
+        gearActor = new GearActor(gameWorld4, 40, 10, 6, 6);
 
-        laserline1 = new LaserObjectLine(gameWorld4,"laser/laser_rile_2.png","rile", false , 6f, 17.5f, 43.5f, 1f, 0.1f, 0f, 0.06f, 0, 0f, -0.3f);
-        laserbase1 = new LaserObjectBase(laserline1.get_body(),"laser/rile.png","rile", 1.2f, 1f, 43.1f, 0f);
-        laserline2 = new LaserObjectLine(gameWorld4,"laser/laser_leri.png","leri", true , 6.5f, 3.4f, 43.5f, 1f, 0.167562f, 0f, 0f, 0, 0f, -0.3f);
-        laserbase2 = new LaserObjectBase(laserline2.get_body(),"laser/leri.png","leri", 1.2f, 1.2f, -0.92f, -0.05f);
+        laserline1 = new LaserObjectLine(gameWorld4, "laser/laser_rile_2.png", "rile", false, 6f, 17.5f, 43.5f, 1f, 0.1f, 0f, 0.06f, 0, 0f, -0.3f);
+        laserbase1 = new LaserObjectBase(laserline1.get_body(), "laser/rile.png", "rile", 1.2f, 1f, 43.1f, 0f);
+        laserline2 = new LaserObjectLine(gameWorld4, "laser/laser_leri.png", "leri", true, 6.5f, 3.4f, 43.5f, 1f, 0.167562f, 0f, 0f, 0, 0f, -0.3f);
+        laserbase2 = new LaserObjectBase(laserline2.get_body(), "laser/leri.png", "leri", 1.2f, 1.2f, -0.92f, -0.05f);
 //        doorObject = new DoorObject(gameWorld4, "doorLeft.png", "doorRight.png",
 //                30f, 0, 3f, 1f, 2, -2,
 //                0, 0, 0);
@@ -98,16 +100,17 @@ public class Level4 implements Screen {
 //                new Vector2(0, 0), 0, 0, 0, true, false, false);
 //        doorBlockRight = BuildBody.createBox(gameWorld4, 35, 0, 0.5f, 0.5f,
 //                new Vector2(0, 0), 0, 0, 0, true, false, false);
-        
+
         Gdx.input.setInputProcessor(gameStage4);
         float ratio = (float) (Gdx.graphics.getWidth()) / (float) (Gdx.graphics.getHeight());
-        
+
         // 40 is good
         stageViewport = new FitViewport(51, 51 / ratio); // This is for developer
         mainCharacterViewport = new FitViewport(35, 35 / ratio); // This is for gamer
         mainCharacterViewport.getCamera().position.set(0, 0, 1);
+        HUDBatch = new HUD();
 
-        gameStage4 = new Stage(stageViewport);
+        gameStage4 = new Stage(mainCharacterViewport);
         gameStage4.addActor(frameObjectUp);
         gameStage4.addActor(frameObjectFont);
         gameStage4.addActor(frameObjectRear);
@@ -133,7 +136,7 @@ public class Level4 implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Gdx.gl.glClearColor(0.8f, 0.8f, 0.8f, 1);
 
-        if(gameStage4.getViewport() == mainCharacterViewport) {
+        if (gameStage4.getViewport() == mainCharacterViewport) {
             mainCharacterViewport.getCamera().position.set(mainCharacter.getPosition(4, 1.5f));
         }
         gameStage4.getCamera().update();
@@ -145,36 +148,40 @@ public class Level4 implements Screen {
         gameMode.batch.begin();
         gameStage4.draw();
         gameMode.batch.end();
-        
+
         laserline1.move_Y(3.2f, 17.5f);
 
-        if(laserline1.get_body().getPosition().y >= 4.3 && laserline1.get_body().getPosition().y<=6.7) {
-        	 laserline1.touch_rile(18.5f,49.5f);
+        if (laserline1.get_body().getPosition().y >= 4.3 && laserline1.get_body().getPosition().y <= 6.7) {
+            laserline1.touch_rile(18.5f, 49.5f);
+        } else if (laserline1.get_body().getPosition().y >= 8.3 && laserline1.get_body().getPosition().y <= 10.7) {
+            laserline1.touch_rile(27, 49.5f);
+        } else if (laserline1.get_body().getPosition().y >= 13.3 && laserline1.get_body().getPosition().y <= 15.7) {
+            laserline1.touch_rile(34, 49.5f);
+        } else {
+            laserline1.left_rile();
         }
-        else if(laserline1.get_body().getPosition().y >= 8.3 && laserline1.get_body().getPosition().y <= 10.7) {
-        	laserline1.touch_rile(27,49.5f);
-        }
-        else if(laserline1.get_body().getPosition().y >= 13.3 && laserline1.get_body().getPosition().y <= 15.7) {
-        	laserline1.touch_rile(34,49.5f);
-        }
-        else  {
-        	laserline1.left_rile();
-        }
-       
+
         if (TimeUtils.nanoTime() - laserline2.get_start() > 2500000000f) {
-        	laserline2.set_startTime();
-        	if(laserline2.isVisible()) {
-        		laserline2.setVisible(false);
-        		laserline2.sleep();
-        	}
-        	else {
-        		laserline2.setVisible(true);
-        		laserline2.awake();
-        	}
+            laserline2.set_startTime();
+            if (laserline2.isVisible()) {
+                laserline2.setVisible(false);
+                laserline2.sleep();
+            } else {
+                laserline2.setVisible(true);
+                laserline2.awake();
+            }
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.B)) {
+            gearActor.getGearActor_fireGunHashMap().get("LeftBottom").spawnFire(5, gameStage4, delta);
+            gearActor.getGearActor_fireGunHashMap().get("RightBottom").spawnFire(5, gameStage4, delta);
+            gearActor.getGearActor_fireGunHashMap().get("RightUp").spawnFire(5, gameStage4, delta);
+            gearActor.getGearActor_fireGunHashMap().get("LeftUp").spawnFire(5, gameStage4, delta);
         }
 
         box2DDebugRenderer.render(gameWorld4, gameStage4.getCamera().combined);
         gameWorld4.step(Gdx.graphics.getDeltaTime(), 6, 2);
+        HUDBatch.render(delta);
     }
 
     private void update(float delta) {
@@ -182,7 +189,7 @@ public class Level4 implements Screen {
 //            doorBlockLeft.setTransform(27, 0, 0);
 //            doorBlockRight.setTransform(36f, 0, 0);
 //        }
-    	if (mainCharacter.getIsBound()) {
+        if (mainCharacter.getIsBound()) {
             gameMode.setScreen(new Stageselection(gameMode));
             dispose();
         }
@@ -215,13 +222,14 @@ public class Level4 implements Screen {
 
     @Override
     public void dispose() {
-    	isTheDoorOpen=false;
-    	gameStage4.dispose();
-    	screenMusic.dispose();
+        isTheDoorOpen = false;
+        gameStage4.dispose();
+        screenMusic.dispose();
         mainCharacter.dispose();
         frameObjectUp.dispose();
         frameObjectFont.dispose();
         frameObjectRear.dispose();
         //doorObject.dispose();
+        HUD.hp = 3;
     }
 }

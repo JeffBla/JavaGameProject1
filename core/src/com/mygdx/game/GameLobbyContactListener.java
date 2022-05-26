@@ -114,10 +114,18 @@ public class GameLobbyContactListener implements ContactListener {
         {
             if(classA.equalsIgnoreCase("character.enemy.robot.Enemy_robot")
                     && classB.equalsIgnoreCase("character.mainCharacter.MainCharacter")){
-                System.out.println("DIE");
+                // if the health point decrease
+                if(!HUD.isHpDecrease) {
+                    HUD.hp--;
+                    HUD.whenHpDecrease();
+                }
             }else if(classB.equalsIgnoreCase("character.enemy.robot.Enemy_robot")
                     && classA.equalsIgnoreCase("character.mainCharacter.MainCharacter")){
-                System.out.println("DIE");
+                // if the health point decrease
+                if(!HUD.isHpDecrease) {
+                    HUD.hp--;
+                    HUD.whenHpDecrease();
+                }
             }
         }
         // if mainCharacter enter the door and touch the bound

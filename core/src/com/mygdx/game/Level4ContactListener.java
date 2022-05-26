@@ -1,12 +1,14 @@
 package com.mygdx.game;
 
 import character.interActorObject.Cast_magic.Cast_magicObject_fire;
+import character.interActorObject.Gear.GearActor_fire;
 import com.badlogic.gdx.physics.box2d.*;
 
 import character.enemy.robot.Enemy_robot;
 import character.interActorObject.WallObject;
 import character.interActorObject.Laser.LaserObjectLine;
 import character.mainCharacter.MainCharacter;
+import character.mainCharacter.MainCharacterShield;
 import kit.FlipAnimation;
 
 public class Level4ContactListener implements ContactListener {
@@ -21,8 +23,10 @@ public class Level4ContactListener implements ContactListener {
         if ((tmpB = contact.getFixtureB().getBody().getUserData()) != null)
             classB = tmpB.getClass().getName();
         else return;
+
       //System.out.println("A: "+classA);
       //System.out.println("B: "+classB);
+
         {
         	if(classA.equalsIgnoreCase("character.mainCharacter.MainCharacter")
                     && classB.equalsIgnoreCase("character.interActorObject.Laser.LaserObjectLine")){
@@ -91,16 +95,24 @@ public class Level4ContactListener implements ContactListener {
         }
         // if Cast_magic_FireAnim hit object
         {
-            if (classA.equalsIgnoreCase("character.interActorObject.Cast_magic.Cast_magicObject_fire")
-                    && classB.equalsIgnoreCase("character.interActorObject.WallObject")){
+            if (classA.equalsIgnoreCase("character.interActorObject.Cast_magic.Cast_magicObject_fire")){
                 Cast_magicObject_fire magicObject_fire = (Cast_magicObject_fire) tmpA;
 
                 magicObject_fire.setIsHit(true);
-            }else if(classB.equalsIgnoreCase("character.interActorObject.Cast_magic.Cast_magicObject_fire")
-                    && classA.equalsIgnoreCase("character.interActorObject.WallObject")){
+            }else if(classB.equalsIgnoreCase("character.interActorObject.Cast_magic.Cast_magicObject_fire")){
                 Cast_magicObject_fire magicObject_fire = (Cast_magicObject_fire) tmpB;
 
                 magicObject_fire.setIsHit(true);
+            }
+        }
+        // if fire hit the wall
+        {
+            if (classA.equalsIgnoreCase("character.interActorObject.Gear.GearActor_fire")
+                    && classB.equalsIgnoreCase("character.interActorObject.WallObject")){
+                ((GearActor_fire)tmpA).setIsDelete(true);
+            }else if(classB.equalsIgnoreCase("character.interActorObject.Gear.GearActor_fire")
+                    && classA.equalsIgnoreCase("character.interActorObject.WallObject")){
+                ((GearActor_fire)tmpB).setIsDelete(true);
             }
         }
 }

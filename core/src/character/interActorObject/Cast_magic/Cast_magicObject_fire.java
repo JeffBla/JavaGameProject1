@@ -16,7 +16,7 @@ public class Cast_magicObject_fire extends Actor {
     private TextureRegion currentFrame;
     private final float weight, height, radius;
     private float stateTime = 0.0f;
-    private float speed = 2;
+    private float speed = 5;
     private boolean isSpawn;
     private boolean isHit;
 
@@ -64,9 +64,15 @@ public class Cast_magicObject_fire extends Actor {
         if (animFly.getSpawnAnimation().isAnimationFinished(stateTime)) {
             body.setLinearVelocity(speed, 0);
         }
-        if (isHit && animFly.getHitAnimation().isAnimationFinished(stateTime)) {
-            body.setTransform(100, 100, 0);
-            body.setLinearVelocity(0, 0);
+        if (isHit) {
+            body.setLinearVelocity(0,0);
+            if(animFly.getHitAnimation().isAnimationFinished(stateTime)) {
+                body.setTransform(100, 100, 0);
+                body.setLinearVelocity(0, 0);
+                body.destroyFixture(body.getFixtureList().first());
+                isHit = false;
+                dispose();
+            }
         }
     }
 

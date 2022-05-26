@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import kit.FlipAnimation;
 
 public class Level2ContactListener implements ContactListener {
+    HUD HUDBatch=new HUD();
     @Override
     public void beginContact(Contact contact) {
         Object tmpA, tmpB;
@@ -76,11 +77,28 @@ public class Level2ContactListener implements ContactListener {
         {
             if(classA.equalsIgnoreCase("character.enemy.robot.Enemy_robot")
                     && classB.equalsIgnoreCase("character.mainCharacter.MainCharacter")){
-                System.out.println("DIE");
+                HUD.hp--;
             }else if(classB.equalsIgnoreCase("character.enemy.robot.Enemy_robot")
                     && classA.equalsIgnoreCase("character.mainCharacter.MainCharacter")){
-                System.out.println("DIE");
+                HUD.hp--;
             }
+        }
+        // if the health point decrease
+        {
+            switch(HUD.hp) {
+                case 3:
+                    break;
+                case 2:
+                    HUDBatch.FullHp3.setPosition(100000, 100000);
+                    break;
+                case 1:
+                    HUDBatch.FullHp2.setPosition(100000, 100000);
+                    break;
+                case 0:
+                    HUDBatch.FullHp1.setPosition(100000, 100000);
+                    break;
+            }
+
         }
         // if mainCharacter enter the door and touch the bound
         {
@@ -105,6 +123,7 @@ public class Level2ContactListener implements ContactListener {
                     && classB.equalsIgnoreCase("character.interActorObject.Laser.LaserObjectLine")){
                 MainCharacter mainCharacter =(MainCharacter) tmpA;
                 LaserObjectLine Laser = (LaserObjectLine) tmpB;
+                HUD.hp--;
                 System.out.println("die");
             }
         }

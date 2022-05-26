@@ -57,6 +57,7 @@ public class Level2 implements Screen {
     private FitViewport stageViewport;
     private FitViewport mainCharacterViewport;
     public static boolean isTheDoorOpen = false;
+    public HUD HUDBatch;
 
     public Level2(GameMode gameMode) {
         this.gameMode = gameMode;
@@ -117,6 +118,7 @@ public class Level2 implements Screen {
         stageViewport = new FitViewport(40, 40 / ratio); // This is for developer
         mainCharacterViewport = new FitViewport(25, 25 / ratio); // This is for gamer
         mainCharacterViewport.getCamera().position.set(0, 0, 1);
+        HUDBatch =new HUD();
 
         gameStage2 = new Stage(stageViewport);
         gameStage2.addActor(frameObjectUp);
@@ -192,6 +194,7 @@ public class Level2 implements Screen {
         laserline5.move_Y(3f, 7.5f);
         box2DDebugRenderer.render(gameWorld2, gameStage2.getCamera().combined);
         gameWorld2.step(Gdx.graphics.getDeltaTime(), 6, 2);
+        HUDBatch.render(delta);
     }
 
     private void update(float delta) {
@@ -201,6 +204,7 @@ public class Level2 implements Screen {
         }
         if (mainCharacter.getIsBound()) {
             gameMode.setScreen(new Stageselection(gameMode));
+            HUD.hp=3;
             dispose();
         }
     }
@@ -258,5 +262,6 @@ public class Level2 implements Screen {
         doorObject.dispose();
         enemy_robot1.dispose();
         enemy_robot2.dispose();
+        HUD.hp=3;
     }
 }

@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class GameMode extends Game {
 	public static final	float PPM= 100f; // pixel per meter (PPM) ratio
 
-	SpriteBatch batch;
+	public SpriteBatch batch;
 	BitmapFont bitmapFont;
 	float bitmapFontSize= 5.0f;
 	// ^for testing and

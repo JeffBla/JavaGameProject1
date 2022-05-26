@@ -13,6 +13,7 @@ import com.badlogic.gdx.physics.box2d.Manifold;
 import kit.FlipAnimation;
 
 public class Level3ContactListener implements ContactListener {
+    HUD HUDBatch=new HUD();
     @Override
     public void beginContact(Contact contact) {
         Object tmpA, tmpB;
@@ -27,26 +28,39 @@ public class Level3ContactListener implements ContactListener {
 //        System.out.println("A: "+classA);
 //        System.out.println("B: "+classB);
 
-        // if mainCharacter is attack and encounter DotObject
+        // if mainCharacter encounter DotObject
         {
             if (classA.equalsIgnoreCase("character.interActorObject.DotObject")
                     && classB.equalsIgnoreCase("character.mainCharacter.MainCharacter")) {
-                MainCharacter mainCharacter = (MainCharacter) tmpB;
-
-                System.out.println("-1");
+                HUD.hp--;
                 DotObject dotObject= (DotObject)tmpA;
                 dotObject.setIsDelete(true);
                 dotObject.getBody().setLinearVelocity(0,0);
 
             } else if (classB.equalsIgnoreCase("character.interActorObject.DotObject")
                     && classA.equalsIgnoreCase("character.mainCharacter.MainCharacter")) {
-                MainCharacter mainCharacter = (MainCharacter) tmpA;
-
-                System.out.println("-1");
+                HUD.hp--;
                 DotObject dotObject= (DotObject)tmpB;
                 dotObject.setIsDelete(true);
                 dotObject.getBody().setLinearVelocity(0,0);
             }
+        }
+        // if the health point decrease
+        {
+            switch(HUD.hp) {
+                case 3:
+                    break;
+                case 2:
+                    HUDBatch.FullHp3.setPosition(100000, 100000);
+                    break;
+                case 1:
+                    HUDBatch.FullHp2.setPosition(100000, 100000);
+                    break;
+                case 0:
+                    HUDBatch.FullHp1.setPosition(100000, 100000);
+                    break;
+            }
+
         }
         // if mainCharacter's attackDetectRegion is attack and encounter DotObject
         {
@@ -58,7 +72,6 @@ public class Level3ContactListener implements ContactListener {
                 dotObject.setIsDelete(true);
                 dotObject.getBody().setLinearVelocity(0,0);
 
-                System.out.println("dotDeleteAttack");
             }else if(classB.equalsIgnoreCase("character.interActorObject.DotObject")
                     && classA.equalsIgnoreCase("character.mainCharacter.MainCharacterAttackDetectRegion")){
 
@@ -66,8 +79,6 @@ public class Level3ContactListener implements ContactListener {
                 dotObject.playAttackedSound(0.5f);
                 dotObject.setIsDelete(true);
                 dotObject.getBody().setLinearVelocity(0,0);
-
-                System.out.println("dotDeleteAttack");
             }
         }
         // if mainCharacter is pressed the button
