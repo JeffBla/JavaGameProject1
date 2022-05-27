@@ -19,7 +19,6 @@ public class WallObject extends Actor {
 
     private final Texture texture = new Texture(Gdx.files.internal("wallSample2.png"));
     ;
-
     private final Sprite sprite;
 
     // custom wall

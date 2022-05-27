@@ -154,14 +154,12 @@ public class GameLobby implements Screen {
                 PausedScreen.restart=false;
                 PausedScreen.pause=false;
                 gameMode.setScreen(new GameLobby(gameMode));
-                Pause.dispose();
                 dispose();
             }
             else if(PausedScreen.stage) {
                 PausedScreen.stage=false;
                 PausedScreen.pause=false;
                 gameMode.setScreen(new Stageselection(gameMode));
-                Pause.dispose();
                 dispose();
             }
         }
@@ -171,14 +169,14 @@ public class GameLobby implements Screen {
             GameOver.render(delta);
             if(GameOverScreen.restart) {
                 GameOverScreen.restart=false;
+                GameOverScreen.gameover=false;
                 gameMode.setScreen(new GameLobby(gameMode));
-                GameOver.dispose();
                 dispose();
             }
             else if(GameOver.stage) {
                 GameOver.stage=false;
+                GameOverScreen.gameover=false;
                 gameMode.setScreen(new Stageselection(gameMode));
-                GameOver.dispose();
                 dispose();
             }
         }
@@ -188,20 +186,20 @@ public class GameLobby implements Screen {
             Complete.render(delta);
             if(CompleteScreen.restart) {
                 CompleteScreen.restart=false;
+                CompleteScreen.complete=false;
                 gameMode.setScreen(new GameLobby(gameMode));
-                Complete.dispose();
                 dispose();
             }
             else if(CompleteScreen.stage) {
                 CompleteScreen.stage=false;
+                CompleteScreen.complete=false;
                 gameMode.setScreen(new Stageselection(gameMode));
-                Complete.dispose();
                 dispose();
             }
             else if(CompleteScreen.nextstage) {
                 CompleteScreen.nextstage=false;
+                CompleteScreen.complete=false;
                 gameMode.setScreen(new Level2(gameMode));
-                Complete.dispose();
                 dispose();
             }
         }

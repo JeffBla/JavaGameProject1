@@ -21,7 +21,6 @@ public class Stageselection implements Screen{
     private ImageButton Stage3ImgButton;
     private ImageButton Stage4ImgButton;
     private Stage stage;
-    private Window exitConfirmWindowFrame;
 
     public Stageselection(final GameMode gameMode) {
         this.gameMode = gameMode;

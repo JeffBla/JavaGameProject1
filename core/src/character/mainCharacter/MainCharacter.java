@@ -205,16 +205,16 @@ public class MainCharacter extends Actor {
             castDurationCount += delta;
 
             // cast magic
-            if (!isCastMagic) {  // 0.3f mean away from mainCharacter
+            if (!isCastMagic) {  // 0.5f mean away from mainCharacter
                 Cast_magicObject_fire cast_magicObject_fire = null;
                 if (isLeft) {
-                    cast_magicObject_fire = new Cast_magicObject_fire(gameWorld, body.getPosition().x - 0.3f,
+                    cast_magicObject_fire = new Cast_magicObject_fire(gameWorld, body.getPosition().x - 0.5f,
                             body.getPosition().y + height / 2, 1.5f, 0.8f);
 
                     FlipAnimation.flipAnim_ArrayLeft(cast_magicObject_fire.getAnimFly().GetActorAnimation());
                     cast_magicObject_fire.setToLeftSpeed();
                 } else {
-                    cast_magicObject_fire = new Cast_magicObject_fire(gameWorld, body.getPosition().x + width + 0.3f,
+                    cast_magicObject_fire = new Cast_magicObject_fire(gameWorld, body.getPosition().x + width + 0.5f,
                             body.getPosition().y + height / 2, 1.5f, 0.8f);
                 }
                 if (cast_magicObject_fire != null)

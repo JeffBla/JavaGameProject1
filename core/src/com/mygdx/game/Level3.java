@@ -142,13 +142,11 @@ public class Level3 implements Screen {
                 PausedScreen.restart = false;
                 PausedScreen.pause = false;
                 gameMode.setScreen(new Level3(gameMode));
-                Pause.dispose();
                 dispose();
             } else if (PausedScreen.stage) {
                 PausedScreen.stage = false;
                 PausedScreen.pause = false;
                 gameMode.setScreen(new Stageselection(gameMode));
-                Pause.dispose();
                 dispose();
             }
         } else if (GameOverScreen.gameover) {
@@ -157,13 +155,13 @@ public class Level3 implements Screen {
             GameOver.render(delta);
             if (GameOverScreen.restart) {
                 GameOverScreen.restart = false;
+                GameOverScreen.gameover=false;
                 gameMode.setScreen(new Level3(gameMode));
-                GameOver.dispose();
                 dispose();
-            } else if (GameOver.stage) {
+            } else if (GameOverScreen.stage) {
                 GameOver.stage = false;
+                GameOverScreen.gameover=false;
                 gameMode.setScreen(new Stageselection(gameMode));
-                GameOver.dispose();
                 dispose();
             }
         } else if (CompleteScreen.complete) {
@@ -172,18 +170,18 @@ public class Level3 implements Screen {
             Complete.render(delta);
             if (CompleteScreen.restart) {
                 CompleteScreen.restart = false;
+                CompleteScreen.complete=false;
                 gameMode.setScreen(new Level3(gameMode));
-                Complete.dispose();
                 dispose();
             } else if (CompleteScreen.stage) {
                 CompleteScreen.stage = false;
+                CompleteScreen.complete=false;
                 gameMode.setScreen(new Stageselection(gameMode));
-                Complete.dispose();
                 dispose();
             } else if (CompleteScreen.nextstage) {
                 CompleteScreen.nextstage = false;
+                CompleteScreen.complete=false;
                 gameMode.setScreen(new Level4(gameMode));
-                Complete.dispose();
                 dispose();
             }
         }
@@ -221,8 +219,9 @@ public class Level3 implements Screen {
             doorBlockRight.setTransform(36f, 0, 0);
         }
         if (mainCharacter.getIsBound()) {
-            gameMode.setScreen(new Stageselection(gameMode));
-            dispose();
+//            gameMode.setScreen(new Stageselection(gameMode));
+            CompleteScreen.complete=true;
+//            dispose();
         }
         gameWorld3.step(Gdx.graphics.getDeltaTime(), 6, 2);
     }

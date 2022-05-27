@@ -7,9 +7,9 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class GameOverScreen {
-    public SpriteBatch HUDBatch;
-    public static Sprite GameOver;
-    public static Texture texture1;
+    private SpriteBatch HUDBatch;
+    private Sprite GameOver;
+    private Texture texture1;
     public static boolean gameover=false;
     public static boolean restart=false;
     public static boolean stage=false;

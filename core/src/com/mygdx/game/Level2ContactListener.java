@@ -77,30 +77,19 @@ public class Level2ContactListener implements ContactListener {
         {
             if(classA.equalsIgnoreCase("character.enemy.robot.Enemy_robot")
                     && classB.equalsIgnoreCase("character.mainCharacter.MainCharacter")){
-                HUD.hp--;
-                HUD.whenHpDecrease();
+                // if the health point decrease
+                if(!HUD.isHpDecrease) {
+                    HUD.hp--;
+                    HUD.whenHpDecrease();
+                }
             }else if(classB.equalsIgnoreCase("character.enemy.robot.Enemy_robot")
                     && classA.equalsIgnoreCase("character.mainCharacter.MainCharacter")){
-                HUD.hp--;
-                HUD.whenHpDecrease();
+                // if the health point decrease
+                if(!HUD.isHpDecrease) {
+                    HUD.hp--;
+                    HUD.whenHpDecrease();
+                }
             }
-        }
-        // if the health point decrease
-        {
-            switch(HUD.hp) {
-                case 3:
-                    break;
-                case 2:
-                    HUDBatch.FullHp3.setPosition(100000, 100000);
-                    break;
-                case 1:
-                    HUDBatch.FullHp2.setPosition(100000, 100000);
-                    break;
-                case 0:
-                    HUDBatch.FullHp1.setPosition(100000, 100000);
-                    break;
-            }
-
         }
         // if mainCharacter enter the door and touch the bound
         {
@@ -125,8 +114,11 @@ public class Level2ContactListener implements ContactListener {
                     && classB.equalsIgnoreCase("character.interActorObject.Laser.LaserObjectLine")){
                 MainCharacter mainCharacter =(MainCharacter) tmpA;
                 LaserObjectLine Laser = (LaserObjectLine) tmpB;
-                HUD.hp--;
-                HUD.whenHpDecrease();
+                // if the health point decrease
+                if(!HUD.isHpDecrease) {
+                    HUD.hp--;
+                    HUD.whenHpDecrease();
+                }
             }
         }
 //        {

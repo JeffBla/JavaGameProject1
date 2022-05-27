@@ -6,24 +6,18 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import character.enemy.robot.Enemy_robot;
-import character.interActorObject.ButtonObject;
-import character.interActorObject.DoorObject;
 import character.interActorObject.WallObject;
 import character.interActorObject.Laser.LaserObjectBase;
 import character.interActorObject.Laser.LaserObjectLine;
 import character.interActorObject.Cannon.Cannon;
 import character.interActorObject.Cannon.CannonLine;
 import character.mainCharacter.MainCharacter;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-
-import worldBuilding.BuildBody;
 
 public class Level4 implements Screen {
     final GameMode gameMode;
@@ -47,9 +41,6 @@ public class Level4 implements Screen {
     final Enemy_robot enemy_robot1;
     final Enemy_robot enemy_robot2;
     private GearActor gearActor;
-    //    final DoorObject doorObject;
-//    final Body doorBlockLeft;
-//    final Body doorBlockRight;
     final MainCharacter mainCharacter;
     private World gameWorld4;
     private Stage gameStage4;
@@ -60,7 +51,7 @@ public class Level4 implements Screen {
     public HUD HUDBatch;
     public PausedScreen Pause;
     public GameOverScreen GameOver;
-    public CompleteScreen Complete;
+    public AllClearScreen Complete;
 
     public Level4(GameMode gameMode) {
         this.gameMode = gameMode;
@@ -101,15 +92,8 @@ public class Level4 implements Screen {
         laserbase1 = new LaserObjectBase(laserline1.get_body(), "laser/rile.png", "rile", 1.2f, 1f, 43.1f, 0f);
         laserline2 = new LaserObjectLine(gameWorld4, "laser/laser_leri.png", "leri", true, 6.5f, 3.4f, 43.5f, 1f, 0.167562f, 0f, 0f, 0, 0f, -0.3f);
         laserbase2 = new LaserObjectBase(laserline2.get_body(), "laser/leri.png", "leri", 1.2f, 1.2f, -0.92f, -0.05f);
-        cannon1 = new Cannon(gameWorld4, mainCharacter.get_body() , 15, 8, 1.5f, 1, 0.1f, 0, 0, 0f);
+        cannon1 = new Cannon(gameWorld4, mainCharacter.get_body(), 15, 8, 1.5f, 1, 0.1f, 0, 0, 0f);
         cannonline1 = new CannonLine(gameWorld4, cannon1.get_body(), 40f, 1f, 0.1f, 0.5f, 0f, -0.2f);
-//        doorObject = new DoorObject(gameWorld4, "doorLeft.png", "doorRight.png",
-//                30f, 0, 3f, 1f, 2, -2,
-//                0, 0, 0);
-//        doorBlockLeft = BuildBody.createBox(gameWorld4, 28, 0, 0.5f, 0.5f,
-//                new Vector2(0, 0), 0, 0, 0, true, false, false);
-//        doorBlockRight = BuildBody.createBox(gameWorld4, 35, 0, 0.5f, 0.5f,
-//                new Vector2(0, 0), 0, 0, 0, true, false, false);
 
         Gdx.input.setInputProcessor(gameStage4);
         float ratio = (float) (Gdx.graphics.getWidth()) / (float) (Gdx.graphics.getHeight());
@@ -118,12 +102,12 @@ public class Level4 implements Screen {
         stageViewport = new FitViewport(51, 51 / ratio); // This is for developer
         mainCharacterViewport = new FitViewport(35, 35 / ratio); // This is for gamer
         mainCharacterViewport.getCamera().position.set(0, 0, 1);
-        HUDBatch =new HUD();
-        Pause=new PausedScreen();
-        GameOver=new GameOverScreen();
-        Complete=new CompleteScreen();
+        HUDBatch = new HUD();
+        Pause = new PausedScreen();
+        GameOver = new GameOverScreen();
+        Complete = new AllClearScreen();
 
-        gameStage4 = new Stage(mainCharacterViewport);
+        gameStage4 = new Stage(stageViewport);
         gameStage4.addActor(frameObjectUp);
         gameStage4.addActor(frameObjectFont);
         gameStage4.addActor(frameObjectRear);
@@ -150,58 +134,47 @@ public class Level4 implements Screen {
     public void render(float delta) {
         if (PausedScreen.pause) {
             gameWorld4.getContactList().clear();
-//            gameWorld.setContactListener(null);
             Pause.render(delta);
             if (PausedScreen.restart) {
                 PausedScreen.restart = false;
                 PausedScreen.pause = false;
                 gameMode.setScreen(new Level4(gameMode));
-                Pause.dispose();
                 dispose();
             } else if (PausedScreen.stage) {
                 PausedScreen.stage = false;
                 PausedScreen.pause = false;
                 gameMode.setScreen(new Stageselection(gameMode));
-                Pause.dispose();
                 dispose();
             }
         } else if (GameOverScreen.gameover) {
             gameWorld4.getContactList().clear();
-//            gameWorld.setContactListener(null);
             GameOver.render(delta);
             if (GameOverScreen.restart) {
                 GameOverScreen.restart = false;
+                GameOverScreen.gameover=false;
                 gameMode.setScreen(new Level4(gameMode));
-                GameOver.dispose();
                 dispose();
-            } else if (GameOver.stage) {
+            } else if (GameOverScreen.stage) {
                 GameOver.stage = false;
+                GameOverScreen.gameover=false;
                 gameMode.setScreen(new Stageselection(gameMode));
-                GameOver.dispose();
                 dispose();
             }
-        } else if (CompleteScreen.complete) {
+        } else if (AllClearScreen.complete) {
             gameWorld4.getContactList().clear();
-//            gameWorld.setContactListener(null);
             Complete.render(delta);
-            if (CompleteScreen.restart) {
-                CompleteScreen.restart = false;
+            if (AllClearScreen.restart) {
+                AllClearScreen.restart = false;
+                AllClearScreen.complete=false;
                 gameMode.setScreen(new Level4(gameMode));
-                Complete.dispose();
                 dispose();
-            } else if (CompleteScreen.stage) {
-                CompleteScreen.stage = false;
+            } else if (AllClearScreen.stage) {
+                AllClearScreen.stage = false;
+                AllClearScreen.complete=false;
                 gameMode.setScreen(new Stageselection(gameMode));
-                Complete.dispose();
-                dispose();
-            } else if (CompleteScreen.nextstage) {
-                CompleteScreen.nextstage = false;
-                gameMode.setScreen(new Level4(gameMode));
-                Complete.dispose();
                 dispose();
             }
-        }
-        else {
+        } else {
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
             Gdx.gl.glClearColor(0.8f, 0.8f, 0.8f, 1);
 
@@ -219,23 +192,22 @@ public class Level4 implements Screen {
             gameMode.batch.end();
 
             laserline1.move_Y(3.2f, 17.5f);
-            if(laserline1.get_begin_touch()==true) {
+            if (laserline1.get_begin_touch() == true) {
                 laserline1.touch_rile();
                 laserline1.set_begin_touch(false);
             }
 
-            if(laserline1.get_leave()==true) {
+            if (laserline1.get_leave() == true) {
                 laserline1.touch_rile();
                 laserline1.set_leave(false);
             }
 
             if (TimeUtils.nanoTime() - laserline2.get_start() > 2500000000f) {
                 laserline2.set_startTime();
-                if(laserline2.isVisible()) {
+                if (laserline2.isVisible()) {
                     laserline2.setVisible(false);
                     laserline2.sleep();
-                }
-                else {
+                } else {
                     laserline2.setVisible(true);
                     laserline2.awake();
                 }
@@ -243,25 +215,17 @@ public class Level4 implements Screen {
 
             if (TimeUtils.nanoTime() - cannon1.get_start() > 2500000000f) {
                 cannon1.set_startTime();
-                if(cannon1.get_attack() == false) {
+                if (cannon1.get_attack() == false) {
                     cannon1.set_target(false);
                     cannon1.set_attack(true);
                     cannonline1.awake();
                     cannonline1.setVisible(true);
-                }
-                else if(cannon1.get_attack() == true){
+                } else if (cannon1.get_attack() == true) {
                     cannon1.set_target(false);
                     cannon1.set_attack(false);
                     cannonline1.sleep();
                     cannonline1.setVisible(false);
                 }
-            }
-
-            if (Gdx.input.isKeyPressed(Input.Keys.B)) {
-                gearActor.getGearActor_fireGunHashMap().get("LeftBottom").spawnFire(5, gameStage4, delta);
-                gearActor.getGearActor_fireGunHashMap().get("RightBottom").spawnFire(5, gameStage4, delta);
-                gearActor.getGearActor_fireGunHashMap().get("RightUp").spawnFire(5, gameStage4, delta);
-                gearActor.getGearActor_fireGunHashMap().get("LeftUp").spawnFire(5, gameStage4, delta);
             }
 
             box2DDebugRenderer.render(gameWorld4, gameStage4.getCamera().combined);
@@ -270,13 +234,12 @@ public class Level4 implements Screen {
     }
 
     private void update(float delta) {
-//    	if (Level2.isTheDoorOpen) {
-//            doorBlockLeft.setTransform(27, 0, 0);
-//            doorBlockRight.setTransform(36f, 0, 0);
-//        }
-        if (mainCharacter.getIsBound()) {
-            gameMode.setScreen(new Stageselection(gameMode));
-            dispose();
+        if (gearActor.getHp() > 50 || (gearActor.getHp() <= 30 && gearActor.getHp() != 0)) {
+            gearActor.shoot_FireBall(gameStage4, delta);
+        }
+        if (gearActor.getHp() <= 0) {
+            // finish
+            AllClearScreen.complete=true;
         }
         gameWorld4.step(Gdx.graphics.getDeltaTime(), 6, 2);
     }
@@ -315,7 +278,6 @@ public class Level4 implements Screen {
         frameObjectUp.dispose();
         frameObjectFont.dispose();
         frameObjectRear.dispose();
-        //doorObject.dispose();
         HUD.hp = 3;
         HUDBatch.dispose();
         Pause.dispose();

@@ -7,9 +7,9 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class CompleteScreen {
-    public SpriteBatch HUDBatch;
-    public static Sprite Complete;
-    public static Texture texture1;
+    private SpriteBatch HUDBatch;
+    private Sprite Complete;
+    private Texture texture1;
     public static boolean complete=false;
     public static boolean restart=false;
     public static boolean stage=false;

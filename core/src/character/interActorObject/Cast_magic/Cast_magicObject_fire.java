@@ -16,7 +16,7 @@ public class Cast_magicObject_fire extends Actor {
     private TextureRegion currentFrame;
     private final float weight, height, radius;
     private float stateTime = 0.0f;
-    private float speed = 5;
+    private float speed = 10;
     private boolean isSpawn;
     private boolean isHit;
 

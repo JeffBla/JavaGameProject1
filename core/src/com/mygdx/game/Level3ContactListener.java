@@ -32,37 +32,26 @@ public class Level3ContactListener implements ContactListener {
         {
             if (classA.equalsIgnoreCase("character.interActorObject.DotObject")
                     && classB.equalsIgnoreCase("character.mainCharacter.MainCharacter")) {
-                HUD.hp--;
-                HUD.whenHpDecrease();
+                // if the health point decrease
+                if(!HUD.isHpDecrease) {
+                    HUD.hp--;
+                    HUD.whenHpDecrease();
+                }
                 DotObject dotObject= (DotObject)tmpA;
                 dotObject.setIsDelete(true);
                 dotObject.getBody().setLinearVelocity(0,0);
 
             } else if (classB.equalsIgnoreCase("character.interActorObject.DotObject")
                     && classA.equalsIgnoreCase("character.mainCharacter.MainCharacter")) {
-                HUD.hp--;
-                HUD.whenHpDecrease();
+                // if the health point decrease
+                if(!HUD.isHpDecrease) {
+                    HUD.hp--;
+                    HUD.whenHpDecrease();
+                }
                 DotObject dotObject= (DotObject)tmpB;
                 dotObject.setIsDelete(true);
                 dotObject.getBody().setLinearVelocity(0,0);
             }
-        }
-        // if the health point decrease
-        {
-            switch(HUD.hp) {
-                case 3:
-                    break;
-                case 2:
-                    HUDBatch.FullHp3.setPosition(100000, 100000);
-                    break;
-                case 1:
-                    HUDBatch.FullHp2.setPosition(100000, 100000);
-                    break;
-                case 0:
-                    HUDBatch.FullHp1.setPosition(100000, 100000);
-                    break;
-            }
-
         }
         // if mainCharacter's attackDetectRegion is attack and encounter DotObject
         {

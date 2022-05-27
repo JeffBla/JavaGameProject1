@@ -125,8 +125,8 @@ public class Cannon extends Actor{
 //					angle = Math.atan(distance_y/distance_x);
 //				}
                 target = true;
-                target_x = body_mainCharactor.getPosition().x - 1f;
-                target_y = body_mainCharactor.getPosition().y ;
+                target_x = body_mainCharactor.getPosition().x - 5f;
+                target_y = body_mainCharactor.getPosition().y + 5f;
                 distance_x = Math.abs(body_cannon.getPosition().x - target_x);
                 distance_y = Math.abs(body_cannon.getPosition().y - target_y);
                 distance_thirdLine = get_long(distance_x,distance_y);
