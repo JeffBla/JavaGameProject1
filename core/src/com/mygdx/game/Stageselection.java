@@ -30,7 +30,7 @@ public class Stageselection implements Screen{
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 1600, 700);
 
-        backgroundImg = new Texture(Gdx.files.internal("startmenu/start_game_white_city.png"));
+        backgroundImg = new Texture(Gdx.files.internal("startMenu/start_game_white_city.png"));
         BackImgButton=ButtonBulider.createImgButton("StageSelection/backbuttonUp.png", "StageSelection/backbuttonDown.png",
                 "StageSelection/backbuttonPressed.png", 40, 750,150,200, new ClickListener() {
                     public void clicked(InputEvent event, float x, float y) {

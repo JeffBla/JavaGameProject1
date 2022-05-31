@@ -20,7 +20,7 @@ import character.mainCharacter.MainCharacter;
 
 public class Level4 implements Screen {
     final GameMode gameMode;
-    public static ScreenMusic screenMusic;
+    final ScreenMusic screenMusic;
     final WallObject frameObjectUp;
     final WallObject frameObjectDown;
     final WallObject frameObjectFont;
@@ -161,7 +161,10 @@ public class Level4 implements Screen {
                 dispose();
             }
         } else {
-            screenMusic.playGameLobbyMusic();
+            if(PausedScreen.resume){
+                screenMusic.playGameLobbyMusic();
+                PausedScreen.resume=false;
+            }
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
             Gdx.gl.glClearColor(0.8f, 0.8f, 0.8f, 1);
 

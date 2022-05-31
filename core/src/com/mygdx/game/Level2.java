@@ -21,7 +21,7 @@ import worldBuilding.BuildBody;
 public class Level2 implements Screen {
 
     final GameMode gameMode;
-    public static ScreenMusic screenMusic;
+    final ScreenMusic screenMusic;
     final WallObject wallObject1;
     final WallObject wallObject2;
     final WallObject frameObjectUp;
@@ -178,7 +178,10 @@ public class Level2 implements Screen {
                 dispose();
             }
         } else {
-            screenMusic.playGameLobbyMusic();
+            if(PausedScreen.resume){
+                screenMusic.playGameLobbyMusic();
+                PausedScreen.resume=false;
+            }
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
             Gdx.gl.glClearColor(0.8f, 0.8f, 0.8f, 1);
 
@@ -237,9 +240,8 @@ public class Level2 implements Screen {
             doorBlockRight.setTransform(36f, 0, 0);
         }
         if (mainCharacter.getIsBound()) {
-            gameMode.setScreen(new Stageselection(gameMode));
+            CompleteScreen.complete=true;
             HUD.hp=3;
-            dispose();
         }
         gameWorld2.step(Gdx.graphics.getDeltaTime(), 6, 2);
     }

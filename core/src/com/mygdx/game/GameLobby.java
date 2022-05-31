@@ -22,7 +22,7 @@ import worldBuilding.BuildBody;
 
 public class GameLobby implements Screen {
     final GameMode gameMode;
-    public static ScreenMusic screenMusic;
+    final ScreenMusic screenMusic;
     final WallObject wallObject0;
     final WallObject wallObject1;
     final WallObject wallObject2;
@@ -193,6 +193,10 @@ public class GameLobby implements Screen {
             }
         }
         else {
+            if(PausedScreen.resume){
+            screenMusic.playGameLobbyMusic();
+            PausedScreen.resume=false;
+            }
             gameWorld.getContactList().clear();
             gameWorld.setContactListener(new GameLobbyContactListener());
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);

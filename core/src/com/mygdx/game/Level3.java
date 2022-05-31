@@ -22,7 +22,7 @@ import java.util.Random;
 public class Level3 implements Screen {
 
     final GameMode gameMode;
-    public static ScreenMusic screenMusic;
+    final ScreenMusic screenMusic;
     final WallObject wallObject0;
     final WallObject frameObjectUp;
     final WallObject frameObjectDownPartOne;
@@ -178,7 +178,10 @@ public class Level3 implements Screen {
                 dispose();
             }
         } else {
-            screenMusic.playGameLobbyMusic();
+            if(PausedScreen.resume){
+                screenMusic.playGameLobbyMusic();
+                PausedScreen.resume=false;
+            }
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
             Gdx.gl.glClearColor(0.8f, 0.8f, 0.8f, 1);
 
