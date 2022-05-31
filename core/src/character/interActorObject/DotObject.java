@@ -55,15 +55,21 @@ public class DotObject extends Actor {
         body = BuildBody.createCircle(gameWorld, x, y, weight / 2, 0, 0, 1,
                 false, true, false);
 
-        float randomNumX ;
-        float randomNumY ;
-        while(true){
-            randomNumX = random.nextFloat(-7, 7);
-            if (Math.abs(randomNumX) >= 4.0f) {
+        float randomNumX;
+        float randomNumY;
+        while (true) {
+            randomNumX = random.nextFloat() * 7;
+            if (random.nextBoolean()) {
+                randomNumX *= -1;
+            }
+            if (Math.abs(randomNumX) >= 4.0f){
                 break;
             }
-        }while (true) {
-            randomNumY = random.nextFloat(-7, 7);
+        } while (true) {
+            randomNumY = random.nextFloat() * 7;
+            if (random.nextBoolean()) {
+                randomNumY *= -1;
+            }
             if (Math.abs(randomNumY) >= 4.0f) {
                 break;
             }
@@ -86,8 +92,8 @@ public class DotObject extends Actor {
     @Override
     public void act(float delta) {
         if (isDelete) {
-            body.setTransform(100,100,0);
-            body.setLinearVelocity(0,0);
+            body.setTransform(100, 100, 0);
+            body.setLinearVelocity(0, 0);
             body.setAwake(true);
         }
     }

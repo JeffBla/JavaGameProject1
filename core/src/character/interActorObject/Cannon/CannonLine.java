@@ -20,18 +20,19 @@ public class CannonLine extends Actor{
     private Animation<TextureRegion> laserAnimation;
     int perCellWidth;
     int perCellHeight;
-    private Sprite sprite_laser;
-    private Body body_cannon;
-    private Body body_line;
+    private Sprite spriteLaser;
+    private Body bodyCannon;
+    private Body bodyLine;
     private int frameCol;
     private int frameRow;
+    private boolean onAttack = true;
     float stateTime =0;
-    public CannonLine(World gameWorld, Body cannon_body,
-                      float weight, float height, float anima_duration,
-                      float fixBoxOrigin_constant,float fixBoxWeight_constant, float fixBoxHeight_constant) {
+    public CannonLine(World gameWorld, Body bodyCannon,
+                      float width, float height, float animaDuration,
+                      float fixBoxOrigin_constant,float fixBoxWidth_constant, float fixBoxHeight_constant) {
 
-        laserSheetTexture = new Texture(Gdx.files.internal("Cannon/laser_2.png"));
-        this.body_cannon = cannon_body;
+        laserSheetTexture = new Texture(Gdx.files.internal("Cannon/line.png"));
+        this.bodyCannon = bodyCannon;
 
         frameCol=1;
         frameRow=4;
@@ -42,44 +43,60 @@ public class CannonLine extends Actor{
         for(int i=0;i<4;i++) {
             col_cellRegion[i] = cellRegion[i][0];
         }
-        laserAnimation = new Animation<TextureRegion>(anima_duration, col_cellRegion);
+        laserAnimation = new Animation<TextureRegion>(animaDuration, col_cellRegion);
         laserAnimation.setPlayMode(Animation.PlayMode.LOOP);
         currentFrame = laserAnimation.getKeyFrame(stateTime);
 
-        sprite_laser = new Sprite(laserSheetTexture);
-        sprite_laser.setPosition(cannon_body.getPosition().x, cannon_body.getPosition().y);
-        sprite_laser.setSize(weight * GameMode.PPM, height * GameMode.PPM);
-        body_line = BuildBody.createBox(gameWorld, cannon_body.getPosition().x, cannon_body.getPosition().y,
-                sprite_laser.getWidth() / GameMode.PPM / 2 + fixBoxWeight_constant,
-                sprite_laser.getHeight() / GameMode.PPM / 2 + fixBoxHeight_constant,
-                new Vector2(sprite_laser.getWidth() / GameMode.PPM / 2, sprite_laser.getHeight() / GameMode.PPM / 2),
+        spriteLaser = new Sprite(laserSheetTexture);
+        spriteLaser.setPosition(bodyCannon.getPosition().x, bodyCannon.getPosition().y);
+        spriteLaser.setSize(width * GameMode.PPM, height * GameMode.PPM);
+        bodyLine = BuildBody.createBox(gameWorld, bodyCannon.getPosition().x, bodyCannon.getPosition().y,
+                spriteLaser.getWidth() / GameMode.PPM / 2 + fixBoxWidth_constant,
+                spriteLaser.getHeight() / GameMode.PPM / 2 + fixBoxHeight_constant,
+                new Vector2(spriteLaser.getWidth() / GameMode.PPM / 2, spriteLaser.getHeight() / GameMode.PPM / 2),
                 0, 0, 0, false, true, true);
-        body_line.setSleepingAllowed(true);
-        body_line.setUserData(this);
+        bodyLine.setSleepingAllowed(true);
+        bodyLine.setUserData(this);
     }
 
     @Override
     public void act(float delta) {
         stateTime += delta;
         currentFrame = laserAnimation.getKeyFrame(stateTime);
-        body_line.setTransform(body_cannon.getPosition().x, body_cannon.getPosition().y, (float) body_cannon.getAngle());
+        bodyLine.setTransform(bodyCannon.getPosition().x, bodyCannon.getPosition().y, (float) bodyCannon.getAngle());
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        batch.draw(currentFrame,(float)( body_line.getPosition().x + 1.2*Math.cos(body_cannon.getAngle())), (float)( body_line.getPosition().y + 1.2*Math.sin(body_cannon.getAngle())), 0, 0, sprite_laser.getWidth() / GameMode.PPM, sprite_laser.getHeight() / GameMode.PPM, 1, 1, (float)Math.toDegrees(body_cannon.getAngle()));
+        batch.draw(currentFrame,(float)( bodyLine.getPosition().x + 1.2*Math.cos(bodyCannon.getAngle())), (float)( bodyLine.getPosition().y + 1.2*Math.sin(bodyCannon.getAngle())), 0, 0, spriteLaser.getWidth() / GameMode.PPM, spriteLaser.getHeight() / GameMode.PPM, 1, 1, (float)Math.toDegrees(bodyCannon.getAngle()));
     }
 
-    public Body get_body() {
-        return body_line;
+    public Body getBody() {
+        return bodyLine;
+    }
+
+    public TextureRegion getTextureRegion() {
+        return currentFrame;
+    }
+
+    public Sprite getSprite() {
+        return spriteLaser;
+    }
+
+    public boolean getAttack() {
+        return onAttack;
+    }
+
+    public void setAttack(boolean condition) {
+        onAttack = condition;
     }
 
     public void sleep() {
-        body_line.setActive(false);
+        bodyLine.setActive(false);
     }
 
     public void awake() {
-        body_line.setActive(true);
+        bodyLine.setActive(true);
     }
 
     public void dispose() {

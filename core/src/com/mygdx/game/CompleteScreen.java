@@ -1,8 +1,6 @@
 package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -28,17 +26,26 @@ public class CompleteScreen {
         HUDBatch.begin();
         Complete.draw(HUDBatch);
         if(Gdx.input.isTouched()) {
-            if(Gdx.input.getX()>405&&Gdx.input.getX()<748&&Gdx.input.getY()>637&&Gdx.input.getY()<730) {
+            if(Gdx.input.getX()>405&&Gdx.input.getX()<748&&
+                    Gdx.input.getY()>637&&Gdx.input.getY()<730) {
                 restart=true;
             }
-            else if(Gdx.input.getX()>835&&Gdx.input.getX()<1047&&Gdx.input.getY()>637&&Gdx.input.getY()<730) {
+            else if(Gdx.input.getX()>835&&Gdx.input.getX()<1047&&
+                    Gdx.input.getY()>637&&Gdx.input.getY()<730) {
                 stage=true;
             }
-            else if(Gdx.input.getX()>1162&&Gdx.input.getX()<1452&&Gdx.input.getY()>613&&Gdx.input.getY()<775) {
+            else if(Gdx.input.getX()>1162&&Gdx.input.getX()<1452&&
+                    Gdx.input.getY()>613&&Gdx.input.getY()<775) {
                 nextstage=true;
             }
         }
         HUDBatch.end();
+    }
+    public static void initial(){
+        complete=false;
+        restart=false;
+        stage=false;
+        nextstage=false;
     }
     public void dispose() {
         HUDBatch.dispose();

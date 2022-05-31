@@ -1,6 +1,7 @@
 package com.mygdx.game;
 
 import character.interActorObject.Gear.GearActor;
+import character.interActorObject.Gear.GearActor_hp;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -13,15 +14,13 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import character.enemy.robot.Enemy_robot;
 import character.interActorObject.WallObject;
-import character.interActorObject.Laser.LaserObjectBase;
-import character.interActorObject.Laser.LaserObjectLine;
+import character.interActorObject.Laser.Laser;
 import character.interActorObject.Cannon.Cannon;
-import character.interActorObject.Cannon.CannonLine;
 import character.mainCharacter.MainCharacter;
 
 public class Level4 implements Screen {
     final GameMode gameMode;
-    final ScreenMusic screenMusic;
+    public static ScreenMusic screenMusic;
     final WallObject frameObjectUp;
     final WallObject frameObjectDown;
     final WallObject frameObjectFont;
@@ -32,12 +31,9 @@ public class Level4 implements Screen {
     final WallObject wallObject4;
     final WallObject wallObject5;
     final WallObject wallObject6;
-    final LaserObjectLine laserline1;
-    final LaserObjectBase laserbase1;
-    final LaserObjectLine laserline2;
-    final LaserObjectBase laserbase2;
+    final Laser laser1;
+    final Laser laser2;
     final Cannon cannon1;
-    final CannonLine cannonline1;
     final Enemy_robot enemy_robot1;
     final Enemy_robot enemy_robot2;
     private GearActor gearActor;
@@ -88,13 +84,9 @@ public class Level4 implements Screen {
         enemy_robot2 = new Enemy_robot(gameWorld4, 20, 12.5f, 5, 2f);
         gearActor = new GearActor(gameWorld4, 40, 10, 6, 6);
 
-        laserline1 = new LaserObjectLine(gameWorld4, "laser/laser_rile_2.png", "rile", false, 6f, 17.5f, 43.5f, 1f, 0.1f, 0f, 0.06f, 0, 0f, -0.3f);
-        laserbase1 = new LaserObjectBase(laserline1.get_body(), "laser/rile.png", "rile", 1.2f, 1f, 43.1f, 0f);
-        laserline2 = new LaserObjectLine(gameWorld4, "laser/laser_leri.png", "leri", true, 6.5f, 3.4f, 43.5f, 1f, 0.167562f, 0f, 0f, 0, 0f, -0.3f);
-        laserbase2 = new LaserObjectBase(laserline2.get_body(), "laser/leri.png", "leri", 1.2f, 1.2f, -0.92f, -0.05f);
-        cannon1 = new Cannon(gameWorld4, mainCharacter.get_body(), 15, 8, 1.5f, 1, 0.1f, 0, 0, 0f);
-        cannonline1 = new CannonLine(gameWorld4, cannon1.get_body(), 40f, 1f, 0.1f, 0.5f, 0f, -0.2f);
-
+        laser1 = new Laser(gameWorld4, "laser/lineRile2.png", "laser/baseRile.png", "rile", false, 6.05f, 17.5f, 43.3f, 1f, 0.1f, 0f, 0.06f, 0, 0f, -0.3f, 43.1f, 0f, 1.2f, 1f);
+        laser2 = new Laser(gameWorld4, "laser/lineLeri.png", "laser/baseLeri.png", "leri",true, 6.5f, 3.4f, 43.5f, 1f, 0.167562f, 0f, 0f, 0, 0f, -0.3f, -0.92f, -0.05f, 1.2f, 1.2f);
+        cannon1 = new Cannon(gameWorld4, mainCharacter.get_body() , 15, 8, 1.5f, 1, 0.1f, 0, 0, 0f);
         Gdx.input.setInputProcessor(gameStage4);
         float ratio = (float) (Gdx.graphics.getWidth()) / (float) (Gdx.graphics.getHeight());
 
@@ -107,7 +99,7 @@ public class Level4 implements Screen {
         GameOver = new GameOverScreen();
         Complete = new AllClearScreen();
 
-        gameStage4 = new Stage(stageViewport);
+        gameStage4 = new Stage(mainCharacterViewport);
         gameStage4.addActor(frameObjectUp);
         gameStage4.addActor(frameObjectFont);
         gameStage4.addActor(frameObjectRear);
@@ -120,61 +112,56 @@ public class Level4 implements Screen {
         gameStage4.addActor(wallObject6);
         gameStage4.addActor(enemy_robot1);
         gameStage4.addActor(enemy_robot2);
-        gameStage4.addActor(gearActor);
-        gameStage4.addActor(laserbase1);
-        gameStage4.addActor(laserline1);
-        gameStage4.addActor(laserbase2);
-        gameStage4.addActor(laserline2);
-        gameStage4.addActor(cannon1);
-        gameStage4.addActor(cannonline1);
+        gameStage4.addActor(laser1);
+        gameStage4.addActor(laser2);
+//        gameStage4.addActor(cannon1);
         gameStage4.addActor(mainCharacter);
+        gameStage4.addActor(gearActor);
     }
 
     @Override
     public void render(float delta) {
         if (PausedScreen.pause) {
+            screenMusic.stopGameLobbyMusic();
             gameWorld4.getContactList().clear();
-            Pause.render(delta);
+            Pause.render(delta,getClass().getName());
             if (PausedScreen.restart) {
-                PausedScreen.restart = false;
-                PausedScreen.pause = false;
+                PausedScreen.initial();
                 gameMode.setScreen(new Level4(gameMode));
                 dispose();
             } else if (PausedScreen.stage) {
-                PausedScreen.stage = false;
-                PausedScreen.pause = false;
+                PausedScreen.initial();
                 gameMode.setScreen(new Stageselection(gameMode));
                 dispose();
             }
         } else if (GameOverScreen.gameover) {
+            screenMusic.stopGameLobbyMusic();
             gameWorld4.getContactList().clear();
             GameOver.render(delta);
             if (GameOverScreen.restart) {
-                GameOverScreen.restart = false;
-                GameOverScreen.gameover=false;
+                GameOverScreen.initial();
                 gameMode.setScreen(new Level4(gameMode));
                 dispose();
             } else if (GameOverScreen.stage) {
-                GameOver.stage = false;
-                GameOverScreen.gameover=false;
+                GameOverScreen.initial();
                 gameMode.setScreen(new Stageselection(gameMode));
                 dispose();
             }
         } else if (AllClearScreen.complete) {
+            screenMusic.stopGameLobbyMusic();
             gameWorld4.getContactList().clear();
             Complete.render(delta);
             if (AllClearScreen.restart) {
-                AllClearScreen.restart = false;
-                AllClearScreen.complete=false;
+                AllClearScreen.initial();
                 gameMode.setScreen(new Level4(gameMode));
                 dispose();
             } else if (AllClearScreen.stage) {
-                AllClearScreen.stage = false;
-                AllClearScreen.complete=false;
+                AllClearScreen.initial();
                 gameMode.setScreen(new Stageselection(gameMode));
                 dispose();
             }
         } else {
+            screenMusic.playGameLobbyMusic();
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
             Gdx.gl.glClearColor(0.8f, 0.8f, 0.8f, 1);
 
@@ -184,47 +171,58 @@ public class Level4 implements Screen {
             gameStage4.getCamera().update();
             gameMode.batch.setProjectionMatrix(gameStage4.getCamera().combined);
 
-            gameStage4.act();
-            update(delta);
-
             gameMode.batch.begin();
             gameStage4.draw();
             gameMode.batch.end();
 
-            laserline1.move_Y(3.2f, 17.5f);
-            if (laserline1.get_begin_touch() == true) {
-                laserline1.touch_rile();
-                laserline1.set_begin_touch(false);
+            gameStage4.act();
+            update(delta);
+
+            laser1.moveY(3.2f, 17.5f);
+            if(laser1.getLine().getTouch()==true) {
+                laser1.getLine().touch_rile();
+                laser1.getLine().setTouch(false);
             }
 
-            if (laserline1.get_leave() == true) {
-                laserline1.touch_rile();
-                laserline1.set_leave(false);
+            if(laser1.getLine().getLeave()==true) {
+                laser1.getLine().touch_rile();
+                laser1.getLine().setLeave(false);
             }
 
-            if (TimeUtils.nanoTime() - laserline2.get_start() > 2500000000f) {
-                laserline2.set_startTime();
-                if (laserline2.isVisible()) {
-                    laserline2.setVisible(false);
-                    laserline2.sleep();
-                } else {
-                    laserline2.setVisible(true);
-                    laserline2.awake();
+            if (TimeUtils.nanoTime() - laser2.getStart() > 2500000000f) {
+                laser2.setStartTime();
+                if (laser2.getAttack()) {
+                    laser2.setAttack(false);
+                    laser2.getLine().setVisible(false);
+                    laser2.getLine().sleep();
+                }
+                else {
+                    laser2.setAttack(true);
+                    laser2.getLine().setVisible(true);
+                    laser2.getLine().awake();
                 }
             }
 
-            if (TimeUtils.nanoTime() - cannon1.get_start() > 2500000000f) {
-                cannon1.set_startTime();
-                if (cannon1.get_attack() == false) {
-                    cannon1.set_target(false);
-                    cannon1.set_attack(true);
-                    cannonline1.awake();
-                    cannonline1.setVisible(true);
-                } else if (cannon1.get_attack() == true) {
-                    cannon1.set_target(false);
-                    cannon1.set_attack(false);
-                    cannonline1.sleep();
-                    cannonline1.setVisible(false);
+            if(TimeUtils.nanoTime() - cannon1.getStart() > 2000000000f) {
+                if(cannon1.getBase().getMove()==true) {
+                    cannon1.getBase().setMove(false);
+                    cannon1.getWarningLine().setAim(true);
+                }
+                if (TimeUtils.nanoTime() - cannon1.getStart() > 2500000000f) {
+                    if( cannon1.getWarningLine().getAim() == true) {
+                        cannon1.getWarningLine().setAim(false);
+                        cannon1.getWarningLine().setVisible(false);
+                        cannon1.getLine().awake();
+                        cannon1.getLine().setAttack(true);
+                        cannon1.getLine().setVisible(true);
+                    }
+                    if(TimeUtils.nanoTime() - cannon1.getStart() > 4000000000f) {
+                        cannon1.getLine().setAttack(false);
+                        cannon1.getLine().setVisible(false);
+                        cannon1.getLine().sleep();
+                        cannon1.getBase().setTarget(false);
+                        cannon1.setStartTime();
+                    }
                 }
             }
 
@@ -278,6 +276,9 @@ public class Level4 implements Screen {
         frameObjectUp.dispose();
         frameObjectFont.dispose();
         frameObjectRear.dispose();
+        laser1.dispose();
+        laser2.dispose();
+        cannon1.dispose();
         HUD.hp = 3;
         HUDBatch.dispose();
         Pause.dispose();

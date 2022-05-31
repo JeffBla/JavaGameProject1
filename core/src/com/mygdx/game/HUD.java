@@ -97,4 +97,11 @@ public class HUD {
                 break;
         }
     }
+    public static void hpdecrease(){
+        // if the health point decrease
+        if(!isHpDecrease) {
+        hp--;
+        whenHpDecrease();
+        }
+    }
 }

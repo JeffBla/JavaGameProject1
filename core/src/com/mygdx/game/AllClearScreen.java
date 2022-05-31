@@ -15,7 +15,6 @@ public class AllClearScreen {
 
     public AllClearScreen() {
         HUDBatch =new SpriteBatch();
-
         texture1=new Texture("StageSelection/ClearScreen.png");
         Clear=new Sprite(texture1);
         Clear.setPosition(-80, -300);
@@ -26,14 +25,21 @@ public class AllClearScreen {
         HUDBatch.begin();
         Clear.draw(HUDBatch);
         if(Gdx.input.isTouched()) {
-            if(Gdx.input.getX()>370&&Gdx.input.getX()<702&&Gdx.input.getY()>705&&Gdx.input.getY()<780) {
+            if(Gdx.input.getX()>370&&Gdx.input.getX()<702&&
+                    Gdx.input.getY()>705&&Gdx.input.getY()<780) {
                 restart=true;
             }
-            if(Gdx.input.getX()>1080&&Gdx.input.getX()<1360&&Gdx.input.getY()>705&&Gdx.input.getY()<800){
+            if(Gdx.input.getX()>1080&&Gdx.input.getX()<1360&&
+                    Gdx.input.getY()>705&&Gdx.input.getY()<800){
                 stage=true;
             }
         }
         HUDBatch.end();
+    }
+    public static void initial(){
+        complete=false;
+        restart=false;
+        stage=false;
     }
     public void dispose() {
         HUDBatch.dispose();

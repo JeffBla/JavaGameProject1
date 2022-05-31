@@ -1,8 +1,6 @@
 package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -26,14 +24,21 @@ public class GameOverScreen {
         HUDBatch.begin();
         GameOver.draw(HUDBatch);
         if(Gdx.input.isTouched()) {
-            if(Gdx.input.getX()>452&&Gdx.input.getX()<788&&Gdx.input.getY()>643&&Gdx.input.getY()<715) {
+            if(Gdx.input.getX()>452&&Gdx.input.getX()<788&&
+                    Gdx.input.getY()>643&&Gdx.input.getY()<715) {
                 restart=true;
             }
-            else if(Gdx.input.getX()>1110&&Gdx.input.getX()<1387&&Gdx.input.getY()>643&&Gdx.input.getY()<733) {
+            else if(Gdx.input.getX()>1110&&Gdx.input.getX()<1387&&
+                    Gdx.input.getY()>643&&Gdx.input.getY()<733) {
                 stage=true;
             }
         }
         HUDBatch.end();
+    }
+    public static void initial(){
+        gameover=false;
+        restart=false;
+        stage=false;
     }
     public void dispose() {
         HUDBatch.dispose();

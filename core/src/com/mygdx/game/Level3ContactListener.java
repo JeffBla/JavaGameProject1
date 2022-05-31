@@ -32,22 +32,16 @@ public class Level3ContactListener implements ContactListener {
         {
             if (classA.equalsIgnoreCase("character.interActorObject.DotObject")
                     && classB.equalsIgnoreCase("character.mainCharacter.MainCharacter")) {
-                // if the health point decrease
-                if(!HUD.isHpDecrease) {
-                    HUD.hp--;
-                    HUD.whenHpDecrease();
-                }
+                HUD.hpdecrease();
+
                 DotObject dotObject= (DotObject)tmpA;
                 dotObject.setIsDelete(true);
                 dotObject.getBody().setLinearVelocity(0,0);
 
             } else if (classB.equalsIgnoreCase("character.interActorObject.DotObject")
                     && classA.equalsIgnoreCase("character.mainCharacter.MainCharacter")) {
-                // if the health point decrease
-                if(!HUD.isHpDecrease) {
-                    HUD.hp--;
-                    HUD.whenHpDecrease();
-                }
+                HUD.hpdecrease();
+
                 DotObject dotObject= (DotObject)tmpB;
                 dotObject.setIsDelete(true);
                 dotObject.getBody().setLinearVelocity(0,0);

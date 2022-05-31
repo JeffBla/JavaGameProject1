@@ -6,25 +6,22 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-
 import character.enemy.robot.Enemy_robot;
 import character.interActorObject.ButtonObject;
 import character.interActorObject.DoorObject;
 import character.interActorObject.WallObject;
-import character.interActorObject.Laser.LaserObjectBase;
-import character.interActorObject.Laser.LaserObjectLine;
+import character.interActorObject.Laser.Laser;
 import character.mainCharacter.MainCharacter;
 import worldBuilding.BuildBody;
 
 public class Level2 implements Screen {
 
     final GameMode gameMode;
-    final ScreenMusic screenMusic;
+    public static ScreenMusic screenMusic;
     final WallObject wallObject1;
     final WallObject wallObject2;
     final WallObject frameObjectUp;
@@ -37,17 +34,11 @@ public class Level2 implements Screen {
     final DoorObject doorObject;
     final Body doorBlockLeft;
     final Body doorBlockRight;
-    final LaserObjectLine laserline1;
-    final LaserObjectBase laserbase1;
-    final LaserObjectLine laserline2;
-    final LaserObjectBase laserbase2;
-    final LaserObjectLine laserline3;
-    final LaserObjectBase laserbase3;
-    final LaserObjectLine laserline4;
-    final LaserObjectBase laserbase4;
-    final LaserObjectLine laserline5;
-    final LaserObjectBase laserbase5;
-
+    final Laser laser1;
+    final Laser laser2;
+    final Laser laser3;
+    final Laser laser4;
+    final Laser laser5;
     final MainCharacter mainCharacter;
     final Enemy_robot enemy_robot1;
     final Enemy_robot enemy_robot2;
@@ -102,17 +93,11 @@ public class Level2 implements Screen {
         openDoorButton = new ButtonObject(gameWorld2, "gameButtonSmall.png",
                 "gameButtonSmall_pressed.png",
                 36, 9f, 1f, 1f, 0, 0, 0);
-
-        laserline1 = new LaserObjectLine(gameWorld2,"laser/laser_leri.png","leri", true , 6.5f, 6.6f, 8.5f, 1.3f, 0.0811227f, 0, 0.03f, 0, 0f, -0.35f);
-        laserbase1 = new LaserObjectBase(laserline1.get_body(),"laser/leri.png","leri", 1.2f, 1.1f, -0.85f, 0.15f);
-        laserline2 = new LaserObjectLine(gameWorld2,"laser/laser_updo.png","updo", true , 5.0f, 8.05f, 1.0f, 4.05f, 0.0811227f, 0, 0f, 0, -0.25f, 0f);
-        laserbase2 = new LaserObjectBase(laserline2.get_body(),"laser/updo.png","updo", 1.1f, 1.2f, -0.05f, 3.8f);
-        laserline3 = new LaserObjectLine(gameWorld2,"laser/laser_doup_2.png","doup", false , 17f, 2f, 1.3f, 8.5f, 0.1f, 0.04f, 0, 0, -0.35f, 0f);
-        laserbase3 = new LaserObjectBase(laserline3.get_body(),"laser/doup.png","doup", 1.2f, 1.2f, 0.05f, -0.8f);
-        laserline4 = new LaserObjectLine(gameWorld2,"laser/laser_updo_2.png","updo", false , 30f, 3.75f, 1.2f, 8.5f, 0.1f, 0.02f, 0, 0, -0.3f, 0f);
-        laserbase4 = new LaserObjectBase(laserline4.get_body(),"laser/updo.png","updo", 1.2f, 1.2f, 0f, 8.1f);
-        laserline5 = new LaserObjectLine(gameWorld2,"laser/laser_rile_2.png","rile", false , 34.3f, 3f, 4.2f, 1f, 0.1f, 0f, 0.04f, 0, 0f, -0.3f);
-        laserbase5 = new LaserObjectBase(laserline5.get_body(),"laser/rile.png","rile", 1.2f, 1f, 3.8f, 0f);
+        laser1 = new Laser(gameWorld2, "laser/lineLeri.png", "laser/baseLeri.png", "leri", true, 6.5f, 6.6f, 8.5f, 1.3f, 0.0811227f, 0, 0.03f, 0, 0f, -0.35f, -0.85f, 0.15f, 1.2f, 1.1f);
+        laser2 = new Laser(gameWorld2, "laser/lineUpdo.png", "laser/baseUpdo.png", "updo", true, 5.0f, 8.05f, 1.0f, 4.05f, 0.0811227f, 0, 0f, 0, -0.25f, 0f, -0.05f, 3.8f, 1.1f, 1.2f);
+        laser3 = new Laser(gameWorld2, "laser/lineDoup2.png", "laser/baseDoup.png", "doup", false, 17f, 2f, 1.3f, 8.5f, 0.1f, 0.04f, 0, 0, -0.35f, 0f, 0.05f, -0.8f, 1.2f, 1.2f);
+        laser4 = new Laser(gameWorld2, "laser/lineUpdo2.png", "laser/baseUpdo.png", "updo", false, 30f, 3.75f, 1.2f, 8.5f, 0.1f, 0.02f, 0, 0, -0.3f, 0f, 0f, 8.1f, 1.2f, 1.2f);
+        laser5 = new Laser(gameWorld2, "laser/lineRile2.png", "laser/baseRile.png", "rile", false, 34.3f, 3f, 4.2f, 1f, 0.1f, 0f, 0.04f, 0, 0f, -0.3f, 3.8f, 0f, 1.2f, 1f);
 
         Gdx.input.setInputProcessor(gameStage2);
         float ratio = (float) (Gdx.graphics.getWidth()) / (float) (Gdx.graphics.getHeight());
@@ -126,7 +111,7 @@ public class Level2 implements Screen {
         GameOver=new GameOverScreen();
         Complete=new CompleteScreen();
 
-        gameStage2 = new Stage(stageViewport);
+        gameStage2 = new Stage(mainCharacterViewport);
         gameStage2.addActor(frameObjectUp);
         gameStage2.addActor(wallObject1);
         gameStage2.addActor(wallObject2);
@@ -140,72 +125,60 @@ public class Level2 implements Screen {
         gameStage2.addActor(enemy_robot1);
         gameStage2.addActor(enemy_robot2);
         gameStage2.addActor(mainCharacter);
-
-        gameStage2.addActor(laserbase1);
-        gameStage2.addActor(laserline1);
-        gameStage2.addActor(laserbase2);
-        gameStage2.addActor(laserline2);
-        gameStage2.addActor(laserbase3);
-        gameStage2.addActor(laserline3);
-        gameStage2.addActor(laserbase4);
-        gameStage2.addActor(laserline4);
-        gameStage2.addActor(laserbase5);
-        gameStage2.addActor(laserline5);
+        gameStage2.addActor(laser1);
+        gameStage2.addActor(laser2);
+        gameStage2.addActor(laser3);
+        gameStage2.addActor(laser4);
+        gameStage2.addActor(laser5);
     }
 
     @Override
     public void render(float delta) {
         if (PausedScreen.pause) {
+            screenMusic.stopGameLobbyMusic();
             gameWorld2.getContactList().clear();
-//            gameWorld.setContactListener(null);
-            Pause.render(delta);
+            Pause.render(delta,getClass().getName());
             if (PausedScreen.restart) {
-                PausedScreen.restart = false;
-                PausedScreen.pause = false;
+                PausedScreen.initial();
                 gameMode.setScreen(new Level2(gameMode));
                 dispose();
             } else if (PausedScreen.stage) {
-                PausedScreen.stage = false;
-                PausedScreen.pause = false;
+                PausedScreen.initial();
                 gameMode.setScreen(new Stageselection(gameMode));
                 dispose();
             }
         } else if (GameOverScreen.gameover) {
+            screenMusic.stopGameLobbyMusic();
             gameWorld2.getContactList().clear();
-//            gameWorld.setContactListener(null);
             GameOver.render(delta);
             if (GameOverScreen.restart) {
-                GameOverScreen.restart = false;
-                GameOverScreen.gameover=false;
+                GameOverScreen.initial();
                 gameMode.setScreen(new Level2(gameMode));
                 dispose();
-            } else if (GameOverScreen.stage) {
-                GameOver.stage = false;
-                GameOverScreen.gameover=false;
+            } else if (GameOver.stage) {
+                GameOverScreen.initial();
                 gameMode.setScreen(new Stageselection(gameMode));
                 dispose();
             }
         } else if (CompleteScreen.complete) {
+            screenMusic.stopGameLobbyMusic();
             gameWorld2.getContactList().clear();
-//            gameWorld.setContactListener(null);
             Complete.render(delta);
             if (CompleteScreen.restart) {
-                CompleteScreen.restart = false;
-                CompleteScreen.complete=false;
+                CompleteScreen.initial();
                 gameMode.setScreen(new Level2(gameMode));
                 dispose();
             } else if (CompleteScreen.stage) {
-                CompleteScreen.stage = false;
-                CompleteScreen.complete=false;
+                CompleteScreen.initial();
                 gameMode.setScreen(new Stageselection(gameMode));
                 dispose();
             } else if (CompleteScreen.nextstage) {
-                CompleteScreen.nextstage = false;
-                CompleteScreen.complete=false;
+                CompleteScreen.initial();
                 gameMode.setScreen(new Level3(gameMode));
                 dispose();
             }
         } else {
+            screenMusic.playGameLobbyMusic();
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
             Gdx.gl.glClearColor(0.8f, 0.8f, 0.8f, 1);
 
@@ -222,31 +195,37 @@ public class Level2 implements Screen {
             gameStage2.draw();
             gameMode.batch.end();
 
-            laserline1.move_Y(4.45f, 6.6f);
-            if (TimeUtils.nanoTime() - laserline1.get_start() > 1210000000f) {
+            laser1.moveY(4.45f, 6.6f);
+            if (TimeUtils.nanoTime() - laser1.getStart() > 1210000000f) {
+                laser1.setStartTime();
+                if (laser1.getAttack()) {
+                    laser1.setAttack(false);
+                    laser1.getLine().setVisible(false);
+                    laser1.getLine().sleep();
+                }
+                else {
+                    laser1.setAttack(true);
+                    laser1.getLine().setVisible(true);
+                    laser1.getLine().awake();
+                }
+            }
+            if (TimeUtils.nanoTime() - laser2.getStart() > 1210000000f) {
+                laser2.setStartTime();
+                if (laser2.getAttack()) {
+                    laser2.setAttack(false);
+                    laser2.getLine().setVisible(false);
+                    laser2.getLine().sleep();
+                }
+                else {
+                    laser2.setAttack(true);
+                    laser2.getLine().setVisible(true);
+                    laser2.getLine().awake();
+                }
+            }
 
-                laserline1.set_startTime();
-                if (laserline1.isVisible()) {
-                    laserline1.setVisible(false);
-                    laserline1.sleep();
-                } else {
-                    laserline1.setVisible(true);
-                    laserline1.awake();
-                }
-            }
-            if (TimeUtils.nanoTime() - laserline2.get_start() > 1210000000f) {
-                laserline2.set_startTime();
-                if (laserline2.isVisible()) {
-                    laserline2.setVisible(false);
-                    laserline2.sleep();
-                } else {
-                    laserline2.setVisible(true);
-                    laserline2.awake();
-                }
-            }
-            laserline3.move_X(17f, 23f);
-            laserline4.move_X(30f, 34f);
-            laserline5.move_Y(3f, 7.5f);
+            laser3.moveX(17f, 23f);
+            laser4.moveX(30f, 34f);
+            laser5.moveY(3f, 7.5f);
             box2DDebugRenderer.render(gameWorld2, gameStage2.getCamera().combined);
             HUDBatch.render(delta);
         }
@@ -258,10 +237,9 @@ public class Level2 implements Screen {
             doorBlockRight.setTransform(36f, 0, 0);
         }
         if (mainCharacter.getIsBound()) {
-//            gameMode.setScreen(new Stageselection(gameMode));
-            CompleteScreen.complete=true;
+            gameMode.setScreen(new Stageselection(gameMode));
             HUD.hp=3;
-//            dispose();
+            dispose();
         }
         gameWorld2.step(Gdx.graphics.getDeltaTime(), 6, 2);
     }
@@ -299,16 +277,11 @@ public class Level2 implements Screen {
         wallObject1.dispose();
         wallObject2.dispose();
         mainCharacter.dispose();
-        laserline1.dispose();
-        laserbase1.dispose();
-        laserline2.dispose();
-        laserbase2.dispose();
-        laserline3.dispose();
-        laserbase3.dispose();
-        laserline4.dispose();
-        laserbase4.dispose();
-        laserline5.dispose();
-        laserbase5.dispose();
+        laser1.dispose();
+        laser2.dispose();
+        laser3.dispose();
+        laser4.dispose();
+        laser5.dispose();
         frameObjectUp.dispose();
         frameObjectDownPartOne.dispose();
         frameObjectDownPartTwo.dispose();

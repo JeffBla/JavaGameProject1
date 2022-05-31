@@ -22,7 +22,7 @@ import java.util.Random;
 public class Level3 implements Screen {
 
     final GameMode gameMode;
-    final ScreenMusic screenMusic;
+    public static ScreenMusic screenMusic;
     final WallObject wallObject0;
     final WallObject frameObjectUp;
     final WallObject frameObjectDownPartOne;
@@ -106,10 +106,10 @@ public class Level3 implements Screen {
         stageViewport = new FitViewport(40, 40 / ratio); // This is for developer
         mainCharacterViewport = new FitViewport(25, 25 / ratio); // This is for gamer
         mainCharacterViewport.getCamera().position.set(0, 0, 1);
-        HUDBatch =new HUD();
-        Pause=new PausedScreen();
-        GameOver=new GameOverScreen();
-        Complete=new CompleteScreen();
+        HUDBatch = new HUD();
+        Pause = new PausedScreen();
+        GameOver = new GameOverScreen();
+        Complete = new CompleteScreen();
 
         gameStage3 = new Stage(stageViewport);
 
@@ -127,7 +127,7 @@ public class Level3 implements Screen {
         random = new Random();
 
         for (int i = 0; i <= dotInitNum; i++) {
-            dotCounter= spawnDots(dotCounter);
+            dotCounter = spawnDots(dotCounter);
         }
 
     }
@@ -135,63 +135,56 @@ public class Level3 implements Screen {
     @Override
     public void render(float delta) {
         if (PausedScreen.pause) {
+            screenMusic.stopGameLobbyMusic();
             gameWorld3.getContactList().clear();
-//            gameWorld.setContactListener(null);
-            Pause.render(delta);
+            Pause.render(delta,getClass().getName());
             if (PausedScreen.restart) {
-                PausedScreen.restart = false;
-                PausedScreen.pause = false;
+                PausedScreen.initial();
                 gameMode.setScreen(new Level3(gameMode));
                 dispose();
             } else if (PausedScreen.stage) {
-                PausedScreen.stage = false;
-                PausedScreen.pause = false;
+                PausedScreen.initial();
                 gameMode.setScreen(new Stageselection(gameMode));
                 dispose();
             }
         } else if (GameOverScreen.gameover) {
+            screenMusic.stopGameLobbyMusic();
             gameWorld3.getContactList().clear();
-//            gameWorld.setContactListener(null);
             GameOver.render(delta);
             if (GameOverScreen.restart) {
-                GameOverScreen.restart = false;
-                GameOverScreen.gameover=false;
+                GameOverScreen.initial();
                 gameMode.setScreen(new Level3(gameMode));
                 dispose();
             } else if (GameOverScreen.stage) {
-                GameOver.stage = false;
-                GameOverScreen.gameover=false;
+                GameOverScreen.initial();
                 gameMode.setScreen(new Stageselection(gameMode));
                 dispose();
             }
         } else if (CompleteScreen.complete) {
+            screenMusic.stopGameLobbyMusic();
             gameWorld3.getContactList().clear();
-//            gameWorld.setContactListener(null);
             Complete.render(delta);
             if (CompleteScreen.restart) {
-                CompleteScreen.restart = false;
-                CompleteScreen.complete=false;
+                CompleteScreen.initial();
                 gameMode.setScreen(new Level3(gameMode));
                 dispose();
             } else if (CompleteScreen.stage) {
-                CompleteScreen.stage = false;
-                CompleteScreen.complete=false;
+                CompleteScreen.initial();
                 gameMode.setScreen(new Stageselection(gameMode));
                 dispose();
             } else if (CompleteScreen.nextstage) {
-                CompleteScreen.nextstage = false;
-                CompleteScreen.complete=false;
+                CompleteScreen.initial();
                 gameMode.setScreen(new Level4(gameMode));
                 dispose();
             }
-        }
-        else {
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        Gdx.gl.glClearColor(0.8f, 0.8f, 0.8f, 1);
+        } else {
+            screenMusic.playGameLobbyMusic();
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+            Gdx.gl.glClearColor(0.8f, 0.8f, 0.8f, 1);
 
-        if (gameStage3.getViewport() == mainCharacterViewport) {
-            mainCharacterViewport.getCamera().position.set(mainCharacter.getPosition(6f, 1.5f));
-        }
+            if (gameStage3.getViewport() == mainCharacterViewport) {
+                mainCharacterViewport.getCamera().position.set(mainCharacter.getPosition(6f, 1.5f));
+            }
             gameStage3.getCamera().update();
             gameMode.batch.setProjectionMatrix(gameStage3.getCamera().combined);
 
@@ -211,7 +204,7 @@ public class Level3 implements Screen {
     private void update(float delta) {
         createDotTimer += delta;
         if (dotCounter <= dotMaxNum && createDotTimer >= createDotThreshold) {
-            dotCounter= spawnDots(dotCounter);
+            dotCounter = spawnDots(dotCounter);
             createDotTimer = 0;
         }
         if (Level3.isTheDoorOpen) {
@@ -219,9 +212,7 @@ public class Level3 implements Screen {
             doorBlockRight.setTransform(36f, 0, 0);
         }
         if (mainCharacter.getIsBound()) {
-//            gameMode.setScreen(new Stageselection(gameMode));
-            CompleteScreen.complete=true;
-//            dispose();
+            CompleteScreen.complete = true;
         }
         gameWorld3.step(Gdx.graphics.getDeltaTime(), 6, 2);
     }
@@ -257,17 +248,31 @@ public class Level3 implements Screen {
         screenMusic.dispose();
         wallObject0.dispose();
         mainCharacter.dispose();
-        HUD.hp=3;
+        HUD.hp = 3;
         HUDBatch.dispose();
         Pause.dispose();
         GameOver.dispose();
         Complete.dispose();
     }
 
-    private int spawnDots(int dotNum){
-        DotObject tmpDotObject = new DotObject(gameWorld3, random.nextFloat(2, 38),
-                random.nextFloat(2, 18), dotRadius, dotRadius);
+    private int spawnDots(int dotNum) {
+        float random_posX;
+        while (true) {
+            random_posX = random.nextFloat() * 38;
+            if (random_posX >= 2) {
+                break;
+            }
+        }
+        float random_posY;
+        while (true) {
+            random_posY = random.nextFloat() * 18;
+            if (random_posY >= 2) {
+                break;
+            }
+        }
+        DotObject tmpDotObject = new DotObject(gameWorld3, random_posX,
+                random_posY, dotRadius, dotRadius);
         gameStage3.addActor(tmpDotObject);
-        return dotNum+1;
+        return dotNum + 1;
     }
 }

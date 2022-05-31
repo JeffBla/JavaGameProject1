@@ -22,46 +22,6 @@ public class GameLobbyContactListener implements ContactListener {
 //        System.out.println("A: "+classA);
 //        System.out.println("B: "+classB);
 
-        // if mainCharacter is attack and encounter some mobs
-        {
-            if (classA.equalsIgnoreCase("character.interActorObject.BoxObject")
-                    && classB.equalsIgnoreCase("character.mainCharacter.MainCharacter")) {
-                boolean isLeft_mainCh;
-
-                MainCharacter mainCharacter = (MainCharacter) (contact.getFixtureB().getBody().getUserData());
-                isLeft_mainCh = mainCharacter.getIsLeft();
-                if (mainCharacter.getIsAttack()) {
-                    if (!isLeft_mainCh) {
-                        if (mainCharacter.attackDetectRight.getDetectRegion().getLocalCenter().equals(contact.getFixtureB().getBody().getLocalCenter())) {
-                            System.out.println("BR vs A");
-                        }
-                    } else {
-                        if (mainCharacter.attackDetectLeft.getDetectRegion().getLocalCenter().equals(contact.getFixtureB().getBody().getLocalCenter())) {
-                            System.out.println("BL vs A");
-                        }
-                    }
-                }
-            }
-            else if (classB.equalsIgnoreCase("character.interActorObject.BoxObject")
-                    && classA.equalsIgnoreCase("character.mainCharacter.MainCharacter")) {
-                boolean isLeft_mainCh;
-
-                MainCharacter mainCharacter = (MainCharacter) (contact.getFixtureA().getBody().getUserData());
-                isLeft_mainCh = mainCharacter.getIsLeft();
-
-                if (mainCharacter.getIsAttack()) {
-                    if (!isLeft_mainCh) {
-                        if (mainCharacter.attackDetectRight.getDetectRegion().getLocalCenter().equals(contact.getFixtureA().getBody().getLocalCenter())) {
-                            System.out.println("AR vs B");
-                        }
-                    } else {
-                        if (mainCharacter.attackDetectLeft.getDetectRegion().getLocalCenter().equals(contact.getFixtureA().getBody().getLocalCenter())) {
-                            System.out.println("AL vs B");
-                        }
-                    }
-                }
-            }
-        }
         // if mainCharacter is pressed the button
         {
             if (classA.equalsIgnoreCase("character.interActorObject.ButtonObject")
@@ -114,18 +74,14 @@ public class GameLobbyContactListener implements ContactListener {
         {
             if(classA.equalsIgnoreCase("character.enemy.robot.Enemy_robot")
                     && classB.equalsIgnoreCase("character.mainCharacter.MainCharacter")){
-                // if the health point decrease
-                if(!HUD.isHpDecrease) {
-                    HUD.hp--;
-                    HUD.whenHpDecrease();
-                }
+
+                HUD.hpdecrease();
+
             }else if(classB.equalsIgnoreCase("character.enemy.robot.Enemy_robot")
                     && classA.equalsIgnoreCase("character.mainCharacter.MainCharacter")){
-                // if the health point decrease
-                if(!HUD.isHpDecrease) {
-                    HUD.hp--;
-                    HUD.whenHpDecrease();
-                }
+
+                HUD.hpdecrease();
+
             }
         }
         // if mainCharacter enter the door and touch the bound

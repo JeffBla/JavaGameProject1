@@ -17,8 +17,12 @@ public class ScreenMusic{
         gameLobbyMusic.play();
     }
 
-    public void dispose(){
+    public void stopGameLobbyMusic(){
         gameLobbyMusic.stop();
+    }
+
+    public void dispose(){
+        stopGameLobbyMusic();
         gameLobbyMusic.dispose();
     }
 }

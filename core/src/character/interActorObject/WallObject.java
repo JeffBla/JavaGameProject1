@@ -80,4 +80,8 @@ public class WallObject extends Actor {
     public float getWallWeight() {
         return weight;
     }
+
+    public Body getBody(){
+        return body;
+    }
 }

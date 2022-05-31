@@ -22,7 +22,7 @@ import worldBuilding.BuildBody;
 
 public class GameLobby implements Screen {
     final GameMode gameMode;
-    final ScreenMusic screenMusic;
+    public static ScreenMusic screenMusic;
     final WallObject wallObject0;
     final WallObject wallObject1;
     final WallObject wallObject2;
@@ -32,7 +32,6 @@ public class GameLobby implements Screen {
     final WallObject frameObjectDownDown;
     final WallObject frameObjectFont;
     final WallObject frameObjectRear;
-    final BoxObject boxObject;
     final ButtonObject openDoorButton;
     final DoorObject doorObject;
     final Body doorBlockLeft;
@@ -93,8 +92,6 @@ public class GameLobby implements Screen {
         frameObjectRear = new WallObject(gameWorld, 39f, -7f, 1f, 22f,
                 0f, 0f, 0f);
 
-        boxObject = new BoxObject(gameWorld, 8, 5);
-
         doorObject = new DoorObject(gameWorld, "doorLeft.png", "doorRight.png",
                 30f, 0, 3f, 1f, 2, -2,
                 0, 0, 0);
@@ -122,13 +119,12 @@ public class GameLobby implements Screen {
         GameOver=new GameOverScreen();
         Complete=new CompleteScreen();
 
-        gameStage = new Stage(stageViewport);
+        gameStage = new Stage(mainCharacterViewport);
 
         gameStage.addActor(frameObjectUp);
         gameStage.addActor(wallObject0);
         gameStage.addActor(wallObject2);
         gameStage.addActor(openDoorButton);
-        gameStage.addActor(boxObject);
         gameStage.addActor(frameObjectFont);
         gameStage.addActor(frameObjectRear);
         gameStage.addActor(frameObjectDownPartOne);
@@ -147,58 +143,51 @@ public class GameLobby implements Screen {
     public void render(float delta) {
 
         if(PausedScreen.pause) {
+            screenMusic.stopGameLobbyMusic();
             gameWorld.getContactList().clear();
-//            gameWorld.setContactListener(null);
-            Pause.render(delta);
+            Pause.render(delta,getClass().getName());
             if(PausedScreen.restart) {
-                PausedScreen.restart=false;
-                PausedScreen.pause=false;
+                PausedScreen.initial();
                 gameMode.setScreen(new GameLobby(gameMode));
                 dispose();
             }
             else if(PausedScreen.stage) {
-                PausedScreen.stage=false;
-                PausedScreen.pause=false;
+                PausedScreen.initial();
                 gameMode.setScreen(new Stageselection(gameMode));
                 dispose();
             }
         }
         else if(GameOverScreen.gameover) {
+            screenMusic.stopGameLobbyMusic();
             gameWorld.getContactList().clear();
-//            gameWorld.setContactListener(null);
             GameOver.render(delta);
             if(GameOverScreen.restart) {
-                GameOverScreen.restart=false;
-                GameOverScreen.gameover=false;
+                GameOverScreen.initial();
                 gameMode.setScreen(new GameLobby(gameMode));
                 dispose();
             }
             else if(GameOver.stage) {
-                GameOver.stage=false;
-                GameOverScreen.gameover=false;
+                GameOverScreen.initial();
                 gameMode.setScreen(new Stageselection(gameMode));
                 dispose();
             }
         }
         else if(CompleteScreen.complete) {
+            screenMusic.stopGameLobbyMusic();
             gameWorld.getContactList().clear();
-//            gameWorld.setContactListener(null);
             Complete.render(delta);
             if(CompleteScreen.restart) {
-                CompleteScreen.restart=false;
-                CompleteScreen.complete=false;
+                CompleteScreen.initial();
                 gameMode.setScreen(new GameLobby(gameMode));
                 dispose();
             }
             else if(CompleteScreen.stage) {
-                CompleteScreen.stage=false;
-                CompleteScreen.complete=false;
+                CompleteScreen.initial();
                 gameMode.setScreen(new Stageselection(gameMode));
                 dispose();
             }
             else if(CompleteScreen.nextstage) {
-                CompleteScreen.nextstage=false;
-                CompleteScreen.complete=false;
+                CompleteScreen.initial();
                 gameMode.setScreen(new Level2(gameMode));
                 dispose();
             }
@@ -236,8 +225,6 @@ public class GameLobby implements Screen {
         }
         if (mainCharacter.getIsBound()) {
             CompleteScreen.complete=true;
-//            gameMode.setScreen(new Stageselection(gameMode));
-//            dispose();
         }
         gameWorld.step(Gdx.graphics.getDeltaTime(), 6, 2);
     }
@@ -274,7 +261,6 @@ public class GameLobby implements Screen {
         frameObjectRear.dispose();
         wallObject0.dispose();
         wallObject1.dispose();
-        boxObject.dispose();
         doorObject.dispose();
         openDoorButton.dispose();
         keyMapTutorial.dispose();

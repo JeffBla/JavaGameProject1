@@ -1,10 +1,9 @@
 package com.mygdx.game;
 
 import character.enemy.robot.Enemy_robot;
-import character.interActorObject.BoxObject;
 import character.interActorObject.ButtonObject;
 import character.interActorObject.WallObject;
-import character.interActorObject.Laser.LaserObjectLine;
+import character.interActorObject.Laser.LaserLine;
 import character.mainCharacter.MainCharacter;
 import com.badlogic.gdx.physics.box2d.*;
 import kit.FlipAnimation;
@@ -77,18 +76,12 @@ public class Level2ContactListener implements ContactListener {
         {
             if(classA.equalsIgnoreCase("character.enemy.robot.Enemy_robot")
                     && classB.equalsIgnoreCase("character.mainCharacter.MainCharacter")){
-                // if the health point decrease
-                if(!HUD.isHpDecrease) {
-                    HUD.hp--;
-                    HUD.whenHpDecrease();
-                }
+                HUD.hpdecrease();
+
             }else if(classB.equalsIgnoreCase("character.enemy.robot.Enemy_robot")
                     && classA.equalsIgnoreCase("character.mainCharacter.MainCharacter")){
-                // if the health point decrease
-                if(!HUD.isHpDecrease) {
-                    HUD.hp--;
-                    HUD.whenHpDecrease();
-                }
+                HUD.hpdecrease();
+
             }
         }
         // if mainCharacter enter the door and touch the bound
@@ -111,92 +104,18 @@ public class Level2ContactListener implements ContactListener {
         }
         {
             if(classA.equalsIgnoreCase("character.mainCharacter.MainCharacter")
-                    && classB.equalsIgnoreCase("character.interActorObject.Laser.LaserObjectLine")){
+                    && classB.equalsIgnoreCase("character.interActorObject.Laser.LaserLine")){
                 MainCharacter mainCharacter =(MainCharacter) tmpA;
-                LaserObjectLine Laser = (LaserObjectLine) tmpB;
-                // if the health point decrease
-                if(!HUD.isHpDecrease) {
-                    HUD.hp--;
-                    HUD.whenHpDecrease();
-                }
+                LaserLine Laserline = (LaserLine) tmpB;
+                HUD.hpdecrease();
+
             }
         }
-//        {
-//        	if(classA.equalsIgnoreCase("character.interActorObject.BoxObject")
-//                    && classB.equalsIgnoreCase("character.interActorObject.Laser.LaserObject")){
-//        		BoxObject Box =(BoxObject)(contact.getFixtureA().getBody().getUserData());
-//        		LaserObject Laser = (LaserObject) tmpB;
-//        		if(Laser.get_type().equals("leri")) {
-//        			Laser.touch_leri(Box.getPosition_X(), Box.getPosition_Y());
-//        		}
-//        		else if(Laser.get_type().equals("doup")) {
-//        			Laser.touch_doup(Box.getPosition_X(), Box.getPosition_X());
-//        		}
-//            }
-//        	else if(classB.equalsIgnoreCase("character.interActorObject.BoxObject")
-//                    && classA.equalsIgnoreCase("character.interActorObject.Laser.LaserObject")){
-//        		BoxObject Box =(BoxObject)(contact.getFixtureB().getBody().getUserData());
-//        		LaserObject Laser = (LaserObject) tmpA;
-//        		if(Laser.get_type().equals("leri")) {
-//        			Laser.touch_leri(Box.getPosition_X(), Box.getPosition_Y());
-//        		}
-//        		else if(Laser.get_type().equals("doup")) {
-//        			Laser.touch_doup(Box.getPosition_X(), Box.getPosition_Y());
-//        		}
-//            }
-//        }
     }
 
     @Override
     public void endContact(Contact contact) {
-        Object tmpA, tmpB;
-        String classA, classB;
-        if ((tmpA = contact.getFixtureA().getBody().getUserData()) != null)
-            classA = tmpA.getClass().getName();
-        else return;
-        if ((tmpB = contact.getFixtureB().getBody().getUserData()) != null)
-            classB = tmpB.getClass().getName();
-        else return;
 
-//        {
-//        	if(classA.equalsIgnoreCase("character.mainCharacter.MainCharacter")
-//                    && classB.equalsIgnoreCase("character.interActorObject.Laser.LaserObject")){
-//        		MainCharacter mainCharacter =(MainCharacter) tmpA;
-//        		LaserObject Laser = (LaserObject) tmpB;
-//        		if(Laser.get_type().equals("leri")) {
-//        			System.out.println("leri");
-//        			Laser.left();
-//        		}
-//        		else if(Laser.get_type().equals("doup")) {
-//        			System.out.println("doup");
-//        			Laser.left();
-//        		}
-//            }
-//        }
-//        {
-//        	if(classA.equalsIgnoreCase("character.interActorObject.BoxObject")
-//                    && classB.equalsIgnoreCase("character.interActorObject.Laser.LaserObject")){
-//        		BoxObject Box =(BoxObject) tmpA;
-//        		LaserObject Laser = (LaserObject) tmpB;
-//        		if(Laser.get_type().equals("leri")) {
-//            		Laser.left();
-//        		}
-//        		else if(Laser.get_type().equals("doup")) {
-//        			Laser.left();
-//        		}
-//            }
-//        	else if(classB.equalsIgnoreCase("character.interActorObject.BoxObject")
-//                    && classA.equalsIgnoreCase("character.interActorObject.Laser.LaserObject")){
-//        		BoxObject Box =(BoxObject) tmpB;
-//        		LaserObject Laser = (LaserObject) tmpA;
-//        		if(Laser.get_type().equals("leri")) {
-//            		Laser.left();
-//        		}
-//        		else if(Laser.get_type().equals("doup")) {
-//        			Laser.left();
-//        		}
-//            }
-//        }
     }
 
     @Override
