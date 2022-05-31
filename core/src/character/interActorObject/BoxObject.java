@@ -65,5 +65,14 @@ public class BoxObject extends Actor {
     public void dispose() {
         texture.dispose();
     }
-
+    
+    public float getPosition_X() {
+        return body.getPosition().x;
+    }
+    public float getPosition_Y() {
+        return body.getPosition().y;
+    }
+    public void catch_(float x,float y) {
+    	body.setTransform(x, y, 0);
+    }
 }

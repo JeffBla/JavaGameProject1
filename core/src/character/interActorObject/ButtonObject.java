@@ -56,6 +56,8 @@ public class ButtonObject extends Actor {
 
     public void dispose() {
         buttonUpImg.dispose();
+        buttonDownImg.dispose();
+        pressedSound.dispose();
     }
 
     public void setPressedSound(Sound pressed) {

@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import worldBuilding.UI.ButtonBulider;
@@ -18,8 +17,9 @@ public class Stageselection implements Screen{
     private ImageButton BackImgButton;
     private ImageButton Stage1ImgButton;
     private ImageButton Stage2ImgButton;
+    private ImageButton Stage3ImgButton;
+    private ImageButton Stage4ImgButton;
     private Stage stage;
-    private Window exitConfirmWindowFrame;
 
     public Stageselection(final GameMode gameMode) {
         this.gameMode = gameMode;
@@ -55,9 +55,27 @@ public class Stageselection implements Screen{
                 dispose();
             }
         });
+        Stage3ImgButton=worldBuilding.UI.ButtonBulider.createImgButton("StageSelection/Stage3.png",
+                "StageSelection/Stage3down.png", "StageSelection/Stage3Pressed.png",
+                500, 600, new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                gameMode.setScreen(new Level3(gameMode));
+                dispose();
+            }
+        });
+        Stage4ImgButton=worldBuilding.UI.ButtonBulider.createImgButton("StageSelection/Stage4.png",
+                "StageSelection/Stage4down.png", "StageSelection/Stage4Pressed.png",
+                700, 600, new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                gameMode.setScreen(new Level4(gameMode));
+                dispose();
+            }
+        });
         stage.addActor(BackImgButton);
         stage.addActor(Stage1ImgButton);
         stage.addActor(Stage2ImgButton);
+        stage.addActor(Stage3ImgButton);
+        stage.addActor(Stage4ImgButton);
 
     }
 

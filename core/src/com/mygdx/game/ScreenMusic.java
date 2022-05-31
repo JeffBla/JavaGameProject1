@@ -3,7 +3,7 @@ package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 
-public class ScreenMusic {
+public class ScreenMusic{
 
     private Music gameLobbyMusic;
 
@@ -15,5 +15,14 @@ public class ScreenMusic {
         gameLobbyMusic.setLooping(true);
         gameLobbyMusic.setVolume(0.4f);
         gameLobbyMusic.play();
+    }
+
+    public void stopGameLobbyMusic(){
+        gameLobbyMusic.stop();
+    }
+
+    public void dispose(){
+        stopGameLobbyMusic();
+        gameLobbyMusic.dispose();
     }
 }

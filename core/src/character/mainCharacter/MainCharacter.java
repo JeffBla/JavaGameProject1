@@ -1,5 +1,6 @@
 package character.mainCharacter;
 
+import character.interActorObject.Cast_magic.Cast_magicObject_fire;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.*;
@@ -12,6 +13,8 @@ import com.badlogic.gdx.utils.Array;
 import kit.FlipAnimation;
 import worldBuilding.BuildBody;
 
+import java.util.ArrayList;
+
 public class MainCharacter extends Actor {
     private final Array<Animation<TextureRegion>> actorAnimation;
 
@@ -19,29 +22,48 @@ public class MainCharacter extends Actor {
     private final MainCharacterIdle idle;
     private final MainCharacterAttack attack;
     private final MainCharacterSoundEffect soundEffect;
+    private final MainCharacterShield shield;
 
     private final World gameWorld;
     public Body body;
-    public Body attackDetectRight;
-    public Body attackDetectLeft;
+    public MainCharacterAttackDetectRegion attackDetectRight;
+    public MainCharacterAttackDetectRegion attackDetectLeft;
     public TextureRegion currentFrame;
 
     public Vector2 speed = new Vector2(0, 0);
     public float stateTime = 0.0f;
-    private final float walkSpeed = 3;  // 5 for game. 10 for test.
+    private final float walkSpeed = 5;  // 5 for game. 10 for test.
     private final float width = 1.7f, height = 1.7f;
+
+    private final float[] attackDurations = {0, 0.6f, 0.4f, 0.6f};
+    private final float attackComboTimeDuration = 1f;
+    private float attackDurationCount = 0;
+    private float attackComboTimeCount = 0;
+    private float attacklevelCount = 1;
+    private final float castDuration = 0.6f;
+    private float castDurationCount = 0;
+    private ArrayList<Cast_magicObject_fire> cast_magicObjectFireArrayList;
+
+    private int attackDetectRightCount = 0;
+    private int attackDetectLeftCount = 0;
 
     private boolean isLeft = false;
     private boolean isAttack = false;
     private boolean isBound = false;
+    private boolean isCatch = false;
+    private boolean isCastMagic = false;
 
     public MainCharacter(World gameWorld, float x, float y) {
         this.gameWorld = gameWorld;
+        this.setBounds(x, y, width, height);
+
+        cast_magicObjectFireArrayList = new ArrayList<>();
 
         walk = new MainCharacterWalk();
         idle = new MainCharacterIdle();
         attack = new MainCharacterAttack();
         soundEffect = new MainCharacterSoundEffect();
+        shield = new MainCharacterShield(gameWorld, width / 2 + x, height + y, height, height, this);
 
         actorAnimation = new Array<>();
         actorAnimation.addAll(walk.walkAnimation, idle.idleAnimation,
@@ -52,7 +74,7 @@ public class MainCharacter extends Actor {
         body = BuildBody.createBox(gameWorld, x, y, 0.3f, 0.65f,
                 new Vector2(width / 2, height / 2 - 0.2f), 0, 0, 0.2f,
                 false, true, false);
-
+        body.setSleepingAllowed(false);
         body.setUserData(this);
     }
 
@@ -74,25 +96,27 @@ public class MainCharacter extends Actor {
 
     @Override
     public void act(float delta) {
+        this.setPosition(body.getPosition().x, body.getPosition().y);
+
         stateTime += delta;
         keyInput(delta);
+
+        for (Cast_magicObject_fire magicObject : cast_magicObjectFireArrayList) {
+            magicObject.act(delta);
+        }
+
+        shield.act(delta);
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
         batch.draw(currentFrame, body.getPosition().x, body.getPosition().y, width, height);
+        for (Cast_magicObject_fire magicObject : cast_magicObjectFireArrayList) {
+            magicObject.draw(batch, parentAlpha);
+        }
+
+        shield.draw(batch, parentAlpha);
     }
-
-    private final float[] attackDurations = {0, 0.6f, 0.4f, 0.6f};
-    private final float attackComboTimeDuration = 1f;
-    private float attackDurationCount = 0;
-    private float attackComboTimeCount = 0;
-    private float attacklevelCount = 1;
-    private final float castDuration = 1.2f;
-    private float castDurationCount = 0;
-
-    private int attackDetectRightCount = 0;
-    private int attackDetectLeftCount = 0;
 
     private void keyInput(float delta) {
         boolean pressLeft = Gdx.input.isKeyPressed(Input.Keys.A);
@@ -101,6 +125,13 @@ public class MainCharacter extends Actor {
         boolean pressDown = Gdx.input.isKeyPressed(Input.Keys.S);
         boolean pressAttack = Gdx.input.isKeyPressed(Input.Keys.J);
         boolean pressCast = Gdx.input.isKeyPressed(Input.Keys.K);
+
+        boolean pressCatch = Gdx.input.isKeyPressed(Input.Keys.Z);
+        if (pressCatch) {
+            isCatch = true;
+        } else {
+            isCatch = false;
+        }
 
         // idle
         currentFrame = idle.idleAnimation.getKeyFrame(stateTime);
@@ -122,16 +153,16 @@ public class MainCharacter extends Actor {
 
             // attack detect region
             if (!isLeft && attackDetectRightCount != 1) {
-                attackDetectRight = BuildBody.createBox(gameWorld, 0, 0, 0.3f * 2 - 0.12f, 0.65f,
-                        new Vector2(body.getPosition().x + width / 2 + 0.2f, body.getPosition().y + height / 2 - 0.2f),
+                attackDetectRight = new MainCharacterAttackDetectRegion(gameWorld, 0, 0, 0.35f * 2, 0.65f,
+                        new Vector2(body.getPosition().x + width / 2 + 0.5f, body.getPosition().y + height / 2 - 0.2f),
                         0, 0, 0, false, true, true);
-                attackDetectRight.setUserData(this);
+
                 attackDetectRightCount++;
             } else if (isLeft && attackDetectLeftCount != 1) {
-                attackDetectLeft = BuildBody.createBox(gameWorld, 0, 0, 0.3f * 2 - 0.12f, 0.65f,
-                        new Vector2(body.getPosition().x + width / 2 - 0.2f, body.getPosition().y + height / 2 - 0.2f),
+                attackDetectLeft = new MainCharacterAttackDetectRegion(gameWorld, 0, 0, 0.35f * 2, 0.65f,
+                        new Vector2(body.getPosition().x + width / 2 - 0.5f, body.getPosition().y + height / 2 - 0.2f),
                         0, 0, 0, false, true, true);
-                attackDetectLeft.setUserData(this);
+
                 attackDetectLeftCount++;
             }
 
@@ -172,12 +203,35 @@ public class MainCharacter extends Actor {
         if (pressCast || castDurationCount != 0) {
             body.setLinearVelocity(0, 0);
             castDurationCount += delta;
+
+            // cast magic
+            if (!isCastMagic) {  // 0.5f mean away from mainCharacter
+                Cast_magicObject_fire cast_magicObject_fire = null;
+                if (isLeft) {
+                    cast_magicObject_fire = new Cast_magicObject_fire(gameWorld, body.getPosition().x - 0.5f,
+                            body.getPosition().y + height / 2, 1.5f, 0.8f);
+
+                    FlipAnimation.flipAnim_ArrayLeft(cast_magicObject_fire.getAnimFly().GetActorAnimation());
+                    cast_magicObject_fire.setToLeftSpeed();
+                } else {
+                    cast_magicObject_fire = new Cast_magicObject_fire(gameWorld, body.getPosition().x + width + 0.5f,
+                            body.getPosition().y + height / 2, 1.5f, 0.8f);
+                }
+                if (cast_magicObject_fire != null)
+                    cast_magicObjectFireArrayList.add(cast_magicObject_fire);
+                isCastMagic = true;
+            }
+
             if (castDurationCount <= castDuration) {
                 currentFrame = attack.attackAnimCast.getKeyFrame(castDurationCount);
+                soundEffect.stopRun_sound();
                 return;
             }
         }
-        if (castDurationCount > castDuration) castDurationCount = 0;
+        if (castDurationCount > castDuration) {
+            castDurationCount = 0;
+            isCastMagic = false;
+        }
 
         // move
         body.setLinearVelocity(speed);
@@ -221,11 +275,13 @@ public class MainCharacter extends Actor {
 
     private void DestoryAttackDetect() {
         if (attackDetectLeftCount == 1) {
-            gameWorld.destroyBody(attackDetectLeft);
+            gameWorld.destroyBody(attackDetectLeft.getDetectRegion());
+            attackDetectLeft = null;
             attackDetectLeftCount = 0;
         }
         if (attackDetectRightCount == 1) {
-            gameWorld.destroyBody(attackDetectRight);
+            gameWorld.destroyBody(attackDetectRight.getDetectRegion());
+            attackDetectRight = null;
             attackDetectRightCount = 0;
         }
     }
@@ -237,10 +293,27 @@ public class MainCharacter extends Actor {
         soundEffect.dispose();
     }
 
-    public void setIsBound(boolean isBound){
-        this.isBound=isBound;
+    public void setIsBound(boolean isBound) {
+        this.isBound = isBound;
     }
-    public boolean getIsBound(){
+
+    public boolean getIsBound() {
         return isBound;
+    }
+
+    public float getPosition_X() {
+        return body.getPosition().x;
+    }
+
+    public float getPosition_Y() {
+        return body.getPosition().y;
+    }
+
+    public boolean getIsCatch() {
+        return this.isCatch;
+    }
+
+    public Body get_body() {
+        return this.body;
     }
 }

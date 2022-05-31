@@ -100,6 +100,7 @@ public class Enemy_robot extends Actor {
 
     public void dispose() {
         idle.dispose();
+        walk.dispose();
     }
 
     public Array<Animation<TextureRegion>> getActorAnimation() {
