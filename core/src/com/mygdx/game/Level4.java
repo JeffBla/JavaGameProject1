@@ -229,7 +229,7 @@ public class Level4 implements Screen {
                 }
             }
 
-            box2DDebugRenderer.render(gameWorld4, gameStage4.getCamera().combined);
+//            box2DDebugRenderer.render(gameWorld4, gameStage4.getCamera().combined);
             HUDBatch.render(delta);
         }
     }

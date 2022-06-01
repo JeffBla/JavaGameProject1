@@ -199,7 +199,7 @@ public class Level3 implements Screen {
             gameMode.batch.draw(hintTexture, 1, 5, 6, 4);
             gameMode.batch.end();
 
-            box2DDebugRenderer.render(gameWorld3, gameStage3.getCamera().combined);
+//            box2DDebugRenderer.render(gameWorld3, gameStage3.getCamera().combined);
             HUDBatch.render(delta);
         }
     }

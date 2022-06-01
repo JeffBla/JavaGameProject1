@@ -229,7 +229,7 @@ public class Level2 implements Screen {
             laser3.moveX(17f, 23f);
             laser4.moveX(30f, 34f);
             laser5.moveY(3f, 7.5f);
-            box2DDebugRenderer.render(gameWorld2, gameStage2.getCamera().combined);
+//            box2DDebugRenderer.render(gameWorld2, gameStage2.getCamera().combined);
             HUDBatch.render(delta);
         }
     }

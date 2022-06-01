@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class MainCharacterIdle {
-    Texture idleSheetTexture;
+    private final Texture idleSheetTexture;
 
     public Animation<TextureRegion> idleAnimation;
 

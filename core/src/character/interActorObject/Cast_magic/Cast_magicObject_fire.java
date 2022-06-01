@@ -14,19 +14,19 @@ public class Cast_magicObject_fire extends Actor {
     private Body body;
 
     private TextureRegion currentFrame;
-    private final float weight, height, radius;
+    private final float fireBall_width, fireBall_height, radius;
     private float stateTime = 0.0f;
     private float speed = 10;
     private boolean isSpawn;
     private boolean isHit;
 
     public Cast_magicObject_fire(World gameWorld, float x, float y,
-                                 float weight, float height) {
+                                 float fireBall_width, float fireBall_height) {
         this.gameWord = gameWorld;
 
-        this.weight = weight;
-        this.height = height;
-        this.radius = height;
+        this.fireBall_width = fireBall_width;
+        this.fireBall_height = fireBall_height;
+        this.radius = fireBall_height;
         isSpawn = true;
         isHit = false;
 
@@ -53,7 +53,7 @@ public class Cast_magicObject_fire extends Actor {
 
         batch.draw(currentFrame, body.getPosition().x - radius,
                 body.getPosition().y - radius / 2,
-                weight, height);
+                fireBall_width, fireBall_height);
 
     }
 

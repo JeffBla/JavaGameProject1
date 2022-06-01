@@ -17,8 +17,8 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import worldBuilding.UI.ButtonBulider;
 
 public class MainMenuScreen implements Screen {
-    final GameMode gameMode;
-    OrthographicCamera camera;
+    private final GameMode gameMode;
+    private OrthographicCamera camera;
     private Texture backgroundImg = new Texture(Gdx.files.internal("startMenu/start_game_white_city.png"));
     private ImageButton StartImgButton;
     private ImageButton ExitImgButton;

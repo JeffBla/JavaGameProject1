@@ -21,27 +21,27 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import worldBuilding.BuildBody;
 
 public class GameLobby implements Screen {
-    final GameMode gameMode;
-    final ScreenMusic screenMusic;
-    final WallObject wallObject0;
-    final WallObject wallObject1;
-    final WallObject wallObject2;
-    final WallObject frameObjectUp;
-    final WallObject frameObjectDownPartOne;
-    final WallObject frameObjectDownPartTwo;
-    final WallObject frameObjectDownDown;
-    final WallObject frameObjectFont;
-    final WallObject frameObjectRear;
-    final ButtonObject openDoorButton;
-    final DoorObject doorObject;
-    final Body doorBlockLeft;
-    final Body doorBlockRight;
-    final Body doorBlockUp;
+    private final GameMode gameMode;
+    private final ScreenMusic screenMusic;
+    private final WallObject wallObject0;
+    private final WallObject wallObject1;
+    private final WallObject wallObject2;
+    private final WallObject frameObjectUp;
+    private final WallObject frameObjectDownPartOne;
+    private final WallObject frameObjectDownPartTwo;
+    private final WallObject frameObjectDownDown;
+    private final WallObject frameObjectFont;
+    private final WallObject frameObjectRear;
+    private final ButtonObject openDoorButton;
+    private final DoorObject doorObject;
+    private final Body doorBlockLeft;
+    private final Body doorBlockRight;
+    private final Body doorBlockUp;
 
-    final MainCharacter mainCharacter;
-    final Enemy_robot enemy_robot1;
-    final Enemy_robot enemy_robot2;
-    final Enemy_robot enemy_robot3;
+    private final MainCharacter mainCharacter;
+    private final Enemy_robot enemy_robot1;
+    private final Enemy_robot enemy_robot2;
+    private final Enemy_robot enemy_robot3;
 
     private World gameWorld;
     private Stage gameStage;
@@ -216,7 +216,7 @@ public class GameLobby implements Screen {
             gameMode.batch.draw(keyMapTutorial, 1, 5, 6, 4);
             gameMode.batch.end();
 
-            box2DDebugRenderer.render(gameWorld, gameStage.getCamera().combined);
+//            box2DDebugRenderer.render(gameWorld, gameStage.getCamera().combined);
 
             HUDBatch.render(delta);
         }
