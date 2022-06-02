@@ -9,7 +9,6 @@ import com.badlogic.gdx.physics.box2d.*;
 import kit.FlipAnimation;
 
 public class Level2ContactListener implements ContactListener {
-    HUD HUDBatch=new HUD();
     @Override
     public void beginContact(Contact contact) {
         Object tmpA, tmpB;

@@ -1,36 +1,44 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class PausedScreen {
+public class PausedScreen extends HUDScreen{
     private SpriteBatch HUDBatch;
-    private Sprite Paused;
+    private Sprite pausedSprite;
     private Texture texture1;
+    private ScreenMusic screenMusic;
+    private GameMode gameMode;
+    private final Screen screen;
     public static boolean pause = false;
-    public static boolean resume=false;
-    public static boolean restart = false;
-    public static boolean stage = false;
+    public boolean resume = false;
+    public boolean restart = false;
+    public boolean stage = false;
 
-    public PausedScreen() {
+    public PausedScreen(ScreenMusic screenMusic, GameMode gameMode, Screen screen) {
+        this.screenMusic = screenMusic;
+        this.gameMode = gameMode;
+        this.screen = screen;
+
         HUDBatch = new SpriteBatch();
 
         texture1 = new Texture("StageSelection/PausedScreen.png");
-        Paused = new Sprite(texture1);
-        Paused.setPosition(-10, -250);
-        Paused.setScale(0.8f);
+        pausedSprite = new Sprite(texture1);
+        pausedSprite.setPosition(-10, -250);
+        pausedSprite.setScale(0.8f);
     }
 
-    public void render(float delta, String Stage) {
+    private void render() {
         HUDBatch.begin();
-        Paused.draw(HUDBatch);
+        pausedSprite.draw(HUDBatch);
         if (Gdx.input.isTouched()) {
             if (Gdx.input.getX() > 760 && Gdx.input.getX() < 1125
                     && Gdx.input.getY() > 330 && Gdx.input.getY() < 405) {
                 pause = false;
-                resume=true;
+                resume = true;
             } else if (Gdx.input.getX() > 778 && Gdx.input.getX() < 1105
                     && Gdx.input.getY() > 485 && Gdx.input.getY() < 555) {
                 restart = true;
@@ -42,13 +50,30 @@ public class PausedScreen {
         HUDBatch.end();
     }
 
-    public static void initial(){
-        pause=false;
-        restart=false;
-        stage=false;
+    private void initial() {
+        pause = false;
+        restart = false;
+        stage = false;
     }
+
     public void dispose() {
         HUDBatch.dispose();
         texture1.dispose();
+    }
+
+    public void stateAnalyze() {
+        if (pause) {
+            screenMusic.stopLevelMusic();
+            render();
+            if (restart) {
+                initial();
+                gameMode.setScreen(analyzeCurrentLevel_new(screen, gameMode));
+                screen.dispose();
+            } else if (stage) {
+                initial();
+                gameMode.setScreen(new Stageselection(gameMode));
+                screen.dispose();
+            }
+        }
     }
 }

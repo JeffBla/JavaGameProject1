@@ -1,7 +1,6 @@
 package com.mygdx.game;
 
 import character.enemy.robot.Enemy_robot;
-import character.interActorObject.BoxObject;
 import character.interActorObject.ButtonObject;
 import character.interActorObject.DoorObject;
 import character.interActorObject.WallObject;
@@ -11,7 +10,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
@@ -114,10 +112,10 @@ public class GameLobby implements Screen {
         stageViewport = new FitViewport(40, 40 / ratio); // This is for developer
         mainCharacterViewport = new FitViewport(25, 25 / ratio); // This is for gamer
         mainCharacterViewport.getCamera().position.set(0, 0, 1);
-        HUDBatch =new HUD();
-        Pause=new PausedScreen();
-        GameOver=new GameOverScreen();
-        Complete=new CompleteScreen();
+        Pause = new PausedScreen(screenMusic, gameMode, this);
+        GameOver = new GameOverScreen(screenMusic, gameMode, this);
+        Complete = new CompleteScreen(screenMusic, gameMode, this);
+        HUDBatch = new HUD(Pause);
 
         gameStage = new Stage(mainCharacterViewport);
 
@@ -141,86 +139,25 @@ public class GameLobby implements Screen {
 
     @Override
     public void render(float delta) {
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        Gdx.gl.glClearColor(0.8f, 0.8f, 0.8f, 1);
 
-        if(PausedScreen.pause) {
-            screenMusic.stopGameLobbyMusic();
-            gameWorld.getContactList().clear();
-            Pause.render(delta,getClass().getName());
-            if(PausedScreen.restart) {
-                PausedScreen.initial();
-                gameMode.setScreen(new GameLobby(gameMode));
-                dispose();
-            }
-            else if(PausedScreen.stage) {
-                PausedScreen.initial();
-                gameMode.setScreen(new Stageselection(gameMode));
-                dispose();
-            }
+        if (gameStage.getViewport() == mainCharacterViewport) {
+            mainCharacterViewport.getCamera().position.set(mainCharacter.getPosition(4, 1.5f));
         }
-        else if(GameOverScreen.gameover) {
-            screenMusic.stopGameLobbyMusic();
-            gameWorld.getContactList().clear();
-            GameOver.render(delta);
-            if(GameOverScreen.restart) {
-                GameOverScreen.initial();
-                gameMode.setScreen(new GameLobby(gameMode));
-                dispose();
-            }
-            else if(GameOver.stage) {
-                GameOverScreen.initial();
-                gameMode.setScreen(new Stageselection(gameMode));
-                dispose();
-            }
-        }
-        else if(CompleteScreen.complete) {
-            screenMusic.stopGameLobbyMusic();
-            gameWorld.getContactList().clear();
-            Complete.render(delta);
-            if(CompleteScreen.restart) {
-                CompleteScreen.initial();
-                gameMode.setScreen(new GameLobby(gameMode));
-                dispose();
-            }
-            else if(CompleteScreen.stage) {
-                CompleteScreen.initial();
-                gameMode.setScreen(new Stageselection(gameMode));
-                dispose();
-            }
-            else if(CompleteScreen.nextstage) {
-                CompleteScreen.initial();
-                gameMode.setScreen(new Level2(gameMode));
-                dispose();
-            }
-        }
-        else {
-            if(PausedScreen.resume){
-            screenMusic.playGameLobbyMusic();
-            PausedScreen.resume=false;
-            }
-            gameWorld.getContactList().clear();
-            gameWorld.setContactListener(new GameLobbyContactListener());
-            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-            Gdx.gl.glClearColor(0.8f, 0.8f, 0.8f, 1);
+        gameStage.getCamera().update();
+        gameMode.batch.setProjectionMatrix(gameStage.getCamera().combined);
 
-            if (gameStage.getViewport() == mainCharacterViewport) {
-                mainCharacterViewport.getCamera().position.set(mainCharacter.getPosition(4, 1.5f));
-            }
-            gameStage.getCamera().update();
-            gameMode.batch.setProjectionMatrix(gameStage.getCamera().combined);
-
-            gameStage.act();
-            update(delta);
-
-            gameMode.batch.begin();
-            gameStage.draw();
-            gameMode.batch.draw(keyMapTutorial, 1, 5, 6, 4);
-            gameMode.batch.end();
+        gameMode.batch.begin();
+        gameStage.draw();
+        gameMode.batch.draw(keyMapTutorial, 1, 5, 6, 4);
+        gameMode.batch.end();
 
 //            box2DDebugRenderer.render(gameWorld, gameStage.getCamera().combined);
+        HUDBatch.render(delta);
 
-            HUDBatch.render(delta);
-        }
-        }
+        update(delta);
+    }
 
     public void update(float delta) {
         if (isTheDoorOpen) {
@@ -228,9 +165,20 @@ public class GameLobby implements Screen {
             doorBlockRight.setTransform(36f, 0, 0);
         }
         if (mainCharacter.getIsBound()) {
-            CompleteScreen.complete=true;
+            Complete.complete = true;
         }
-        gameWorld.step(Gdx.graphics.getDeltaTime(), 6, 2);
+
+        Pause.stateAnalyze();
+        GameOver.stateAnalyze();
+        Complete.stateAnalyze();
+        if (Pause.resume) {
+            screenMusic.playGameLobbyMusic();
+            Pause.resume = false;
+        }
+        if (!Pause.pause && !GameOver.gameover && !Complete.complete) {
+            gameStage.act();
+            gameWorld.step(Gdx.graphics.getDeltaTime(), 6, 2);
+        }
     }
 
 
@@ -253,8 +201,9 @@ public class GameLobby implements Screen {
     public void pause() {
     }
 
+    @Override
     public void dispose() {
-        isTheDoorOpen=false;
+        isTheDoorOpen = false;
         gameStage.dispose();
         screenMusic.dispose();
         frameObjectFont.dispose();
@@ -274,7 +223,7 @@ public class GameLobby implements Screen {
         mainCharacter.dispose();
 
         HUDBatch.dispose();
-        HUD.hp=3;
+        HUD.hp = 3;
         Pause.dispose();
         GameOver.dispose();
         Complete.dispose();
