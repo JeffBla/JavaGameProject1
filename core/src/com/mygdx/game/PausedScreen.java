@@ -7,11 +7,11 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class PausedScreen extends HUDScreen{
-    private SpriteBatch HUDBatch;
-    private Sprite pausedSprite;
-    private Texture texture1;
-    private ScreenMusic screenMusic;
-    private GameMode gameMode;
+    private final SpriteBatch HUDBatch;
+    private final Sprite pausedSprite,Resume,ResumeP,Restart,RestartP,StageB,StageP;
+    private final Texture texture1,texture2,texture3,texture4,texture2p,texture3p,texture4p;
+    private final ScreenMusic screenMusic;
+    private final GameMode gameMode;
     private final Screen screen;
     public static boolean pause = false;
     public boolean resume = false;
@@ -26,24 +26,62 @@ public class PausedScreen extends HUDScreen{
         HUDBatch = new SpriteBatch();
 
         texture1 = new Texture("StageSelection/PausedScreen.png");
+        texture2=new Texture("StageSelection/resumebutton.png");
+        texture2p=new Texture("StageSelection/resumePressed.png");
+        texture3=new Texture("StageSelection/pausedrestart.png");
+        texture3p=new Texture("StageSelection/pausedrestartPressed.png");
+        texture4=new Texture("StageSelection/pausedstage.png");
+        texture4p=new Texture("StageSelection/pausedstagePressed.png");
         pausedSprite = new Sprite(texture1);
         pausedSprite.setPosition(-10, -250);
         pausedSprite.setScale(0.8f);
+        Resume=new Sprite(texture2);
+        Resume.setPosition(680, 450);
+        Resume.setScale(0.8f);
+        ResumeP=new Sprite(texture2p);
+        ResumeP.setPosition(680, 450);
+        ResumeP.setScale(0.8f);
+        Restart=new Sprite(texture3);
+        Restart.setPosition(680, 300);
+        Restart.setScale(0.8f);
+        RestartP=new Sprite(texture3p);
+        RestartP.setPosition(680, 300);
+        RestartP.setScale(0.8f);
+        StageB=new Sprite(texture4);
+        StageB.setPosition(680, 150);
+        StageB.setScale(0.8f);
+        StageP=new Sprite(texture4p);
+        StageP.setPosition(680, 150);
+        StageP.setScale(0.8f);
     }
 
     private void render() {
         HUDBatch.begin();
         pausedSprite.draw(HUDBatch);
+        Resume.draw(HUDBatch);
+        Restart.draw(HUDBatch);
+        StageB.draw(HUDBatch);
         if (Gdx.input.isTouched()) {
-            if (Gdx.input.getX() > 760 && Gdx.input.getX() < 1125
-                    && Gdx.input.getY() > 330 && Gdx.input.getY() < 405) {
+            if (Gdx.input.getX() > Resume.getX()+50 &&
+                    Gdx.input.getX() < Resume.getX()+Resume.getWidth()-50 &&
+                    Gdx.input.getY() > Resume.getY()-Resume.getHeight() &&
+                    Gdx.input.getY() < Resume.getY()) {
+                ResumeP.draw(HUDBatch);
                 pause = false;
-                resume = true;
-            } else if (Gdx.input.getX() > 778 && Gdx.input.getX() < 1105
-                    && Gdx.input.getY() > 485 && Gdx.input.getY() < 555) {
+                resume=true;
+            }
+            else if (Gdx.input.getX() > Restart.getX()+50 &&
+                    Gdx.input.getX() < Restart.getX()+Restart.getWidth()-50 &&
+                    Gdx.input.getY() > Restart.getY()+310-Resume.getHeight() &&
+                    Gdx.input.getY() < Restart.getY()+285) {
+                RestartP.draw(HUDBatch);
                 restart = true;
-            } else if (Gdx.input.getX() > 796 && Gdx.input.getX() < 1078
-                    && Gdx.input.getY() > 632 && Gdx.input.getY() < 723) {
+            }
+            else if (Gdx.input.getX() > StageB.getX()+50 &&
+                    Gdx.input.getX() < StageB.getX()+StageB.getWidth()-50 &&
+                    Gdx.input.getY() > StageB.getY()+615-Resume.getHeight() &&
+                    Gdx.input.getY() < StageB.getY()+580) {
+                StageP.draw(HUDBatch);
                 stage = true;
             }
         }
@@ -59,6 +97,12 @@ public class PausedScreen extends HUDScreen{
     public void dispose() {
         HUDBatch.dispose();
         texture1.dispose();
+        texture2.dispose();
+        texture3.dispose();
+        texture4.dispose();
+        texture2p.dispose();
+        texture3p.dispose();
+        texture4p.dispose();
     }
 
     public void stateAnalyze() {

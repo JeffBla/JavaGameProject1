@@ -1,5 +1,6 @@
 package com.mygdx.game;
 
+import character.interActorObject.Gear.GearActor;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -15,17 +16,22 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import worldBuilding.UI.ButtonBulider;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class MainMenuScreen implements Screen {
     private final GameMode gameMode;
     private OrthographicCamera camera;
-    private Texture backgroundImg = new Texture(Gdx.files.internal("startMenu/start_game_white_city.png"));
-    private ImageButton StartImgButton;
-    private ImageButton ExitImgButton;
-    private Stage stage;
-    private Window exitConfirmWindowFrame;
-    private ImageButton exitConfirmWindow_exitButton;
-    private ImageButton exitConfirmWindow_noButton;
+    private final Texture backgroundImg = new Texture(Gdx.files.internal("startMenu/start_game_white_city.png")),
+            Cover =new Texture(Gdx.files.internal("startMenu/icon.png"));
+//    private Sprite icon;
+    private final ImageButton StartImgButton;
+    private final ImageButton ExitImgButton;
+    private final Stage stage;
+    private final Window exitConfirmWindowFrame;
+    private final ImageButton exitConfirmWindow_exitButton;
+    private final ImageButton exitConfirmWindow_noButton;
+    private final CoverImg coverImg;
+    private final CoverAnimation coverAnimation;
 
     public MainMenuScreen(final GameMode gameMode) {
         this.gameMode = gameMode;
@@ -35,6 +41,10 @@ public class MainMenuScreen implements Screen {
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 1600, 700);
+
+        coverImg = new CoverImg(300f,-300,0,0,0.8f);
+        coverAnimation = new CoverAnimation();
+        coverImg.addAction(coverAnimation.action1Scale());
 
         StartImgButton = ButtonBulider.createImgButton("startMenu/SpyStartButtonUp.png", "startMenu/SpyStartButtonDown.png",
                 "startMenu/SpyStartButtonCheck.png", 100, 600, new ClickListener() {
@@ -87,6 +97,7 @@ public class MainMenuScreen implements Screen {
 
         stage.addActor(StartImgButton);
         stage.addActor(ExitImgButton);
+        stage.addActor(coverImg);
     }
 
     @Override
@@ -98,9 +109,11 @@ public class MainMenuScreen implements Screen {
 
         gameMode.batch.begin();
         gameMode.batch.draw(backgroundImg, 0, 0);
+//        icon.draw(gameMode.batch);
         gameMode.batch.end();
 
         stage.draw();
+        stage.act();
     }
 
     public void show() {
@@ -125,5 +138,6 @@ public class MainMenuScreen implements Screen {
 
     public void dispose() {
         backgroundImg.dispose();
+        Cover.dispose();
     }
 }

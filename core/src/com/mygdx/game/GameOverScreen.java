@@ -7,11 +7,11 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class GameOverScreen extends HUDScreen{
-    private SpriteBatch HUDBatch;
-    private Sprite GameOver;
-    private Texture texture1;
-    private ScreenMusic screenMusic;
-    private GameMode gameMode;
+    private final SpriteBatch HUDBatch;
+    private final Sprite GameOver,Restart,RestartP,Stage,StageP;
+    private final Texture texture1,texture2,texture2p,texture3,texture3p;
+    private final ScreenMusic screenMusic;
+    private final GameMode gameMode;
     private final Screen screen;
     public static boolean gameover = false;
     public boolean restart = false;
@@ -24,22 +24,50 @@ public class GameOverScreen extends HUDScreen{
 
         HUDBatch = new SpriteBatch();
 
-        texture1 = new Texture("StageSelection/GameOverScreen.png");
-        GameOver = new Sprite(texture1);
+        texture1=new Texture("StageSelection/GameOverScreen.png");
+        texture2=new Texture("StageSelection/GOrestart.png");
+        texture2p=new Texture("StageSelection/GOrestartPressed.png");
+        texture3=new Texture("StageSelection/GOstage.png");
+        texture3p=new Texture("StageSelection/GOstagePressed.png");
+        GameOver=new Sprite(texture1);
         GameOver.setPosition(-10, -250);
         GameOver.setScale(0.8f);
+        Restart=new Sprite(texture2);
+        Restart.setPosition(380,130);
+        Restart.setScale(0.8f);
+        RestartP=new Sprite(texture2p);
+        RestartP.setPosition(380,130);
+        RestartP.setScale(0.8f);
+        Stage=new Sprite(texture3);
+        Stage.setPosition(1000, 130);
+        Stage.setScale(0.8f);
+        StageP=new Sprite(texture3p);
+        StageP.setPosition(1000, 130);
+        StageP.setScale(0.8f);
     }
 
     private void render() {
         HUDBatch.begin();
         GameOver.draw(HUDBatch);
+        Restart.draw(HUDBatch);
+        Stage.draw(HUDBatch);
         if (Gdx.input.isTouched()) {
-            if (Gdx.input.getX() > 452 && Gdx.input.getX() < 788 &&
-                    Gdx.input.getY() > 643 && Gdx.input.getY() < 715) {
-                restart = true;
-            } else if (Gdx.input.getX() > 1110 && Gdx.input.getX() < 1387 &&
-                    Gdx.input.getY() > 643 && Gdx.input.getY() < 733) {
-                stage = true;
+            if(Gdx.input.getX()>Restart.getX()+50&&
+                    Gdx.input.getX()<Restart.getX()+Restart.getWidth()-50&&
+                    Gdx.input.getY()>Restart.getY()-Restart.getHeight()+655&&
+                    Gdx.input.getY()<Restart.getY()+625
+            ) {
+                RestartP.draw(HUDBatch);
+                restart=true;
+            }
+            else if(
+                    Gdx.input.getX()>Stage.getX()+50&&
+                            Gdx.input.getX()<Stage.getX()+Restart.getWidth()-50&&
+                            Gdx.input.getY()>Stage.getY()-Stage.getHeight()+655&&
+                            Gdx.input.getY()<Stage.getY()+625
+            ) {
+                StageP.draw(HUDBatch);
+                stage=true;
             }
         }
         HUDBatch.end();
@@ -54,6 +82,10 @@ public class GameOverScreen extends HUDScreen{
     public void dispose() {
         HUDBatch.dispose();
         texture1.dispose();
+        texture2.dispose();
+        texture2p.dispose();
+        texture3.dispose();
+        texture3p.dispose();
     }
 
     public void stateAnalyze() {

@@ -11,19 +11,14 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import kit.BodyEditorLoader;
 import worldBuilding.BuildBody;
-import com.badlogic.gdx.graphics.Color;
 
 import java.util.HashMap;
 
 public class GearActor extends Image {
 
-    private World world;
+    private final World world;
     private float angle;
     private Body body;
     private float gear_angularVelocity = 1;

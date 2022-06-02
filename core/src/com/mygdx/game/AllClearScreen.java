@@ -7,9 +7,9 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class AllClearScreen extends HUDScreen {
-    private SpriteBatch HUDBatch;
-    private Sprite Clear;
-    private Texture texture1;
+    private final SpriteBatch HUDBatch;
+    private final Sprite Clear,Restart,RestartP,Stage,StageP;
+    private final Texture texture1,texture2,texture2p,texture3,texture3p;
     private final ScreenMusic screenMusic;
     private final GameMode gameMode;
     private final Screen screen;
@@ -23,23 +23,47 @@ public class AllClearScreen extends HUDScreen {
         this.screen = screen;
 
         HUDBatch = new SpriteBatch();
-        texture1 = new Texture("StageSelection/ClearScreen.png");
-        Clear = new Sprite(texture1);
+        texture1=new Texture("StageSelection/ClearScreen.png");
+        texture2=new Texture("StageSelection/CSrestart.png");
+        texture2p=new Texture("StageSelection/CSrestartPressed.png");
+        texture3=new Texture("StageSelection/CSstage.png");
+        texture3p=new Texture("StageSelection/CSstagePressed.png");
+        Clear=new Sprite(texture1);
         Clear.setPosition(-80, -300);
         Clear.setScale(0.8f);
+        Restart=new Sprite(texture2);
+        Restart.setPosition(292,105);
+        Restart.setScale(0.8f);
+        RestartP=new Sprite(texture2p);
+        RestartP.setPosition(292,105);
+        RestartP.setScale(0.8f);
+        Stage=new Sprite(texture3);
+        Stage.setPosition(1005,103);
+        Stage.setScale(0.8f);
+        StageP=new Sprite(texture3p);
+        StageP.setPosition(1005,103);
+        StageP.setScale(0.8f);
     }
 
     private void render() {
         HUDBatch.begin();
         Clear.draw(HUDBatch);
+        Restart.draw(HUDBatch);
+        Stage.draw(HUDBatch);
         if (Gdx.input.isTouched()) {
-            if (Gdx.input.getX() > 370 && Gdx.input.getX() < 702 &&
-                    Gdx.input.getY() > 705 && Gdx.input.getY() < 780) {
-                restart = true;
+            if(Gdx.input.getX()>Restart.getX()+50
+                    &&Gdx.input.getX()<Restart.getX()+Restart.getWidth()-50
+                    &&Gdx.input.getY()>Restart.getY()-Restart.getHeight()+700
+                    && Gdx.input.getY()<Restart.getY()+675) {
+                RestartP.draw(HUDBatch);
+                restart=true;
             }
-            if (Gdx.input.getX() > 1080 && Gdx.input.getX() < 1360 &&
-                    Gdx.input.getY() > 705 && Gdx.input.getY() < 800) {
-                stage = true;
+            if(Gdx.input.getX()>Stage.getX()+40
+                    &&Gdx.input.getX()<Stage.getX()+Stage.getWidth()-45
+                    && Gdx.input.getY()>Stage.getY()-Stage.getHeight()+705
+                    &&Gdx.input.getY()<Stage.getY()+680){
+                StageP.draw(HUDBatch);
+                stage=true;
             }
         }
         HUDBatch.end();
@@ -54,6 +78,10 @@ public class AllClearScreen extends HUDScreen {
     public void dispose() {
         HUDBatch.dispose();
         texture1.dispose();
+        texture2.dispose();
+        texture2p.dispose();
+        texture3.dispose();
+        texture3p.dispose();
     }
 
     public void stateAnalyze() {

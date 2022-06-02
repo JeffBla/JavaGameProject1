@@ -224,7 +224,7 @@ public class Level3 implements Screen {
         float random_posX;
         while (true) {
             random_posX = random.nextFloat() * 38;
-            if (random_posX >= 2) {
+            if (random_posX >= 6) {
                 break;
             }
         }
