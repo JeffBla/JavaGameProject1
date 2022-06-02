@@ -1,5 +1,6 @@
 package com.mygdx.game;
 
+import character.mainCharacter.MainCharacter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
@@ -13,6 +14,7 @@ public class GameOverScreen extends HUDScreen{
     private final ScreenMusic screenMusic;
     private final GameMode gameMode;
     private final Screen screen;
+    private float timer=0;
     public static boolean gameover = false;
     public boolean restart = false;
     public boolean stage = false;
@@ -46,7 +48,7 @@ public class GameOverScreen extends HUDScreen{
         StageP.setScale(0.8f);
     }
 
-    private void render() {
+    private void render(float delta) {
         HUDBatch.begin();
         GameOver.draw(HUDBatch);
         Restart.draw(HUDBatch);
@@ -55,10 +57,11 @@ public class GameOverScreen extends HUDScreen{
             if(Gdx.input.getX()>Restart.getX()+50&&
                     Gdx.input.getX()<Restart.getX()+Restart.getWidth()-50&&
                     Gdx.input.getY()>Restart.getY()-Restart.getHeight()+655&&
-                    Gdx.input.getY()<Restart.getY()+625
-            ) {
+                    Gdx.input.getY()<Restart.getY()+625) {
                 RestartP.draw(HUDBatch);
-                restart=true;
+                if(delay(delta)) {
+                    restart = true;
+                }
             }
             else if(
                     Gdx.input.getX()>Stage.getX()+50&&
@@ -67,7 +70,9 @@ public class GameOverScreen extends HUDScreen{
                             Gdx.input.getY()<Stage.getY()+625
             ) {
                 StageP.draw(HUDBatch);
-                stage=true;
+                if(delay(delta)) {
+                    stage = true;
+                }
             }
         }
         HUDBatch.end();
@@ -77,6 +82,15 @@ public class GameOverScreen extends HUDScreen{
         gameover = false;
         restart = false;
         stage = false;
+    }
+    private boolean delay(float delta) {
+        float interval=0.05f;
+        timer+=delta;
+        if(timer>=interval) {
+            timer=0;
+            return true;
+        }
+        return false;
     }
 
     public void dispose() {
@@ -88,10 +102,11 @@ public class GameOverScreen extends HUDScreen{
         texture3p.dispose();
     }
 
-    public void stateAnalyze() {
+    public void stateAnalyze(float delta, MainCharacter mainCharacter) {
         if (gameover) {
+            mainCharacter.getSoundEffect().stopRun_sound();
             screenMusic.stopLevelMusic();
-            render();
+            render(delta);
             if (restart) {
                 initial();
                 gameMode.setScreen(analyzeCurrentLevel_new(screen, gameMode));

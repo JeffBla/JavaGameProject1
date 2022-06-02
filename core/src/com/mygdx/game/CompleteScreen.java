@@ -1,5 +1,6 @@
 package com.mygdx.game;
 
+import character.mainCharacter.MainCharacter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
@@ -13,6 +14,7 @@ public class CompleteScreen extends HUDScreen{
     private final ScreenMusic screenMusic;
     private final GameMode gameMode;
     private final Screen screen;
+    private float timer=0;
     public boolean complete = false;
     public boolean restart = false;
     public boolean stage = false;
@@ -55,7 +57,7 @@ public class CompleteScreen extends HUDScreen{
         NextStageP.setScale(0.8f);
     }
 
-    private void render() {
+    private void render(float delta) {
         HUDBatch.begin();
         Complete.draw(HUDBatch);
         Restart.draw(HUDBatch);
@@ -67,21 +69,27 @@ public class CompleteScreen extends HUDScreen{
                     Gdx.input.getY()>Restart.getY()-Restart.getHeight()+715 &&
                     Gdx.input.getY()<Restart.getY()+670) {
                 RestartP.draw(HUDBatch);
-                restart=true;
+                if(delay(delta)) {
+                    restart = true;
+                }
             }
             else if(Gdx.input.getX()>Stage.getX()+35 &&
                     Gdx.input.getX()<Stage.getX()+Stage.getWidth()-35 &&
                     Gdx.input.getY()>Stage.getY()-Stage.getHeight()+715 &&
                     Gdx.input.getY()<Stage.getY()+670) {
                 StageP.draw(HUDBatch);
-                stage=true;
+                if(delay(delta)) {
+                    stage = true;
+                }
             }
             else if(Gdx.input.getX()>NextStage.getX()+45 &&
                     Gdx.input.getX()<NextStage.getX()+NextStage.getWidth()-45&&
                     Gdx.input.getY()>NextStage.getY()-NextStage.getHeight()+715&&
                     Gdx.input.getY()<NextStage.getY()+670) {
                 NextStageP.draw(HUDBatch);
-                nextstage=true;
+                if(delay(delta)) {
+                    nextstage = true;
+                }
             }
         }
         HUDBatch.end();
@@ -92,6 +100,16 @@ public class CompleteScreen extends HUDScreen{
         restart = false;
         stage = false;
         nextstage = false;
+    }
+
+    private boolean delay(float delta) {
+        float interval=0.05f;
+        timer+=delta;
+        if(timer>=interval) {
+            timer=0;
+            return true;
+        }
+        return false;
     }
 
     public void dispose() {
@@ -105,10 +123,12 @@ public class CompleteScreen extends HUDScreen{
         texture4p.dispose();
     }
 
-    public void stateAnalyze() {
+    public void stateAnalyze(float delta, MainCharacter mainCharacter) {
         if (complete) {
+            mainCharacter.getSoundEffect().stopRun_sound();
+
             screenMusic.stopLevelMusic();
-            render();
+            render(delta);
             if (restart) {
                 initial();
                 gameMode.setScreen(analyzeCurrentLevel_new(screen, gameMode));

@@ -63,8 +63,8 @@ public class Level2 implements Screen {
         screenMusic.playGameLobbyMusic();
 
         mainCharacter = new MainCharacter(gameWorld2, 2, 2);
-        enemy_robot1 = new Enemy_robot(gameWorld2, 10f, 2f, 4, 0);
-        enemy_robot2 = new Enemy_robot(gameWorld2, 20f, 8f, 4, 0);
+        enemy_robot1 = new Enemy_robot(gameWorld2, 10f, 2f, 4, 0, false);
+        enemy_robot2 = new Enemy_robot(gameWorld2, 20f, 8f, 4, 0, false);
         wallObject1 = new WallObject(gameWorld2, 5, -3f, 1f, 11f,
                 0f, 0, 0f);
         wallObject2 = new WallObject(gameWorld2, 15, 2f, 1f, 11f,
@@ -154,36 +154,6 @@ public class Level2 implements Screen {
     }
 
     private void update(float delta) {
-        laser1.moveY(4.45f, 6.6f);
-        if (TimeUtils.nanoTime() - laser1.getStart() > 1210000000f) {
-            laser1.setStartTime();
-            if (laser1.getAttack()) {
-                laser1.setAttack(false);
-                laser1.getLine().setVisible(false);
-                laser1.getLine().sleep();
-            } else {
-                laser1.setAttack(true);
-                laser1.getLine().setVisible(true);
-                laser1.getLine().awake();
-            }
-        }
-        if (TimeUtils.nanoTime() - laser2.getStart() > 1210000000f) {
-            laser2.setStartTime();
-            if (laser2.getAttack()) {
-                laser2.setAttack(false);
-                laser2.getLine().setVisible(false);
-                laser2.getLine().sleep();
-            } else {
-                laser2.setAttack(true);
-                laser2.getLine().setVisible(true);
-                laser2.getLine().awake();
-            }
-        }
-
-        laser3.moveX(17f, 23f);
-        laser4.moveX(30f, 34f);
-        laser5.moveY(3f, 7.5f);
-
         if (Level2.isTheDoorOpen) {
             doorBlockLeft.setTransform(27, 0, 0);
             doorBlockRight.setTransform(36f, 0, 0);
@@ -193,14 +163,38 @@ public class Level2 implements Screen {
             HUD.hp = 3;
         }
 
-        Pause.stateAnalyze();
-        GameOver.stateAnalyze();
-        Complete.stateAnalyze();
+        Pause.stateAnalyze(delta, mainCharacter);
+        GameOver.stateAnalyze(delta,mainCharacter);
+        Complete.stateAnalyze(delta,mainCharacter);
         if (Pause.resume) {
             screenMusic.playGameLobbyMusic();
             Pause.resume = false;
         }
         if (!Pause.pause && !GameOver.gameover && !Complete.complete) {
+
+            laser1.moveY(4.45f, 6.6f);
+            if (TimeUtils.nanoTime() - laser1.getStart() > 1210000000f) {
+                laser1.setStartTime();
+                if (laser1.getAttack()) {
+                    laser1.relode();
+                }
+                else {
+                    laser1.attack();
+                }
+            }
+            if (TimeUtils.nanoTime() - laser2.getStart() > 1210000000f) {
+                laser2.setStartTime();
+                if (laser2.getAttack()) {
+                    laser2.relode();
+                }
+                else {
+                    laser2.attack();
+                }
+            }
+            laser3.moveX(17f, 23f);
+            laser4.moveX(30f, 34f);
+            laser5.moveY(3f, 7.5f);
+
             gameStage2.act();
             gameWorld2.step(Gdx.graphics.getDeltaTime(), 6, 2);
         }

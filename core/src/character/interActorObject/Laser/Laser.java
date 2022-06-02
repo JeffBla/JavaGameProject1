@@ -84,6 +84,18 @@ public class Laser extends Actor{
         line.getBody().setTransform(line.getBody().getPosition().x, line.getBody().getPosition().y - speedY, 0);
     }
 
+    public void relode() {
+        onAttack = false;
+        line.setVisible(false);
+        line.sleep();
+    }
+
+    public void attack() {
+        onAttack = true;
+        line.setVisible(true);
+        line.awake();
+    }
+
     public void dispose() {
         line.dispose();
         base.dispose();

@@ -42,10 +42,9 @@ public class Cannon extends Actor{
         return this.start;
     }
 
-    public void setStartTime() {
-        start = TimeUtils.nanoTime();
+    public void setStartTime(long time) {
+        start = time;
     }
-
     public CannonBase getBase() {
         return base;
     }
@@ -56,6 +55,27 @@ public class Cannon extends Actor{
 
     public CannonWarningLine getWarningLine() {
         return warningLine;
+    }
+
+    public void aim() {
+        base.setMove(false);
+        warningLine.setAim(true);
+    }
+
+    public void attack() {
+        warningLine.setAim(false);
+        warningLine.setVisible(false);
+        line.awake();
+        line.setAttack(true);
+        line.setVisible(true);
+    }
+
+    public void reDestination() {
+        line.setAttack(false);
+        line.setVisible(false);
+        line.sleep();
+        base.setTarget(false);
+        start = TimeUtils.nanoTime();
     }
 
     public void dispose() {

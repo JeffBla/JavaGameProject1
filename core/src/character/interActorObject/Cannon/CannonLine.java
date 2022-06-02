@@ -25,7 +25,7 @@ public class CannonLine extends Actor{
     private Body bodyLine;
     private int frameCol;
     private int frameRow;
-    private boolean onAttack = true;
+    private boolean onAttack = false;
     float stateTime =0;
     public CannonLine(World gameWorld, Body bodyCannon,
                       float width, float height, float animaDuration,

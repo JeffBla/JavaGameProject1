@@ -7,8 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 public class CoverImg extends Image {
 
-    public CoverImg(float pos_x, float pos_y,
-                    float aWidth, float aHeight,float scale){
+    public CoverImg(float pos_x, float pos_y, float scale) {
         super(new Texture(Gdx.files.internal("startMenu/icon.png")));
         this.setScale(scale);
         this.setPosition(pos_x, pos_y);

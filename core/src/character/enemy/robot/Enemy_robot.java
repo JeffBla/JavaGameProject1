@@ -17,7 +17,7 @@ public class Enemy_robot extends Actor {
 
     private Enemy_robotIdle idle;
     private Enemy_robotWalk walk;
-
+    private Enemy_robotWarning warning;
     private World gameWorld;
     public Body body;
     public Body sightTrigger;
@@ -34,13 +34,19 @@ public class Enemy_robot extends Actor {
     private boolean isLeft = false;
     private boolean isAttack = false;
     private boolean isWalk = true;
+    private boolean isWarning = false;
+    private long startTime = 0;
 
-    public Enemy_robot(World gameWorld, float x, float y, float speed_x, float speed_y) {
+    public Enemy_robot(World gameWorld, float x, float y, float speed_x, float speed_y, boolean isWarning) {
         this.gameWorld = gameWorld;
+        this.isWarning = isWarning;
 
         idle = new Enemy_robotIdle();
         walk = new Enemy_robotWalk();
 
+        if(isWarning) {
+            warning = new Enemy_robotWarning(gameWorld,x,y);
+        }
         actorAnimation = new Array<>();
         actorAnimation.addAll(idle.idleAnimation, walk.walkAnimation);
 
@@ -51,51 +57,56 @@ public class Enemy_robot extends Actor {
         body = BuildBody.createBox(gameWorld, x, y, width / 2 - 0.3f, height / 2 - 0.8f,
                 new Vector2(width / 2, height / 2 - 0.8f), 0, 0, 0.2f,
                 false, true, true);
-
+        body.setSleepingAllowed(true);
         sightTrigger = BuildBody.createBox(gameWorld, x, y, sightWidth / 2 - 0.6f, sightHeight / 2 - 0.3f,
                 new Vector2(-1f, 0.3f),
                 0, 0, 0,
                 false, true, true);
 
         setSpeed(speed_x, speed_y);
-
+        sightTrigger.setSleepingAllowed(true);
         sightTrigger.setUserData(this);
         body.setUserData(this);
-    }
-
-    public Enemy_robot(World gameWorld, float x, float y) {
-        this(gameWorld, x, y, 0, 0);
-        setSpeed(init_walkSpeed, 0);
     }
 
     @Override
     public void act(float delta) {
         stateTime += delta;
-        if (!isWalk) {
-            // idle
-            currentFrame = idle.idleAnimation.getKeyFrame(stateTime);
-        } else {
-            // move
-            body.setLinearVelocity(speed);
-            sightTrigger.setLinearVelocity(speed);
-            currentFrame = walk.walkAnimation.getKeyFrame(stateTime);
+        if(isWarning) {
+            warning.act(delta);
         }
-        if (!isLeft) {
-            sightTrigger.setTransform(body.getPosition().x+5f, body.getPosition().y, 0);
-        } else {
-            sightTrigger.setTransform(body.getPosition().x+0.1f, body.getPosition().y + 0.1f, 0);
+        else {
+            if (!isWalk) {
+                // idle
+                currentFrame = idle.idleAnimation.getKeyFrame(stateTime);
+            } else {
+                // move
+                body.setLinearVelocity(speed);
+                sightTrigger.setLinearVelocity(speed);
+                currentFrame = walk.walkAnimation.getKeyFrame(stateTime);
+            }
+            if (!isLeft) {
+                sightTrigger.setTransform(body.getPosition().x + 5f, body.getPosition().y, 0);
+            } else {
+                sightTrigger.setTransform(body.getPosition().x + 0.1f, body.getPosition().y + 0.1f, 0);
 
+            }
         }
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        if (!isLeft) {
-            batch.draw(eyeSightTexture, body.getPosition().x + 0.5f, body.getPosition().y - 0.5f, sightWidth, sightHeight);
-        } else {
-            batch.draw(eyeSightTexture, body.getPosition().x - 4.5f, body.getPosition().y - 0.5f, sightWidth, sightHeight);
+        if(isWarning) {
+            warning.draw(batch, parentAlpha);
         }
-        batch.draw(currentFrame, body.getPosition().x, body.getPosition().y, width, height);
+        else{
+            if (!isLeft) {
+                batch.draw(eyeSightTexture, body.getPosition().x + 0.5f, body.getPosition().y - 0.5f, sightWidth, sightHeight);
+            } else {
+                batch.draw(eyeSightTexture, body.getPosition().x - 4.5f, body.getPosition().y - 0.5f, sightWidth, sightHeight);
+            }
+            batch.draw(currentFrame, body.getPosition().x, body.getPosition().y, width, height);
+        }
     }
 
     public void dispose() {
@@ -121,5 +132,28 @@ public class Enemy_robot extends Actor {
 
     public Vector2 getSpeed() {
         return speed;
+    }
+
+    public void setStartTime(long time) {
+        startTime = time;
+    }
+
+    public long getStartTime() {
+        return startTime;
+    }
+
+    public void sleep() {
+        body.setAwake(false);
+        sightTrigger.setAwake(false);
+    }
+
+    public void awake() {
+        isWarning = false ;
+        body.setAwake(true);
+        sightTrigger.setAwake(true);
+    }
+
+    public boolean getIsWarning() {
+        return isWarning;
     }
 }

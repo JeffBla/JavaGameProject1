@@ -68,9 +68,9 @@ public class GameLobby implements Screen {
         screenMusic.playGameLobbyMusic();
 
         mainCharacter = new MainCharacter(gameWorld, 2, 2);
-        enemy_robot1 = new Enemy_robot(gameWorld, 10f, 2f, 4, 0);
-        enemy_robot2 = new Enemy_robot(gameWorld, 25, 5, 0, -2);
-        enemy_robot3 = new Enemy_robot(gameWorld, 13, 3.5f, 2, 2);
+        enemy_robot1 = new Enemy_robot(gameWorld, 10f, 2f, 4, 0, false);
+        enemy_robot2 = new Enemy_robot(gameWorld, 25, 5, 0, -2, false);
+        enemy_robot3 = new Enemy_robot(gameWorld, 13, 3.5f, 2, 2, false);
 
         wallObject0 = new WallObject(gameWorld, 8f, 8f);
         wallObject1 = new WallObject(gameWorld, 8f, -1);
@@ -168,9 +168,9 @@ public class GameLobby implements Screen {
             Complete.complete = true;
         }
 
-        Pause.stateAnalyze();
-        GameOver.stateAnalyze();
-        Complete.stateAnalyze();
+        Pause.stateAnalyze(delta, mainCharacter);
+        GameOver.stateAnalyze(delta,mainCharacter);
+        Complete.stateAnalyze(delta,mainCharacter);
         if (Pause.resume) {
             screenMusic.playGameLobbyMusic();
             Pause.resume = false;

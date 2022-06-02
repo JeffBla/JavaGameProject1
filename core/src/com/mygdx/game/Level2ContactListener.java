@@ -2,6 +2,7 @@ package com.mygdx.game;
 
 import character.enemy.robot.Enemy_robot;
 import character.interActorObject.ButtonObject;
+import character.interActorObject.Gear.GearActor_fire;
 import character.interActorObject.WallObject;
 import character.interActorObject.Laser.LaserLine;
 import character.mainCharacter.MainCharacter;
@@ -108,6 +109,16 @@ public class Level2ContactListener implements ContactListener {
                 LaserLine Laserline = (LaserLine) tmpB;
                 HUD.hpdecrease();
 
+            }
+        }
+        // if fire hit the wall
+        {
+            if (classA.equalsIgnoreCase("character.interActorObject.Gear.GearActor_fire")
+                    && classB.equalsIgnoreCase("character.interActorObject.WallObject")) {
+                ((GearActor_fire) tmpA).setIsDelete(true);
+            } else if (classB.equalsIgnoreCase("character.interActorObject.Gear.GearActor_fire")
+                    && classA.equalsIgnoreCase("character.interActorObject.WallObject")) {
+                ((GearActor_fire) tmpB).setIsDelete(true);
             }
         }
     }

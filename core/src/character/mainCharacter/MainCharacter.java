@@ -316,4 +316,8 @@ public class MainCharacter extends Actor {
     public Body get_body() {
         return this.body;
     }
+
+    public MainCharacterSoundEffect getSoundEffect(){
+        return soundEffect;
+    }
 }

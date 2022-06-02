@@ -169,9 +169,9 @@ public class Level3 implements Screen {
             Complete.complete = true;
         }
 
-        Pause.stateAnalyze();
-        GameOver.stateAnalyze();
-        Complete.stateAnalyze();
+        Pause.stateAnalyze(delta, mainCharacter);
+        GameOver.stateAnalyze(delta,mainCharacter);
+        Complete.stateAnalyze(delta,mainCharacter);
         if (Pause.resume) {
             screenMusic.playGameLobbyMusic();
             Pause.resume = false;

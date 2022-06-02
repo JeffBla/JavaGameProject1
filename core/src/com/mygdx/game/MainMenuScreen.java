@@ -1,6 +1,5 @@
 package com.mygdx.game;
 
-import character.interActorObject.Gear.GearActor;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -16,14 +15,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import worldBuilding.UI.ButtonBulider;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class MainMenuScreen implements Screen {
     private final GameMode gameMode;
     private OrthographicCamera camera;
-    private final Texture backgroundImg = new Texture(Gdx.files.internal("startMenu/start_game_white_city.png")),
-            Cover =new Texture(Gdx.files.internal("startMenu/icon.png"));
-//    private Sprite icon;
+    private final Texture backgroundImg = new Texture(Gdx.files.internal("startMenu/start_game_white_city.png"));
     private final ImageButton StartImgButton;
     private final ImageButton ExitImgButton;
     private final Stage stage;
@@ -42,7 +38,7 @@ public class MainMenuScreen implements Screen {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 1600, 700);
 
-        coverImg = new CoverImg(300f,-300,0,0,0.8f);
+        coverImg = new CoverImg(300f,-300,0.8f);
         coverAnimation = new CoverAnimation();
         coverImg.addAction(coverAnimation.action1Scale());
 
@@ -109,7 +105,6 @@ public class MainMenuScreen implements Screen {
 
         gameMode.batch.begin();
         gameMode.batch.draw(backgroundImg, 0, 0);
-//        icon.draw(gameMode.batch);
         gameMode.batch.end();
 
         stage.draw();
@@ -138,6 +133,5 @@ public class MainMenuScreen implements Screen {
 
     public void dispose() {
         backgroundImg.dispose();
-        Cover.dispose();
     }
 }

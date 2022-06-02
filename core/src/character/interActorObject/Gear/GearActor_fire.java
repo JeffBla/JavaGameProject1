@@ -13,14 +13,16 @@ import worldBuilding.BuildBody;
 
 public class GearActor_fire extends Actor {
 
-    private Texture fireTexture= new Texture(Gdx.files.internal("gear/fireGun_fire.png"));
-    private Sprite sprite;
+    private final World gameWorld;
+    private final Texture fireTexture= new Texture(Gdx.files.internal("gear/fireGun_fire.png"));
+    private final Sprite sprite;
     private Body body;
 
     private boolean isDelete;
 
     public GearActor_fire(World gameWorld, float x, float y,
                      float weight, float height) {
+        this.gameWorld = gameWorld;
         isDelete = false;
 
         sprite = new Sprite(fireTexture);

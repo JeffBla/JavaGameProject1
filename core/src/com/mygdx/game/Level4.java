@@ -17,25 +17,24 @@ import character.interActorObject.Cannon.Cannon;
 import character.mainCharacter.MainCharacter;
 
 public class Level4 implements Screen {
-    final GameMode gameMode;
-    final ScreenMusic screenMusic;
-    final WallObject frameObjectUp;
-    final WallObject frameObjectDown;
-    final WallObject frameObjectFont;
-    final WallObject frameObjectRear;
-    final WallObject wallObject1;
-    final WallObject wallObject2;
-    final WallObject wallObject3;
-    final WallObject wallObject4;
-    final WallObject wallObject5;
-    final WallObject wallObject6;
-    final Laser laser1;
-    final Laser laser2;
-    final Cannon cannon1;
-    final Enemy_robot enemy_robot1;
-    final Enemy_robot enemy_robot2;
+    private final GameMode gameMode;
+    private final ScreenMusic screenMusic;
+    private final WallObject frameObjectUp;
+    private final WallObject frameObjectDown;
+    private final WallObject frameObjectFont;
+    private final WallObject frameObjectRear;
+    private final WallObject wallObject1;
+    private final WallObject wallObject2;
+    private final WallObject wallObject3;
+    private final WallObject wallObject4;
+    private final WallObject wallObject5;
+    private final WallObject wallObject6;
+    private final Laser laser1;
+    private Cannon cannon1;
+    private Enemy_robot enemy_robot1;
+    private Enemy_robot enemy_robot2;
     private GearActor gearActor;
-    final MainCharacter mainCharacter;
+    private final MainCharacter mainCharacter;
     private World gameWorld4;
     private Stage gameStage4;
     private Box2DDebugRenderer box2DDebugRenderer;
@@ -46,6 +45,7 @@ public class Level4 implements Screen {
     public PausedScreen Pause;
     public GameOverScreen GameOver;
     public AllClearScreen Complete;
+    private int state = 1;
 
     public Level4(GameMode gameMode) {
         this.gameMode = gameMode;
@@ -79,13 +79,9 @@ public class Level4 implements Screen {
         wallObject6 = new WallObject(gameWorld4, 25, 13.5f, 3f, 2f,
                 0f, 0, 0f);
 
-        enemy_robot1 = new Enemy_robot(gameWorld4, 28f, 5f, 5, -2f);
-        enemy_robot2 = new Enemy_robot(gameWorld4, 20, 12.5f, 5, 2f);
         gearActor = new GearActor(gameWorld4, 40, 10, 6, 6);
 
         laser1 = new Laser(gameWorld4, "laser/lineRile2.png", "laser/baseRile.png", "rile", false, 6.05f, 17.5f, 43.3f, 1f, 0.1f, 0f, 0.06f, 0, 0f, -0.3f, 43.1f, 0f, 1.2f, 1f);
-        laser2 = new Laser(gameWorld4, "laser/lineLeri.png", "laser/baseLeri.png", "leri", true, 6.5f, 3.4f, 43.5f, 1f, 0.167562f, 0f, 0f, 0, 0f, -0.3f, -0.92f, -0.05f, 1.2f, 1.2f);
-        cannon1 = new Cannon(gameWorld4, mainCharacter.get_body(), 15, 8, 1.5f, 1, 0.1f, 0, 0, 0f);
         Gdx.input.setInputProcessor(gameStage4);
         float ratio = (float) (Gdx.graphics.getWidth()) / (float) (Gdx.graphics.getHeight());
 
@@ -109,11 +105,7 @@ public class Level4 implements Screen {
         gameStage4.addActor(wallObject4);
         gameStage4.addActor(wallObject5);
         gameStage4.addActor(wallObject6);
-        gameStage4.addActor(enemy_robot1);
-        gameStage4.addActor(enemy_robot2);
         gameStage4.addActor(laser1);
-        gameStage4.addActor(laser2);
-//        gameStage4.addActor(cannon1);
         gameStage4.addActor(mainCharacter);
         gameStage4.addActor(gearActor);
     }
@@ -140,53 +132,41 @@ public class Level4 implements Screen {
     }
 
     private void update(float delta) {
-        laser1.moveY(3.2f, 17.5f);
-        if (laser1.getLine().getTouch() == true) {
-            laser1.getLine().touch_rile();
-            laser1.getLine().setTouch(false);
-        }
-
-        if (laser1.getLine().getLeave() == true) {
-            laser1.getLine().touch_rile();
-            laser1.getLine().setLeave(false);
-        }
-
-        if (TimeUtils.nanoTime() - laser2.getStart() > 2500000000f) {
-            laser2.setStartTime();
-            if (laser2.getAttack()) {
-                laser2.setAttack(false);
-                laser2.getLine().setVisible(false);
-                laser2.getLine().sleep();
-            } else {
-                laser2.setAttack(true);
-                laser2.getLine().setVisible(true);
-                laser2.getLine().awake();
+        if (gearActor.getHp() < 80) {
+            if (state == 1) {
+                state = 2;
+                enemy_robot1 = new Enemy_robot(gameWorld4, 28f, 5f, 5, -2f, true);
+                enemy_robot1.sleep();
+                enemy_robot1.setStartTime(TimeUtils.nanoTime());
+                enemy_robot2 = new Enemy_robot(gameWorld4, 20, 12.5f, 5, 2f, true);
+                enemy_robot2.sleep();
+                cannon1 = new Cannon(gameWorld4, mainCharacter.get_body(), 15, 8, 1.5f, 1, 0.1f, 0, 0, 0f);
+                cannon1.setStartTime(TimeUtils.nanoTime());
+                gameStage4.addActor(enemy_robot1);
+                gameStage4.addActor(enemy_robot2);
+                gameStage4.addActor(cannon1);
+            } else if (state == 2 && (TimeUtils.nanoTime() - enemy_robot1.getStartTime()) > 3000000000f) {
+                state = 3;
+                enemy_robot1.awake();
+                enemy_robot2.awake();
             }
         }
 
-        if (TimeUtils.nanoTime() - cannon1.getStart() > 2000000000f) {
-            if (cannon1.getBase().getMove() == true) {
-                cannon1.getBase().setMove(false);
-                cannon1.getWarningLine().setAim(true);
-            }
-            if (TimeUtils.nanoTime() - cannon1.getStart() > 2500000000f) {
-                if (cannon1.getWarningLine().getAim() == true) {
-                    cannon1.getWarningLine().setAim(false);
-                    cannon1.getWarningLine().setVisible(false);
-                    cannon1.getLine().awake();
-                    cannon1.getLine().setAttack(true);
-                    cannon1.getLine().setVisible(true);
+        if (state == 3) {
+            if (TimeUtils.nanoTime() - cannon1.getStart() > 1500000000f) {
+                if (cannon1.getBase().getMove() == true) {
+                    cannon1.aim();
                 }
-                if (TimeUtils.nanoTime() - cannon1.getStart() > 4000000000f) {
-                    cannon1.getLine().setAttack(false);
-                    cannon1.getLine().setVisible(false);
-                    cannon1.getLine().sleep();
-                    cannon1.getBase().setTarget(false);
-                    cannon1.setStartTime();
+                if (TimeUtils.nanoTime() - cannon1.getStart() > 2500000000f) {
+                    if (cannon1.getWarningLine().getAim() == true) {
+                        cannon1.attack();
+                    }
+                    if (TimeUtils.nanoTime() - cannon1.getStart() > 4000000000f) {
+                        cannon1.reDestination();
+                    }
                 }
             }
         }
-
         if (gearActor.getHp() > 50 || (gearActor.getHp() <= 30 && gearActor.getHp() != 0)) {
             gearActor.shoot_FireBall(gameStage4, delta);
         }
@@ -195,14 +175,26 @@ public class Level4 implements Screen {
             Complete.complete = true;
         }
 
-        Pause.stateAnalyze();
-        GameOver.stateAnalyze();
-        Complete.stateAnalyze();
+        Pause.stateAnalyze(delta, mainCharacter);
+        GameOver.stateAnalyze(delta, mainCharacter);
+        Complete.stateAnalyze(delta, mainCharacter);
         if (Pause.resume) {
             screenMusic.playGameLobbyMusic();
             Pause.resume = false;
         }
         if (!Pause.pause && !GameOver.gameover && !Complete.complete) {
+
+            laser1.moveY(3.2f, 17.5f);
+            if (laser1.getLine().getTouch() == true) {
+                laser1.getLine().touch_rile();
+                laser1.getLine().setTouch(false);
+            }
+
+            if (laser1.getLine().getLeave() == true) {
+                laser1.getLine().touch_rile();
+                laser1.getLine().setLeave(false);
+            }
+
             gameStage4.act();
             gameWorld4.step(Gdx.graphics.getDeltaTime(), 6, 2);
         }
@@ -243,8 +235,9 @@ public class Level4 implements Screen {
         frameObjectFont.dispose();
         frameObjectRear.dispose();
         laser1.dispose();
-        laser2.dispose();
-        cannon1.dispose();
+        if (cannon1 != null) {
+            cannon1.dispose();
+        }
         HUD.hp = 3;
         HUDBatch.dispose();
         Pause.dispose();
