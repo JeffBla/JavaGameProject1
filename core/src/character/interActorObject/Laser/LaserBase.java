@@ -15,7 +15,7 @@ public class LaserBase extends Actor{
     private float originX;
     private float originY;
     private String type;
-    private Body body;
+    private final Body body;
 
     public LaserBase(Body body,String texture,String type,float offsetX ,float offsetY,float width , float height){
         base = new Texture(Gdx.files.internal(texture));

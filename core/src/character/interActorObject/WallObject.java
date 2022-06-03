@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -15,24 +14,24 @@ import worldBuilding.BuildBody;
 public class WallObject extends Actor {
     private Body body;
     private String type = "None";
-    private float weight, height;
+    private float wall_width, wall_height;
 
     private final Texture texture = new Texture(Gdx.files.internal("wallSample2.png"));
     ;
     private final Sprite sprite;
 
     // custom wall
-    public WallObject(World gameWorld, float x, float y, float weight, float height,
+    public WallObject(World gameWorld, float x, float y, float wall_width, float wall_height,
                       float fixBoxOrigin_constant, float fixBoxWeight_constant, float fixBoxHeight_constant) {
-        this.weight = weight;
-        this.height = height;
+        this.wall_width = wall_width;
+        this.wall_height = wall_height;
 
         sprite = new Sprite(texture);
         sprite.setPosition(x, y);
-        sprite.setSize(weight * GameMode.PPM, height * GameMode.PPM);
+        sprite.setSize(wall_width * GameMode.PPM, wall_height * GameMode.PPM);
 
-        body = BuildBody.createBox(gameWorld, x, y, weight / 2 + fixBoxWeight_constant,
-                height / 2 + fixBoxHeight_constant, new Vector2(sprite.getWidth() / 2f / GameMode.PPM,
+        body = BuildBody.createBox(gameWorld, x, y, wall_width / 2 + fixBoxWeight_constant,
+                wall_height / 2 + fixBoxHeight_constant, new Vector2(sprite.getWidth() / 2f / GameMode.PPM,
                         sprite.getHeight() / 2f / GameMode.PPM + fixBoxOrigin_constant),
                 0, 0, 0, true, false, false);
 
@@ -45,11 +44,11 @@ public class WallObject extends Actor {
         sprite = new Sprite(texture);
         sprite.setPosition(x, y);
 
-        this.weight = sprite.getWidth() / GameMode.PPM;
-        this.height = sprite.getHeight() / GameMode.PPM;
+        this.wall_width = sprite.getWidth() / GameMode.PPM;
+        this.wall_height = sprite.getHeight() / GameMode.PPM;
 
-        body = BuildBody.createBox(gameWorld, x, y, this.weight / 2,
-                this.height / 2 - 0.5f, new Vector2(sprite.getWidth() / 2f / GameMode.PPM,
+        body = BuildBody.createBox(gameWorld, x, y, this.wall_width / 2,
+                this.wall_height / 2 - 0.5f, new Vector2(sprite.getWidth() / 2f / GameMode.PPM,
                         sprite.getHeight() / 2f / GameMode.PPM + 0.5f),
                 0, 0, 0, true, false, false);
         body.setUserData(this);
@@ -74,11 +73,11 @@ public class WallObject extends Actor {
     }
 
     public float getWallHeight() {
-        return height;
+        return wall_height;
     }
 
     public float getWallWeight() {
-        return weight;
+        return wall_width;
     }
 
     public Body getBody(){

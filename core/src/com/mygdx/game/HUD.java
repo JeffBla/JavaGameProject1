@@ -8,16 +8,20 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class HUD {
     public SpriteBatch HUDBatch;
-    public static Sprite FullHp1, FullHp2, FullHp3, EmptyHp1, EmptyHp2, EmptyHp3, Pausedbutton;
+    public static Sprite FullHp1, FullHp2, FullHp3, EmptyHp1, EmptyHp2, EmptyHp3, Pausedbutton,Pausedpressed;
     public static int hp = 3;
     public static boolean isHpDecrease = false;
     private float hpCounter = 0;
+    private final PausedScreen pausedScreen;
 
-    private Texture texture1 = new Texture(Gdx.files.internal("HUD/FullHeart.png"));
-    private Texture texture2 = new Texture(Gdx.files.internal("HUD/EmptyHeart.png"));
-    private Texture texture3 = new Texture(Gdx.files.internal("StageSelection/Pausedbutton.png"));
+    private final Texture texture1 = new Texture(Gdx.files.internal("HUD/FullHeart.png"));
+    private final Texture texture2 = new Texture(Gdx.files.internal("HUD/EmptyHeart.png"));
+    private final Texture texture3 = new Texture(Gdx.files.internal("StageSelection/Pausedbutton.png"));
+    private final Texture texture4 = new Texture(Gdx.files.internal("StageSelection/PausedbuttonPressed.png"));
 
-    public HUD() {
+    public HUD(PausedScreen pausedScreen) {
+        this.pausedScreen = pausedScreen;
+
         HUDBatch = new SpriteBatch();
 
         FullHp1 = new Sprite(texture1);
@@ -41,6 +45,9 @@ public class HUD {
         Pausedbutton = new Sprite(texture3);
         Pausedbutton.setPosition(15, 760);
         Pausedbutton.setScale(0.65f);
+        Pausedpressed=new Sprite(texture4);
+        Pausedpressed.setPosition(15, 760);
+        Pausedpressed.setScale(0.65f);
     }
 
     public void render(float delta) {
@@ -57,7 +64,8 @@ public class HUD {
                     && Gdx.input.getX() < (Pausedbutton.getX() + Pausedbutton.getWidth() - 20)
                     && Gdx.input.getY() < (Pausedbutton.getY() - 640)
                     && Gdx.input.getY() > (Pausedbutton.getY() - Pausedbutton.getHeight() - 602)) {
-                PausedScreen.pause = true;
+                Pausedpressed.draw(HUDBatch);
+                pausedScreen.pause = true;
             }
         }
         HUDBatch.end();
@@ -76,6 +84,7 @@ public class HUD {
         texture1.dispose();
         texture2.dispose();
         texture3.dispose();
+        texture4.dispose();
     }
 
     public static void whenHpDecrease() {

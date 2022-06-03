@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Enemy_robotWalk {
-    Texture walkSheetTexture;
+    private final Texture walkSheetTexture;
 
     public Animation<TextureRegion> walkAnimation;
 

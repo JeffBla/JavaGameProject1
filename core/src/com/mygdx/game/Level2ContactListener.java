@@ -2,14 +2,13 @@ package com.mygdx.game;
 
 import character.enemy.robot.Enemy_robot;
 import character.interActorObject.ButtonObject;
+import character.interActorObject.Gear.GearActor_fire;
 import character.interActorObject.WallObject;
-import character.interActorObject.Laser.LaserLine;
 import character.mainCharacter.MainCharacter;
 import com.badlogic.gdx.physics.box2d.*;
 import kit.FlipAnimation;
 
 public class Level2ContactListener implements ContactListener {
-    HUD HUDBatch=new HUD();
     @Override
     public void beginContact(Contact contact) {
         Object tmpA, tmpB;
@@ -105,10 +104,18 @@ public class Level2ContactListener implements ContactListener {
         {
             if(classA.equalsIgnoreCase("character.mainCharacter.MainCharacter")
                     && classB.equalsIgnoreCase("character.interActorObject.Laser.LaserLine")){
-                MainCharacter mainCharacter =(MainCharacter) tmpA;
-                LaserLine Laserline = (LaserLine) tmpB;
                 HUD.hpdecrease();
 
+            }
+        }
+        // if fire hit the wall
+        {
+            if (classA.equalsIgnoreCase("character.interActorObject.Gear.GearActor_fire")
+                    && classB.equalsIgnoreCase("character.interActorObject.WallObject")) {
+                ((GearActor_fire) tmpA).setIsDelete(true);
+            } else if (classB.equalsIgnoreCase("character.interActorObject.Gear.GearActor_fire")
+                    && classA.equalsIgnoreCase("character.interActorObject.WallObject")) {
+                ((GearActor_fire) tmpB).setIsDelete(true);
             }
         }
     }

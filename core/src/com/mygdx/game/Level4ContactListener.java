@@ -8,8 +8,8 @@ import com.badlogic.gdx.physics.box2d.*;
 
 import character.enemy.robot.Enemy_robot;
 import character.interActorObject.WallObject;
-import character.mainCharacter.MainCharacter;
-import character.mainCharacter.MainCharacterShield;
+import character.interActorObject.Cannon.CannonLine;
+import character.interActorObject.Cannon.CannonBase;
 import kit.FlipAnimation;
 
 public class Level4ContactListener implements ContactListener {
@@ -29,26 +29,54 @@ public class Level4ContactListener implements ContactListener {
         //System.out.println("B: "+classB);
 
         {
-            if(classA.equalsIgnoreCase("character.mainCharacter.MainCharacter")
-                    && classB.equalsIgnoreCase("character.interActorObject.Laser.LaserLine")){
-                MainCharacter mainCharacter =(MainCharacter) tmpA;
-                LaserLine laser = (LaserLine) tmpB;
+            if(classA.equalsIgnoreCase("character.mainCharacter.MainCharacterAttackDetectRegion")
+                    && classB.equalsIgnoreCase("character.interActorObject.Cannon.CannonBase")){
+                CannonBase base = (CannonBase) tmpB;
+                base.setBeAttacked(true);
             }
-            else if(classA.equalsIgnoreCase("character.interActorObject.Laser.LaserLine")
-                    && classB.equalsIgnoreCase("character.mainCharacter.MainCharacter")){
-                LaserLine laser = (LaserLine) tmpA;
-                MainCharacter mainCharacter =(MainCharacter) tmpB;
+            else if(classA.equalsIgnoreCase("character.interActorObject.Cannon.CannonBase")
+                    && classB.equalsIgnoreCase("character.mainCharacter.MainCharacterAttackDetectRegion")){
+                CannonBase base = (CannonBase) tmpA;
+                base.setBeAttacked(true);
             }
         }
 
         {
-            if(classA.equalsIgnoreCase("character.interActorObject.WallObject")
+            if(classA.equalsIgnoreCase("character.mainCharacter.MainCharacter")
+                    && classB.equalsIgnoreCase("character.interActorObject.Cannon.CannonLine")){
+                CannonLine line = (CannonLine) tmpB;
+                if(line.getAttack()==true) {
+                    HUD.hpdecrease();
+                }
+            }
+            else if(classA.equalsIgnoreCase("character.interActorObject.Cannon.CannonLine")
+                    && classB.equalsIgnoreCase("character.mainCharacter.MainCharacter")){
+                CannonLine line = (CannonLine) tmpA;
+                if(line.getAttack()==true) {
+                    HUD.hpdecrease();
+                }
+            }
+        }
+
+        {
+            if(classA.equalsIgnoreCase("character.mainCharacter.MainCharacter")
                     && classB.equalsIgnoreCase("character.interActorObject.Laser.LaserLine")){
-                WallObject wall=(WallObject) tmpA;
+                HUD.hpdecrease();
+            }
+            else if(classA.equalsIgnoreCase("character.interActorObject.Laser.LaserLine")
+                    && classB.equalsIgnoreCase("character.mainCharacter.MainCharacter")){
+                HUD.hpdecrease();
+            }
+        }
+
+        {
+            if (classA.equalsIgnoreCase("character.interActorObject.WallObject")
+                    && classB.equalsIgnoreCase("character.interActorObject.Laser.LaserLine")) {
+                WallObject wall = (WallObject) tmpA;
                 LaserLine laserline = (LaserLine) tmpB;
-                if(laserline.getType().equals("rile")) {
+                if (laserline.getType().equals("rile")) {
                     laserline.setTouch(true);
-                    laserline.setTransfrom(wall.getBody().getPosition().x+wall.getWallWeight(),laserline.getEndX());
+                    laserline.setTransform(wall.getBody().getPosition().x + wall.getWallWeight(), laserline.getEndX());
                 }
             }
         }
@@ -86,18 +114,25 @@ public class Level4ContactListener implements ContactListener {
         {
             if (classA.equalsIgnoreCase("character.enemy.robot.Enemy_robot")
                     && classB.equalsIgnoreCase("character.mainCharacter.MainCharacter")) {
-                HUD.hpdecrease();
+                Enemy_robot robot=(Enemy_robot) tmpA;
+                if(robot.getIsWarning() == false) {
+                    HUD.hpdecrease();
+                }
 
             } else if (classB.equalsIgnoreCase("character.enemy.robot.Enemy_robot")
                     && classA.equalsIgnoreCase("character.mainCharacter.MainCharacter")) {
-                HUD.hpdecrease();
-
+                Enemy_robot robot=(Enemy_robot) tmpB;
+                if(robot.getIsWarning() == false) {
+                    HUD.hpdecrease();
+                }
             }
         }
-        // if Cast_magic_FireAnim hit object except enemy_robot, and attack boss
+        // if Cast_magic_FireAnim hit object except enemy_robot, and attack boss and fireBall
+        // will clear fireBall
         {
             if (classA.equalsIgnoreCase("character.interActorObject.Cast_magic.Cast_magicObject_fire")
-                    && !classB.equalsIgnoreCase("character.enemy.robot.Enemy_robot")) {
+                    && (!classB.equalsIgnoreCase("character.enemy.robot.Enemy_robot") &&
+                    !classB.equalsIgnoreCase("character.interActorObject.Gear.GearActor_fire"))) {
                 Cast_magicObject_fire magicObject_fire = (Cast_magicObject_fire) tmpA;
 
                 magicObject_fire.setIsHit(true);
@@ -106,7 +141,8 @@ public class Level4ContactListener implements ContactListener {
                     ((GearActor) tmpB).deHp(5);
                 }
             } else if (classB.equalsIgnoreCase("character.interActorObject.Cast_magic.Cast_magicObject_fire")
-                    && !classA.equalsIgnoreCase("character.enemy.robot.Enemy_robot")) {
+                    && (!classA.equalsIgnoreCase("character.enemy.robot.Enemy_robot") &&
+                    !classA.equalsIgnoreCase("character.interActorObject.Gear.GearActor_fire"))) {
                 Cast_magicObject_fire magicObject_fire = (Cast_magicObject_fire) tmpB;
 
                 magicObject_fire.setIsHit(true);
@@ -116,11 +152,22 @@ public class Level4ContactListener implements ContactListener {
                 }
             }
         }
-        // if fire hit the wall
+        // if fire hit the Cast_magicObject_fire
+        {
+            if (classA.equalsIgnoreCase("character.interActorObject.Gear.GearActor_fire")
+                    && classB.equalsIgnoreCase("character.interActorObject.Cast_magic.Cast_magicObject_fire")) {
+                ((GearActor_fire) tmpA).setIsDelete(true);
+
+            } else if (classB.equalsIgnoreCase("character.interActorObject.Gear.GearActor_fire")
+                    && classA.equalsIgnoreCase("character.interActorObject.Cast_magic.Cast_magicObject_fire")) {
+                ((GearActor_fire) tmpB).setIsDelete(true);
+            }
+        }// if fire hit the wall
         {
             if (classA.equalsIgnoreCase("character.interActorObject.Gear.GearActor_fire")
                     && classB.equalsIgnoreCase("character.interActorObject.WallObject")) {
                 ((GearActor_fire) tmpA).setIsDelete(true);
+
             } else if (classB.equalsIgnoreCase("character.interActorObject.Gear.GearActor_fire")
                     && classA.equalsIgnoreCase("character.interActorObject.WallObject")) {
                 ((GearActor_fire) tmpB).setIsDelete(true);
@@ -163,13 +210,12 @@ public class Level4ContactListener implements ContactListener {
             classB = tmpB.getClass().getName();
         else return;
 
-        if(classA.equalsIgnoreCase("character.interActorObject.WallObject")
-                && classB.equalsIgnoreCase("character.interActorObject.Laser.LaserLine")){
-            WallObject wall=(WallObject) tmpA;
+        if (classA.equalsIgnoreCase("character.interActorObject.WallObject")
+                && classB.equalsIgnoreCase("character.interActorObject.Laser.LaserLine")) {
             LaserLine laserline = (LaserLine) tmpB;
-            if(laserline.getType().equals("rile")) {
+            if (laserline.getType().equals("rile")) {
                 laserline.setLeave(true);
-                laserline.setTransfrom(laserline.getOriginX(),laserline.getEndX());
+                laserline.setTransform(laserline.getOriginX(), laserline.getEndX());
             }
         }
     }

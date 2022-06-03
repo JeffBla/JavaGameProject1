@@ -7,9 +7,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 
 public class Cast_magic_FireAnim {
-    Texture flySheetTexture;
-    Texture spawnSheetTexture;
-    Texture hitSheetTexture;
+    private final Texture flySheetTexture;
+    private final Texture spawnSheetTexture;
+    private final Texture hitSheetTexture;
 
     private Animation<TextureRegion> flyAnimation;
     private Animation<TextureRegion> spawnAnimation;

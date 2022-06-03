@@ -313,7 +313,11 @@ public class MainCharacter extends Actor {
         return this.isCatch;
     }
 
-    public Body get_body() {
+    public Body getBody() {
         return this.body;
+    }
+
+    public MainCharacterSoundEffect getSoundEffect(){
+        return soundEffect;
     }
 }

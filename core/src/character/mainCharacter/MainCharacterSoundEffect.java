@@ -6,9 +6,9 @@ import com.badlogic.gdx.utils.TimeUtils;
 
 public class MainCharacterSoundEffect {
 
-    private Sound run;
-    private Sound sword_cut_air;
-    private Sound sword_shoosh;
+    private final Sound run;
+    private final Sound sword_cut_air;
+    private final Sound sword_shoosh;
 
     public MainCharacterSoundEffect() {
         run = Gdx.audio.newSound(Gdx.files.internal("Sound/character_run.mp3"));

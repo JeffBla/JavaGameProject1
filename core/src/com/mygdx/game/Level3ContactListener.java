@@ -4,6 +4,7 @@ import character.enemy.robot.Enemy_robot;
 import character.interActorObject.BoxObject;
 import character.interActorObject.ButtonObject;
 import character.interActorObject.DotObject;
+import character.interActorObject.Gear.GearActor_fire;
 import character.interActorObject.WallObject;
 import character.mainCharacter.MainCharacter;
 import com.badlogic.gdx.physics.box2d.Contact;
@@ -13,7 +14,6 @@ import com.badlogic.gdx.physics.box2d.Manifold;
 import kit.FlipAnimation;
 
 public class Level3ContactListener implements ContactListener {
-    HUD HUDBatch=new HUD();
     @Override
     public void beginContact(Contact contact) {
         Object tmpA, tmpB;
@@ -99,6 +99,16 @@ public class Level3ContactListener implements ContactListener {
                 if (bound.getType().equals("Bound")) {
                     mainCharacter.setIsBound(true);
                 }
+            }
+        }
+        // if fire hit the wall
+        {
+            if (classA.equalsIgnoreCase("character.interActorObject.Gear.GearActor_fire")
+                    && classB.equalsIgnoreCase("character.interActorObject.WallObject")) {
+                ((GearActor_fire) tmpA).setIsDelete(true);
+            } else if (classB.equalsIgnoreCase("character.interActorObject.Gear.GearActor_fire")
+                    && classA.equalsIgnoreCase("character.interActorObject.WallObject")) {
+                ((GearActor_fire) tmpB).setIsDelete(true);
             }
         }
     }

@@ -21,7 +21,7 @@ import worldBuilding.BuildBody;
 public class Level2 implements Screen {
 
     final GameMode gameMode;
-    public static ScreenMusic screenMusic;
+    final ScreenMusic screenMusic;
     final WallObject wallObject1;
     final WallObject wallObject2;
     final WallObject frameObjectUp;
@@ -63,8 +63,8 @@ public class Level2 implements Screen {
         screenMusic.playGameLobbyMusic();
 
         mainCharacter = new MainCharacter(gameWorld2, 2, 2);
-        enemy_robot1 = new Enemy_robot(gameWorld2, 10f, 2f, 4, 0);
-        enemy_robot2 = new Enemy_robot(gameWorld2, 20f, 8f, 4, 0);
+        enemy_robot1 = new Enemy_robot(gameWorld2, 10f, 2f, 4, 0, false);
+        enemy_robot2 = new Enemy_robot(gameWorld2, 20f, 8f, 4, 0, false);
         wallObject1 = new WallObject(gameWorld2, 5, -3f, 1f, 11f,
                 0f, 0, 0f);
         wallObject2 = new WallObject(gameWorld2, 15, 2f, 1f, 11f,
@@ -106,10 +106,10 @@ public class Level2 implements Screen {
         stageViewport = new FitViewport(40, 40 / ratio); // This is for developer
         mainCharacterViewport = new FitViewport(25, 25 / ratio); // This is for gamer
         mainCharacterViewport.getCamera().position.set(0, 0, 1);
-        HUDBatch =new HUD();
-        Pause=new PausedScreen();
-        GameOver=new GameOverScreen();
-        Complete=new CompleteScreen();
+        Pause = new PausedScreen(screenMusic, gameMode, this);
+        GameOver = new GameOverScreen(screenMusic, gameMode, this);
+        Complete = new CompleteScreen(screenMusic, gameMode, this);
+        HUDBatch = new HUD(Pause);
 
         gameStage2 = new Stage(mainCharacterViewport);
         gameStage2.addActor(frameObjectUp);
@@ -134,101 +134,23 @@ public class Level2 implements Screen {
 
     @Override
     public void render(float delta) {
-        if (PausedScreen.pause) {
-            screenMusic.stopGameLobbyMusic();
-            gameWorld2.getContactList().clear();
-            Pause.render(delta,getClass().getName());
-            if (PausedScreen.restart) {
-                PausedScreen.initial();
-                gameMode.setScreen(new Level2(gameMode));
-                dispose();
-            } else if (PausedScreen.stage) {
-                PausedScreen.initial();
-                gameMode.setScreen(new Stageselection(gameMode));
-                dispose();
-            }
-        } else if (GameOverScreen.gameover) {
-            screenMusic.stopGameLobbyMusic();
-            gameWorld2.getContactList().clear();
-            GameOver.render(delta);
-            if (GameOverScreen.restart) {
-                GameOverScreen.initial();
-                gameMode.setScreen(new Level2(gameMode));
-                dispose();
-            } else if (GameOver.stage) {
-                GameOverScreen.initial();
-                gameMode.setScreen(new Stageselection(gameMode));
-                dispose();
-            }
-        } else if (CompleteScreen.complete) {
-            screenMusic.stopGameLobbyMusic();
-            gameWorld2.getContactList().clear();
-            Complete.render(delta);
-            if (CompleteScreen.restart) {
-                CompleteScreen.initial();
-                gameMode.setScreen(new Level2(gameMode));
-                dispose();
-            } else if (CompleteScreen.stage) {
-                CompleteScreen.initial();
-                gameMode.setScreen(new Stageselection(gameMode));
-                dispose();
-            } else if (CompleteScreen.nextstage) {
-                CompleteScreen.initial();
-                gameMode.setScreen(new Level3(gameMode));
-                dispose();
-            }
-        } else {
-            screenMusic.playGameLobbyMusic();
-            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-            Gdx.gl.glClearColor(0.8f, 0.8f, 0.8f, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        Gdx.gl.glClearColor(0.8f, 0.8f, 0.8f, 1);
 
-            if (gameStage2.getViewport() == mainCharacterViewport) {
-                mainCharacterViewport.getCamera().position.set(mainCharacter.getPosition(4, 1.5f));
-            }
-            gameStage2.getCamera().update();
-            gameMode.batch.setProjectionMatrix(gameStage2.getCamera().combined);
-
-            gameStage2.act();
-            update(delta);
-
-            gameMode.batch.begin();
-            gameStage2.draw();
-            gameMode.batch.end();
-
-            laser1.moveY(4.45f, 6.6f);
-            if (TimeUtils.nanoTime() - laser1.getStart() > 1210000000f) {
-                laser1.setStartTime();
-                if (laser1.getAttack()) {
-                    laser1.setAttack(false);
-                    laser1.getLine().setVisible(false);
-                    laser1.getLine().sleep();
-                }
-                else {
-                    laser1.setAttack(true);
-                    laser1.getLine().setVisible(true);
-                    laser1.getLine().awake();
-                }
-            }
-            if (TimeUtils.nanoTime() - laser2.getStart() > 1210000000f) {
-                laser2.setStartTime();
-                if (laser2.getAttack()) {
-                    laser2.setAttack(false);
-                    laser2.getLine().setVisible(false);
-                    laser2.getLine().sleep();
-                }
-                else {
-                    laser2.setAttack(true);
-                    laser2.getLine().setVisible(true);
-                    laser2.getLine().awake();
-                }
-            }
-
-            laser3.moveX(17f, 23f);
-            laser4.moveX(30f, 34f);
-            laser5.moveY(3f, 7.5f);
-            box2DDebugRenderer.render(gameWorld2, gameStage2.getCamera().combined);
-            HUDBatch.render(delta);
+        if (gameStage2.getViewport() == mainCharacterViewport) {
+            mainCharacterViewport.getCamera().position.set(mainCharacter.getPosition(4, 1.5f));
         }
+        gameStage2.getCamera().update();
+        gameMode.batch.setProjectionMatrix(gameStage2.getCamera().combined);
+
+        gameMode.batch.begin();
+        gameStage2.draw();
+        gameMode.batch.end();
+
+//            box2DDebugRenderer.render(gameWorld2, gameStage2.getCamera().combined);
+        HUDBatch.render(delta);
+
+        update(delta);
     }
 
     private void update(float delta) {
@@ -237,11 +159,45 @@ public class Level2 implements Screen {
             doorBlockRight.setTransform(36f, 0, 0);
         }
         if (mainCharacter.getIsBound()) {
-            gameMode.setScreen(new Stageselection(gameMode));
-            HUD.hp=3;
-            dispose();
+            Complete.complete = true;
+            HUD.hp = 3;
         }
-        gameWorld2.step(Gdx.graphics.getDeltaTime(), 6, 2);
+
+        Pause.stateAnalyze(delta, mainCharacter);
+        GameOver.stateAnalyze(delta,mainCharacter);
+        Complete.stateAnalyze(delta,mainCharacter);
+        if (Pause.resume) {
+            screenMusic.playGameLobbyMusic();
+            Pause.resume = false;
+        }
+        if (!Pause.pause && !GameOver.gameover && !Complete.complete) {
+
+            laser1.moveY(4.45f, 6.6f);
+            if (TimeUtils.nanoTime() - laser1.getStart() > 1210000000f) {
+                laser1.setStartTime();
+                if (laser1.getAttack()) {
+                    laser1.relode();
+                }
+                else {
+                    laser1.attack();
+                }
+            }
+            if (TimeUtils.nanoTime() - laser2.getStart() > 1210000000f) {
+                laser2.setStartTime();
+                if (laser2.getAttack()) {
+                    laser2.relode();
+                }
+                else {
+                    laser2.attack();
+                }
+            }
+            laser3.moveX(17f, 23f);
+            laser4.moveX(30f, 34f);
+            laser5.moveY(3f, 7.5f);
+
+            gameStage2.act();
+            gameWorld2.step(Gdx.graphics.getDeltaTime(), 6, 2);
+        }
     }
 
     @Override
@@ -271,7 +227,7 @@ public class Level2 implements Screen {
 
     @Override
     public void dispose() {
-        isTheDoorOpen=false;
+        isTheDoorOpen = false;
         gameStage2.dispose();
         screenMusic.dispose();
         wallObject1.dispose();
@@ -292,7 +248,7 @@ public class Level2 implements Screen {
         doorObject.dispose();
         enemy_robot1.dispose();
         enemy_robot2.dispose();
-        HUD.hp=3;
+        HUD.hp = 3;
         HUDBatch.dispose();
         Pause.dispose();
         GameOver.dispose();
