@@ -18,13 +18,9 @@ public class CannonLine extends Actor{
     private final Texture laserSheetTexture;
     private TextureRegion currentFrame;
     private Animation<TextureRegion> laserAnimation;
-    int perCellWidth;
-    int perCellHeight;
     private Sprite spriteLaser;
-    private Body bodyCannon;
-    private Body bodyLine;
-    private int frameCol;
-    private int frameRow;
+    private final Body bodyCannon;
+    private final Body bodyLine;
     private boolean onAttack = false;
     float stateTime =0;
     public CannonLine(World gameWorld, Body bodyCannon,
@@ -34,8 +30,8 @@ public class CannonLine extends Actor{
         laserSheetTexture = new Texture(Gdx.files.internal("Cannon/line.png"));
         this.bodyCannon = bodyCannon;
 
-        frameCol=1;
-        frameRow=4;
+        int frameCol=1;
+        int frameRow=4;
         int perCellWidth = laserSheetTexture.getWidth() / frameCol;
         int perCellHeight = laserSheetTexture.getHeight() / frameRow;
         TextureRegion[][] cellRegion = TextureRegion.split(laserSheetTexture, perCellWidth, perCellHeight);
@@ -63,7 +59,7 @@ public class CannonLine extends Actor{
     public void act(float delta) {
         stateTime += delta;
         currentFrame = laserAnimation.getKeyFrame(stateTime);
-        bodyLine.setTransform(bodyCannon.getPosition().x, bodyCannon.getPosition().y, (float) bodyCannon.getAngle());
+        bodyLine.setTransform(bodyCannon.getPosition().x, bodyCannon.getPosition().y, bodyCannon.getAngle());
     }
 
     @Override
@@ -73,10 +69,6 @@ public class CannonLine extends Actor{
 
     public Body getBody() {
         return bodyLine;
-    }
-
-    public TextureRegion getTextureRegion() {
-        return currentFrame;
     }
 
     public Sprite getSprite() {

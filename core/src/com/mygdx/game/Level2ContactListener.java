@@ -4,7 +4,6 @@ import character.enemy.robot.Enemy_robot;
 import character.interActorObject.ButtonObject;
 import character.interActorObject.Gear.GearActor_fire;
 import character.interActorObject.WallObject;
-import character.interActorObject.Laser.LaserLine;
 import character.mainCharacter.MainCharacter;
 import com.badlogic.gdx.physics.box2d.*;
 import kit.FlipAnimation;
@@ -105,8 +104,6 @@ public class Level2ContactListener implements ContactListener {
         {
             if(classA.equalsIgnoreCase("character.mainCharacter.MainCharacter")
                     && classB.equalsIgnoreCase("character.interActorObject.Laser.LaserLine")){
-                MainCharacter mainCharacter =(MainCharacter) tmpA;
-                LaserLine Laserline = (LaserLine) tmpB;
                 HUD.hpdecrease();
 
             }

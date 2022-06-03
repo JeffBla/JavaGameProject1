@@ -7,8 +7,8 @@ import com.badlogic.gdx.utils.TimeUtils;
 
 public class Laser extends Actor{
 
-    private LaserBase base;
-    private LaserLine line;
+    private final LaserBase base;
+    private final LaserLine line;
     private String type;
     private long start=0;
     private float speedX=0;
@@ -37,10 +37,10 @@ public class Laser extends Actor{
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
+        base.draw(batch, parentAlpha);
         if(onAttack == true) {
             line.draw(batch, parentAlpha);
         }
-        base.draw(batch, parentAlpha);
     }
     public long getStart() {
         return this.start;
@@ -50,24 +50,12 @@ public class Laser extends Actor{
         start = TimeUtils.nanoTime();
     }
 
-    public LaserBase getBase() {
-        return base;
-    }
     public LaserLine getLine() {
         return line;
     }
 
-
-    public String getType() {
-        return type;
-    }
-
     public boolean getAttack() {
         return onAttack;
-    }
-
-    public void setAttack(boolean condition) {
-        onAttack = condition;
     }
 
     public void moveX(float x0, float x1) {

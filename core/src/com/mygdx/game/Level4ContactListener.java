@@ -9,8 +9,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import character.enemy.robot.Enemy_robot;
 import character.interActorObject.WallObject;
 import character.interActorObject.Cannon.CannonLine;
-import character.mainCharacter.MainCharacter;
-import character.mainCharacter.MainCharacterShield;
+import character.interActorObject.Cannon.CannonBase;
 import kit.FlipAnimation;
 
 public class Level4ContactListener implements ContactListener {
@@ -28,6 +27,19 @@ public class Level4ContactListener implements ContactListener {
 
         //System.out.println("A: "+classA);
         //System.out.println("B: "+classB);
+
+        {
+            if(classA.equalsIgnoreCase("character.mainCharacter.MainCharacterAttackDetectRegion")
+                    && classB.equalsIgnoreCase("character.interActorObject.Cannon.CannonBase")){
+                CannonBase base = (CannonBase) tmpB;
+                base.setBeAttacked(true);
+            }
+            else if(classA.equalsIgnoreCase("character.interActorObject.Cannon.CannonBase")
+                    && classB.equalsIgnoreCase("character.mainCharacter.MainCharacterAttackDetectRegion")){
+                CannonBase base = (CannonBase) tmpA;
+                base.setBeAttacked(true);
+            }
+        }
 
         {
             if(classA.equalsIgnoreCase("character.mainCharacter.MainCharacter")
@@ -64,7 +76,7 @@ public class Level4ContactListener implements ContactListener {
                 LaserLine laserline = (LaserLine) tmpB;
                 if (laserline.getType().equals("rile")) {
                     laserline.setTouch(true);
-                    laserline.setTransfrom(wall.getBody().getPosition().x + wall.getWallWeight(), laserline.getEndX());
+                    laserline.setTransform(wall.getBody().getPosition().x + wall.getWallWeight(), laserline.getEndX());
                 }
             }
         }
@@ -200,11 +212,10 @@ public class Level4ContactListener implements ContactListener {
 
         if (classA.equalsIgnoreCase("character.interActorObject.WallObject")
                 && classB.equalsIgnoreCase("character.interActorObject.Laser.LaserLine")) {
-            WallObject wall = (WallObject) tmpA;
             LaserLine laserline = (LaserLine) tmpB;
             if (laserline.getType().equals("rile")) {
                 laserline.setLeave(true);
-                laserline.setTransfrom(laserline.getOriginX(), laserline.getEndX());
+                laserline.setTransform(laserline.getOriginX(), laserline.getEndX());
             }
         }
     }

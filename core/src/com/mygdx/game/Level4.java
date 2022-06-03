@@ -140,7 +140,7 @@ public class Level4 implements Screen {
                 enemy_robot1.setStartTime(TimeUtils.nanoTime());
                 enemy_robot2 = new Enemy_robot(gameWorld4, 20, 12.5f, 5, 2f, true);
                 enemy_robot2.sleep();
-                cannon1 = new Cannon(gameWorld4, mainCharacter.get_body(), 15, 8, 1.5f, 1, 0.1f, 0, 0, 0f);
+                cannon1 = new Cannon(gameWorld4, mainCharacter.getBody(), 15, 8, 1.5f, 1, 0.1f);
                 cannon1.setStartTime(TimeUtils.nanoTime());
                 gameStage4.addActor(enemy_robot1);
                 gameStage4.addActor(enemy_robot2);
@@ -153,16 +153,25 @@ public class Level4 implements Screen {
         }
 
         if (state == 3) {
-            if (TimeUtils.nanoTime() - cannon1.getStart() > 1500000000f) {
-                if (cannon1.getBase().getMove() == true) {
-                    cannon1.aim();
-                }
-                if (TimeUtils.nanoTime() - cannon1.getStart() > 2500000000f) {
-                    if (cannon1.getWarningLine().getAim() == true) {
-                        cannon1.attack();
+            if(cannon1.getBase().getBeAttacked() == true) {
+                cannon1.BeAttacked();
+                cannon1.getBase().setBeAttacked(false);
+            }
+            else if(cannon1.getBase().getOnRecover() == true && TimeUtils.nanoTime() - cannon1.getStart() > 5000000000f) {
+                cannon1.reset();
+            }
+            else if(cannon1.getBase().getBeAttacked() == false){
+                if (TimeUtils.nanoTime() - cannon1.getStart() > 1500000000f) {
+                    if (cannon1.getBase().getMove() == true) {
+                        cannon1.aim();
                     }
-                    if (TimeUtils.nanoTime() - cannon1.getStart() > 4000000000f) {
-                        cannon1.reDestination();
+                    if (TimeUtils.nanoTime() - cannon1.getStart() > 2500000000f) {
+                        if (cannon1.getWarningLine().getAim() == true) {
+                            cannon1.attack();
+                        }
+                        if (TimeUtils.nanoTime() - cannon1.getStart() > 4000000000f) {
+                            cannon1.reDestination();
+                        }
                     }
                 }
             }

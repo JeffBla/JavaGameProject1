@@ -34,16 +34,16 @@ public class AllClearScreen extends HUDScreen {
         Clear.setPosition(-80, -300);
         Clear.setScale(0.8f);
         Restart=new Sprite(texture2);
-        Restart.setPosition(292,105);
+        Restart.setPosition(292,80);
         Restart.setScale(0.8f);
         RestartP=new Sprite(texture2p);
-        RestartP.setPosition(292,105);
+        RestartP.setPosition(292,80);
         RestartP.setScale(0.8f);
         Stage=new Sprite(texture3);
-        Stage.setPosition(1005,103);
+        Stage.setPosition(1005,80);
         Stage.setScale(0.8f);
         StageP=new Sprite(texture3p);
-        StageP.setPosition(1005,103);
+        StageP.setPosition(1005,80);
         StageP.setScale(0.8f);
     }
 

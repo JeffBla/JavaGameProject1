@@ -18,13 +18,9 @@ public class CannonWarningLine extends Actor{
     private final Texture warningLineSheetTexture;
     private TextureRegion currentFrame;
     private Animation<TextureRegion> warningLineAnimation;
-    int perCellWidth;
-    int perCellHeight;
     private Sprite spriteWarningLine;
-    private Body bodyCannon;
-    private Body bodyWarningLine;
-    private int frameCol;
-    private int frameRow;
+    private final Body bodyCannon;
+    private final Body bodyWarningLine;
     private boolean aim;
     float stateTime =0;
     public CannonWarningLine(World gameWorld, Body bodyCannon,
@@ -34,8 +30,8 @@ public class CannonWarningLine extends Actor{
         warningLineSheetTexture = new Texture(Gdx.files.internal("Cannon/warningLine.png"));
         this.bodyCannon = bodyCannon;
 
-        frameCol=1;
-        frameRow=4;
+        int frameCol=1;
+        int frameRow=4;
         int perCellWidth = warningLineSheetTexture.getWidth() / frameCol;
         int perCellHeight = warningLineSheetTexture.getHeight() / frameRow;
         TextureRegion[][] cellRegion = TextureRegion.split(warningLineSheetTexture, perCellWidth, perCellHeight);
@@ -63,7 +59,7 @@ public class CannonWarningLine extends Actor{
     public void act(float delta) {
         stateTime += delta;
         currentFrame = warningLineAnimation.getKeyFrame(stateTime);
-        bodyWarningLine.setTransform(bodyCannon.getPosition().x, bodyCannon.getPosition().y, (float) bodyCannon.getAngle());
+        bodyWarningLine.setTransform(bodyCannon.getPosition().x, bodyCannon.getPosition().y,bodyCannon.getAngle());
     }
 
     @Override
@@ -87,13 +83,10 @@ public class CannonWarningLine extends Actor{
         warningLineSheetTexture.dispose();
     }
 
-    public TextureRegion getTextureRegion() {
-        return currentFrame;
-    }
-
     public Sprite getSprite() {
         return spriteWarningLine;
     }
+
     public boolean getAim() {
         return aim;
     }

@@ -12,15 +12,17 @@ import com.mygdx.game.GameMode;
 import worldBuilding.BuildBody;
 
 public class CannonBase extends Actor{
-    private Body bodyCannon;
-    private Body bodyMainCharactor;
+    private final Body bodyCannon;
+    private final Body bodyMainCharacter;
     private boolean target = false;
     private boolean move = false;
+    private boolean beAttacked = false;
+    private boolean onRecover = false;
     private final Texture texture = new Texture(Gdx.files.internal("Cannon/base.png"));
     private final Sprite sprite;
     private float speed ;
-    private int stop =0 ;
-    private float moveSpeed;
+    private final int stop = 0 ;
+    private final float moveSpeed;
     private double angle = 0;
     private double angle2 =0 ;
     double targetX;
@@ -30,9 +32,9 @@ public class CannonBase extends Actor{
     double distanceX2;
     double distanceY2;
 
-    public CannonBase(World gameWorld, Body bodyMainCharactor, float x, float y, float width, float height, float speed,
+    public CannonBase(World gameWorld, Body bodyMainCharacter, float x, float y, float width, float height, float speed,
                       float fixBoxOrigin_constant, float fixBoxWidth_constant, float fixBoxHeight_constant) {
-        this.bodyMainCharactor = bodyMainCharactor;
+        this.bodyMainCharacter = bodyMainCharacter;
         this.moveSpeed = speed;
         sprite = new Sprite(texture);
         sprite.setPosition(x, y - height * GameMode.PPM/2);
@@ -65,21 +67,21 @@ public class CannonBase extends Actor{
         }
         return "exception";
     }
-    public String checkQuadrantCharactor() {
-        if(bodyCannon.getPosition().x >= bodyMainCharactor.getPosition().x &&
-                bodyCannon.getPosition().y >= bodyMainCharactor.getPosition().y) {
+    public String checkQuadrantCharacter() {
+        if(bodyCannon.getPosition().x >= bodyMainCharacter.getPosition().x &&
+                bodyCannon.getPosition().y >= bodyMainCharacter.getPosition().y) {
             return "1";
         }
-        else if(bodyCannon.getPosition().x <= bodyMainCharactor.getPosition().x &&
-                bodyCannon.getPosition().y >= bodyMainCharactor.getPosition().y) {
+        else if(bodyCannon.getPosition().x <= bodyMainCharacter.getPosition().x &&
+                bodyCannon.getPosition().y >= bodyMainCharacter.getPosition().y) {
             return "2";
         }
-        else if(bodyCannon.getPosition().x <= bodyMainCharactor.getPosition().x &&
-                bodyCannon.getPosition().y <= bodyMainCharactor.getPosition().y) {
+        else if(bodyCannon.getPosition().x <= bodyMainCharacter.getPosition().x &&
+                bodyCannon.getPosition().y <= bodyMainCharacter.getPosition().y) {
             return "3";
         }
-        else if(bodyCannon.getPosition().x >= bodyMainCharactor.getPosition().x &&
-                bodyCannon.getPosition().y <= bodyMainCharactor.getPosition().y) {
+        else if(bodyCannon.getPosition().x >= bodyMainCharacter.getPosition().x &&
+                bodyCannon.getPosition().y <= bodyMainCharacter.getPosition().y) {
             return "4";
         }
         return "exception";
@@ -89,8 +91,8 @@ public class CannonBase extends Actor{
     public void act(float delta) {
         if(target==false) {
             speed = moveSpeed;
-            targetX = bodyMainCharactor.getPosition().x - 5f;
-            targetY = bodyMainCharactor.getPosition().y + 5f;
+            targetX = bodyMainCharacter.getPosition().x - 5f;
+            targetY = bodyMainCharacter.getPosition().y + 5f;
             distanceX = Math.abs(bodyCannon.getPosition().x - targetX);
             distanceY = Math.abs(bodyCannon.getPosition().y - targetY);
             angle = Math.atan(distanceY/distanceX);
@@ -98,8 +100,8 @@ public class CannonBase extends Actor{
             move = true;
         }
         if(move==true) {
-            distanceX2 = Math.abs(bodyCannon.getPosition().x - bodyMainCharactor.getPosition().x);
-            distanceY2 = Math.abs(bodyCannon.getPosition().y - bodyMainCharactor.getPosition().y);
+            distanceX2 = Math.abs(bodyCannon.getPosition().x - bodyMainCharacter.getPosition().x);
+            distanceY2 = Math.abs(bodyCannon.getPosition().y - bodyMainCharacter.getPosition().y);
             angle2 = Math.atan(distanceY2/distanceX2);
             float speedX =0;
             float speedY =0;
@@ -120,16 +122,16 @@ public class CannonBase extends Actor{
                 speedY = (float) (speed*Math.sin(angle));
             }
 
-            if(checkQuadrantCharactor().equals("1")) {
+            if(checkQuadrantCharacter().equals("1")) {
                 angle2 = (float) Math.toRadians(Math.toDegrees(angle2)+180);
             }
-            else if(checkQuadrantCharactor().equals("2")) {
+            else if(checkQuadrantCharacter().equals("2")) {
                 angle2 = -(float) Math.toRadians( Math.toDegrees(angle2));
             }
-            else if(checkQuadrantCharactor().equals("3")) {
+            else if(checkQuadrantCharacter().equals("3")) {
                 angle2 = (float) Math.toRadians(Math.toDegrees(angle2));
             }
-            else if(checkQuadrantCharactor().equals("4")) {
+            else if(checkQuadrantCharacter().equals("4")) {
                 angle2 = -(float) Math.toRadians(Math.toDegrees(angle2)+180);
             }
 
@@ -164,10 +166,6 @@ public class CannonBase extends Actor{
         target = condition;
     }
 
-    public double getLong(double a,double b) {
-        return Math.sqrt(Math.pow(a, 2)+Math.pow(b, 2));
-    }
-
     public void dispose() {
         texture.dispose();
     }
@@ -177,6 +175,22 @@ public class CannonBase extends Actor{
 
     public void setMove(boolean condition) {
         move = condition;
+    }
+
+    public void setBeAttacked(boolean hit) {
+        beAttacked = hit;
+    }
+
+    public boolean getBeAttacked() {
+        return beAttacked;
+    }
+
+    public void setOnRecover(boolean condition) {
+        onRecover = condition;
+    }
+
+    public boolean getOnRecover() {
+        return onRecover;
     }
 }
 
