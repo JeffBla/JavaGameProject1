@@ -10,7 +10,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.mygdx.game.GameMode;
 
-public class Enemy_robotWarning extends Actor{
+public class Enemy_robotWarning{
     private final Texture warningSheetTexture;
     private TextureRegion currentFrame;
     private Animation<TextureRegion> warningAnimation;
@@ -40,13 +40,11 @@ public class Enemy_robotWarning extends Actor{
 
     }
 
-    @Override
     public void act(float delta) {
         stateTime += delta;
         currentFrame = warningAnimation.getKeyFrame(stateTime);
     }
 
-    @Override
     public void draw(Batch batch, float parentAlpha) {
         batch.draw(currentFrame,x,y,spriteWarning.getWidth() / GameMode.PPM, spriteWarning.getHeight() / GameMode.PPM);
     }

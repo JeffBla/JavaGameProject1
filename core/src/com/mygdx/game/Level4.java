@@ -132,7 +132,7 @@ public class Level4 implements Screen {
     }
 
     private void update(float delta) {
-        if (gearActor.getHp() < 80) {
+        if (gearActor.getHp() < 50) {
             if (state == 1) {
                 state = 2;
                 enemy_robot1 = new Enemy_robot(gameWorld4, 28f, 5f, 5, -2f, true);
@@ -160,7 +160,7 @@ public class Level4 implements Screen {
             else if(cannon1.getBase().getOnRecover() == true && TimeUtils.nanoTime() - cannon1.getStart() > 5000000000f) {
                 cannon1.reset();
             }
-            else if(cannon1.getBase().getBeAttacked() == false){
+            else if(cannon1.getBase().getBeAttacked() == false && cannon1.getBase().getOnRecover() == false){
                 if (TimeUtils.nanoTime() - cannon1.getStart() > 1500000000f) {
                     if (cannon1.getBase().getMove() == true) {
                         cannon1.aim();
